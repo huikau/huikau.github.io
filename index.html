@@ -4,319 +4,54 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Huikau</title>
-  <meta name="description" content="Huikau. Gone fishin' — back when the tide turns.">
+  <meta name="description" content="Huikau. Gone fishin'. Back when the tide turns.">
   <meta name="theme-color" content="#0E2B30">
+  <link rel="canonical" href="https://huikau.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://huikau.com/">
+  <meta property="og:title" content="Huikau">
+  <meta property="og:description" content="Gone fishin'. Back when the tide turns.">
+  <meta property="og:image" content="https://huikau.com/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Huikau logo over a sunset, with Captain Ula fishing on the waves">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caprasimo&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --abyss: #0E2B30;
-      --deep: #164E56;
-      --lagoon: #1E6E78;
-      --sunset: #E8662A;
-      --mango: #F5A623;
-      --sand: #F7EEDB;
-      --fb-ink: #0A171B;
-      --fb-teal: #2DD4C8;
-      --display: "Caprasimo", Georgia, serif;
-      --body: "Figtree", system-ui, sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-    html, body { margin: 0; }
-    body {
-      background: var(--abyss);
-      color: var(--sand);
-      font-family: var(--body);
-      font-size: 1.0625rem;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-    }
-    img { display: block; max-width: 100%; }
-    :focus-visible { outline: 3px solid var(--mango); outline-offset: 4px; border-radius: 4px; }
-
-    /* ---------- Golden hour scene ---------- */
-    .scene {
-      position: relative;
-      min-height: max(600px, 100svh);
-      overflow: hidden;
-      overflow: clip;
-      background:
-        radial-gradient(ellipse 55% 38% at 50% 62%, rgba(255, 214, 140, .55), transparent 70%),
-        linear-gradient(180deg,
-          #0E2B30 0%,
-          #1D4F5A 16%,
-          #6E4B5E 34%,
-          #C85A3A 50%,
-          #E8662A 60%,
-          #F5A623 74%,
-          #FBD68A 86%);
-      display: grid;
-      place-items: center;
-      padding: 0 16px 34vh;
-    }
-    .logo {
-      width: min(820px, 92vw);
-      height: auto;
-      filter: drop-shadow(0 10px 30px rgba(110, 40, 20, .25));
-      animation: rise 1.6s cubic-bezier(.2, .7, .2, 1) both;
-    }
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: none; }
-    }
-
-    .sea {
-      position: absolute;
-      inset: auto 0 -2px 0;
-      height: 28%;
-      overflow: clip;
-      pointer-events: none;
-    }
-    .wave {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 200%;
-      animation: drift linear infinite;
-    }
-    .wave.back  { height: 100%; color: var(--lagoon); animation-duration: 46s; opacity: .9; }
-    .wave.mid   { height: 78%;  color: var(--deep);   animation-duration: 32s; animation-direction: reverse; }
-    .wave.front { height: 52%;  color: var(--abyss);  animation-duration: 22s; }
-    @keyframes drift { to { transform: translateX(-50%); } }
-
-    /* ---------- Ula's fishing rig ---------- */
-    .rig {
-      position: absolute;
-      left: clamp(16px, 8vw, 140px);
-      bottom: calc(28% * .52 - 30px);
-      width: 320px;
-      height: 150px;
-      z-index: 2;
-    }
-    .ula {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      border: 4px solid var(--sand);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
-      object-fit: cover;
-      background: var(--sunset);
-    }
-    .ula-tag {
-      position: absolute;
-      left: 6px;
-      bottom: -30px;
-      font-family: var(--display);
-      font-size: .95rem;
-      color: var(--sand);
-      white-space: nowrap;
-    }
-    .line {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-      pointer-events: none;
-    }
-    .line .rod  { stroke: #2A1A12; stroke-width: 3.5; stroke-linecap: round; }
-    .line .cord { stroke: rgba(247, 238, 219, .85); stroke-width: 1.2; fill: none; transition: d .35s ease; }
-    .rig.bite .line .cord { d: path("M150 6 Q215 70 284 106"); }
-
-    .bobber {
-      position: absolute;
-      left: 270px;
-      top: 92px;
-      width: 30px;
-      height: 40px;
-      padding: 0;
-      border: 0;
-      background: none;
-      cursor: pointer;
-      animation: bob 2.8s ease-in-out infinite;
-    }
-    .bobber svg { width: 100%; height: 100%; overflow: visible; }
-    .bobber:hover svg { transform: scale(1.12); }
-    .bobber svg { transition: transform .2s ease; }
-    .rig.bite .bobber { animation: dunk .6s ease-in-out 2; }
-    @keyframes bob {
-      0%, 100% { transform: translateY(0) rotate(-4deg); }
-      50%      { transform: translateY(5px) rotate(4deg); }
-    }
-    @keyframes dunk {
-      0%, 100% { transform: translateY(0); }
-      40%      { transform: translateY(14px); }
-    }
-    .hint {
-      position: absolute;
-      left: 236px;
-      top: 138px;
-      font-size: .8rem;
-      color: rgba(247, 238, 219, .75);
-      white-space: nowrap;
-    }
-
-    .catch {
-      position: absolute;
-      left: 170px;
-      bottom: 160px;
-      width: max-content;
-      max-width: min(300px, calc(100vw - 32px - clamp(16px, 8vw, 140px)));
-      padding: 12px 16px;
-      background: var(--sand);
-      color: var(--abyss);
-      border-radius: 14px 14px 14px 4px;
-      box-shadow: 0 12px 30px rgba(14, 43, 48, .35);
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      opacity: 0;
-      transform: translateY(12px) scale(.96);
-      transition: opacity .25s ease, transform .35s cubic-bezier(.2, .9, .3, 1.3);
-      pointer-events: none;
-    }
-    .catch.show { opacity: 1; transform: none; }
-    .catch-emoji { font-size: 2rem; line-height: 1; }
-    .catch-text { font-size: .95rem; line-height: 1.35; }
-
-    /* ---------- Fat Boy Fishing Club, out on the water ---------- */
-    .crew {
-      position: absolute;
-      right: clamp(16px, 6vw, 120px);
-      bottom: calc(28% - 64px);
-      z-index: 1;
-      width: 400px;
-      display: grid;
-      grid-template-columns: 76px 1fr;
-      gap: 18px;
-      align-items: center;
-      padding: 18px 22px 18px 18px;
-      background: var(--fb-ink);
-      border-top: 4px solid var(--fb-teal);
-      border-radius: 4px;
-      color: #fff;
-      text-decoration: none;
-      box-shadow: 0 18px 40px rgba(14, 43, 48, .45);
-      transform: rotate(-1.5deg);
-      transition: transform .25s ease, box-shadow .25s ease;
-    }
-    .crew:hover { transform: rotate(0) translateY(-4px); box-shadow: 0 24px 48px rgba(14, 43, 48, .55); }
-    .crew:focus-visible { outline-color: var(--fb-teal); }
-    .crew-note {
-      position: absolute;
-      left: 14px;
-      top: -40px;
-      font-family: var(--display);
-      font-size: 1.05rem;
-      color: var(--sand);
-      text-shadow: 0 2px 8px rgba(110, 40, 20, .45);
-      transform: rotate(-3deg);
-      white-space: nowrap;
-    }
-    .crew-skull { width: 76px; height: 76px; }
-    .crew-name {
-      display: block;
-      font-family: "Anton", Impact, sans-serif;
-      font-size: 1.9rem;
-      line-height: 1;
-      letter-spacing: .01em;
-      text-transform: uppercase;
-    }
-    .crew-line { display: block; margin: 8px 0 12px; font-size: .92rem; line-height: 1.4; color: rgba(255, 255, 255, .78); }
-    .crew-cta {
-      display: inline-block;
-      padding: 8px 14px;
-      background: var(--fb-teal);
-      color: var(--fb-ink);
-      font-size: .85rem;
-      font-weight: 600;
-      border-radius: 2px;
-    }
-    .crew:hover .crew-cta { background: #fff; }
-
-    /* ---------- Below the waterline ---------- */
-    .shore {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 72px 24px 48px;
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 56px;
-      align-items: start;
-    }
-    .away h1 {
-      font-family: var(--display);
-      font-weight: 400;
-      font-size: clamp(2.6rem, 6vw, 4.2rem);
-      line-height: 1;
-      margin: 0 0 20px;
-      color: var(--mango);
-    }
-    .away p { margin: 0; max-width: 34ch; font-size: 1.15rem; color: rgba(247, 238, 219, .88); }
-    .tally { margin-top: 20px !important; font-size: .95rem !important; color: rgba(247, 238, 219, .6) !important; min-height: 1.5em; }
-
-    .word {
-      border: 2px solid rgba(247, 238, 219, .18);
-      border-radius: 20px;
-      padding: 26px 28px;
-    }
-    .word-label { margin: 0 0 10px; font-size: .95rem; color: rgba(247, 238, 219, .65); }
-    .word-term {
-      font-family: var(--display);
-      font-size: 2.6rem;
-      line-height: 1.05;
-      margin: 0 0 8px;
-      color: var(--sand);
-    }
-    .word-meaning { margin: 0; font-size: 1.05rem; color: rgba(247, 238, 219, .88); }
-
-    footer {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 24px 24px 40px;
-      font-size: .85rem;
-      color: rgba(247, 238, 219, .5);
-    }
-
-    @media (max-width: 1000px) {
-      .scene { align-content: center; gap: 64px; }
-      .crew { position: relative; right: auto; bottom: auto; width: min(400px, 100%); }
-    }
-    @media (min-width: 1001px) and (max-height: 760px) {
-      .logo { width: min(640px, 60vw); }
-    }
-
-    @media (max-width: 720px) {
-      .shore { grid-template-columns: 1fr; gap: 36px; padding-top: 56px; }
-      .scene { padding-bottom: 30vh; }
-      .rig { transform: scale(.85); transform-origin: left bottom; }
-      .catch { left: 60px; max-width: 260px; }
-      .crew { grid-template-columns: 56px 1fr; gap: 14px; padding: 16px; }
-      .crew-skull { width: 56px; height: 56px; }
-      .crew-name { font-size: 1.55rem; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation: none !important; transition: none !important; }
-    }
-  </style>
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
 </head>
 <body>
   <main>
-    <section class="scene" aria-label="Sunset over the water">
-      <img class="logo" src="assets/huikau-logo.webp" width="1400" height="497" alt="Huikau">
+    <section class="scene" aria-label="The view from Ula's fishing spot">
+      <div class="stars" id="stars" aria-hidden="true"></div>
+      <div class="moon" aria-hidden="true"></div>
+      <div class="lights" id="lights" aria-hidden="true"></div>
+      <div class="fireworks" id="fireworks" aria-hidden="true"></div>
+
+      <p class="clock"><span class="friday" id="friday" hidden>It's Aloha Friday</span><span id="clock-text"></span></p>
+
+      <div class="logo-wrap">
+        <img class="logo" src="assets/huikau-logo.webp" width="1400" height="497" alt="Huikau">
+        <button class="pine" id="pine" type="button" aria-label="Make it rain pineapples"></button>
+      </div>
 
       <div class="sea" aria-hidden="true">
         <svg class="wave back" viewBox="0 0 2880 200" preserveAspectRatio="none">
           <path fill="currentColor" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44 V200 H0 Z"/>
         </svg>
+        <div class="boat" id="boat">
+          <svg viewBox="0 0 120 100">
+            <path d="M84 4 L84 12 L96 8 Z" fill="#E8662A"/>
+            <line x1="62" y1="6" x2="62" y2="80" stroke="#2A1A12" stroke-width="3"/>
+            <path d="M65 10 L65 74 L108 74 Z" fill="#F7EEDB"/>
+            <path d="M59 18 L59 74 L24 74 Z" fill="#E8662A"/>
+            <path d="M8 78 L114 78 L98 94 L24 94 Z" fill="#2A1A12"/>
+          </svg>
+        </div>
         <svg class="wave mid" viewBox="0 0 2880 200" preserveAspectRatio="none">
           <path fill="currentColor" d="M0 40 C80 18 160 18 240 40 S400 62 480 40 S640 18 720 40 S880 62 960 40 S1120 18 1200 40 S1360 62 1440 40 S1600 18 1680 40 S1840 62 1920 40 S2080 18 2160 40 S2320 62 2400 40 S2560 18 2640 40 S2800 62 2880 40 V200 H0 Z"/>
         </svg>
@@ -327,25 +62,7 @@
 
       <a class="crew" href="https://fatboyfishn.com/" target="_blank" rel="noopener">
         <span class="crew-note">Ula's cap came from here</span>
-        <svg class="crew-skull" viewBox="0 0 64 64" aria-hidden="true">
-          <g stroke="#fff" stroke-width="5" stroke-linecap="round">
-            <line x1="10" y1="40" x2="54" y2="58"/>
-            <line x1="54" y1="40" x2="10" y2="58"/>
-          </g>
-          <g fill="#fff">
-            <circle cx="8" cy="38" r="4"/><circle cx="12" cy="36" r="4"/>
-            <circle cx="56" cy="38" r="4"/><circle cx="52" cy="36" r="4"/>
-            <circle cx="8" cy="60" r="4"/><circle cx="12" cy="62" r="3.5"/>
-            <circle cx="56" cy="60" r="4"/><circle cx="52" cy="62" r="3.5"/>
-            <path d="M32 4C19 4 11 13 11 24c0 7 3 11 7 13v6h28v-6c4-2 7-6 7-13C53 13 45 4 32 4Z"/>
-          </g>
-          <g fill="#0A171B">
-            <ellipse cx="23.5" cy="25" rx="6" ry="6.5"/>
-            <ellipse cx="40.5" cy="25" rx="6" ry="6.5"/>
-            <path d="M32 31l-3.5 6h7Z"/>
-            <rect x="24" y="40" width="2.4" height="4"/><rect x="30.8" y="40" width="2.4" height="4"/><rect x="37.6" y="40" width="2.4" height="4"/>
-          </g>
-        </svg>
+        <img class="crew-logo" src="assets/fatboy-logo.webp" width="158" height="200" alt="">
         <span class="crew-body">
           <span class="crew-name">Fat Boy Fishing Club</span>
           <span class="crew-line">Veteran-owned fishing apparel, built for big water and the dock after.</span>
@@ -358,14 +75,24 @@
           <line class="rod" x1="78" y1="70" x2="150" y2="6"/>
           <path class="cord" d="M150 6 Q200 120 284 100"/>
         </svg>
-        <img class="ula" src="assets/ula.webp" width="96" height="96" alt="Ula, smiling at sunset in her skull-and-crossbones cap">
+        <img class="ula" id="ula" src="assets/ula.webp" width="96" height="96" alt="Ula, smiling at sunset in her skull-and-crossbones cap">
+        <svg class="lei" id="lei" viewBox="0 0 120 120" aria-hidden="true" hidden></svg>
         <span class="ula-tag">Captain Ula</span>
         <button class="bobber" id="bobber" type="button" aria-label="Reel in Ula's line">
           <svg viewBox="0 0 30 40" aria-hidden="true">
             <line x1="15" y1="0" x2="15" y2="8" stroke="#2A1A12" stroke-width="2"/>
-            <path d="M3 22 A12 12 0 0 1 27 22 Z" fill="#E8662A"/>
-            <path d="M3 22 A12 12 0 0 0 27 22 Z" fill="#F7EEDB"/>
-            <rect x="3" y="20.5" width="24" height="3" fill="#0E2B30"/>
+            <g class="classic">
+              <path d="M3 22 A12 12 0 0 1 27 22 Z" fill="#E8662A"/>
+              <path d="M3 22 A12 12 0 0 0 27 22 Z" fill="#F7EEDB"/>
+              <rect x="3" y="20.5" width="24" height="3" fill="#0E2B30"/>
+            </g>
+            <g class="pumpkin">
+              <rect x="13.5" y="6" width="3" height="5" rx="1" fill="#3B5B2A"/>
+              <ellipse cx="15" cy="22" rx="13" ry="11.5" fill="#E8662A"/>
+              <path d="M15 10.5 C9 14 9 30 15 33.5 C21 30 21 14 15 10.5" fill="none" stroke="#C24E1A" stroke-width="1.2"/>
+              <path d="M8 18 L11.5 21 L8 21 Z M22 18 L18.5 21 L22 21 Z" fill="#2A1A12"/>
+              <path d="M8.5 25 Q15 31 21.5 25 L19 26.5 L17.5 25.5 L15 27 L12.5 25.5 L11 26.5 Z" fill="#2A1A12"/>
+            </g>
           </svg>
         </button>
         <span class="hint" id="hint">Tap the bobber</span>
@@ -380,90 +107,33 @@
       <div class="away">
         <h1>Gone fishin'.</h1>
         <p>Ula's out on the water and the rest of the site went with her. Check back when the tide turns, or tap the bobber to see what's biting.</p>
-        <p class="tally" id="tally"></p>
+
+        <div class="tackle">
+          <div class="tackle-head">
+            <h2>Ula's tackle box</h2>
+            <span class="tackle-count" id="tackle-count"></span>
+          </div>
+          <ul class="tackle-grid" id="tackle-grid"></ul>
+          <button class="tackle-reset" id="tackle-reset" type="button" hidden>Empty the tackle box</button>
+        </div>
       </div>
 
-      <aside class="word" aria-labelledby="word-label">
-        <p class="word-label" id="word-label">Today's Hawaiian word</p>
-        <p class="word-term" id="word-term" lang="haw">huikau</p>
-        <p class="word-meaning" id="word-meaning">Mixed up, jumbled, confused. In the best way.</p>
-      </aside>
+      <div class="side">
+        <aside class="card word" aria-labelledby="word-label">
+          <p class="card-label" id="word-label">Today's Hawaiian word</p>
+          <p class="word-term" id="word-term" lang="haw">huikau</p>
+          <p class="word-meaning" id="word-meaning">Mixed up, jumbled, confused. In the best way.</p>
+        </aside>
+
+        <aside class="card tides" id="tides" aria-labelledby="tides-label" hidden>
+          <p class="card-label" id="tides-label">Today's tides in Honolulu</p>
+          <ul id="tides-list"></ul>
+          <p class="tides-source">Predictions for Honolulu Harbor from <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=1612340" target="_blank" rel="noopener">NOAA</a>.</p>
+        </aside>
+      </div>
     </section>
   </main>
 
   <footer>© <span id="year">2026</span> Huikau. Made on island time.</footer>
-
-  <script>
-    const words = [
-      ["huikau", "Mixed up, jumbled, confused. In the best way."],
-      ["aloha", "Love and compassion. Also hello, and goodbye."],
-      ["mahalo", "Thank you."],
-      ["nalu", "A wave; the surf."],
-      ["kai", "The sea, or seawater."],
-      ["moana", "The open ocean."],
-      ["lawaiʻa", "A fisherman. Also, to go fishing."],
-      ["hoʻomaha", "To rest or take a break. A vacation."],
-      ["mālie", "Calm and quiet, like the sea on a still evening."],
-      ["pau", "Finished, all done."],
-      ["ʻono", "Delicious."],
-      ["makani", "Wind."],
-      ["ʻohana", "Family, including the ones you choose."],
-      ["kōkua", "Help, given freely."],
-      ["pāʻina", "A meal shared with friends; a small party."],
-      ["a hui hou", "Until we meet again."]
-    ];
-    const day = Math.floor(Date.now() / 86400000);
-    const [term, meaning] = words[day % words.length];
-    document.getElementById("word-term").textContent = term;
-    document.getElementById("word-meaning").textContent = meaning;
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    const catches = [
-      ["🐟", "A mahimahi! Ula said mahalo and let it go."],
-      ["🍍", "A pineapple. Nobody knows how."],
-      ["🩴", "One slipper. Left foot. Again."],
-      ["🐙", "A heʻe. It stole the bait and waved goodbye."],
-      ["🥥", "A coconut with a phone number on it."],
-      ["🐡", "A pufferfish that looked very offended."],
-      ["🌺", "A plumeria. Ula tucked it behind her ear."],
-      ["🥾", "An old boot. A classic."],
-      ["🦈", "A tiny shark, more scared than she was."],
-      ["🐢", "Just a honu saying hi. Ula waved from a respectful distance."],
-      ["🌊", "Nothing but a nice wave. Still counts."],
-      ["🧢", "A Fat Boy Fishing Club cap. Ula already has one."]
-    ];
-
-    const rig = document.getElementById("rig");
-    const card = document.getElementById("catch");
-    const emoji = document.getElementById("catch-emoji");
-    const text = document.getElementById("catch-text");
-    const hint = document.getElementById("hint");
-    const tally = document.getElementById("tally");
-    let last = -1, count = 0, hideTimer, biteTimer;
-
-    document.getElementById("bobber").addEventListener("click", () => {
-      let i;
-      do { i = Math.floor(Math.random() * catches.length); } while (i === last);
-      last = i;
-      count++;
-
-      clearTimeout(hideTimer);
-      clearTimeout(biteTimer);
-      card.classList.remove("show");
-      rig.classList.remove("bite");
-      void rig.offsetWidth;
-      rig.classList.add("bite");
-      hint.hidden = true;
-
-      biteTimer = setTimeout(() => {
-        emoji.textContent = catches[i][0];
-        text.textContent = catches[i][1];
-        card.classList.add("show");
-        rig.classList.remove("bite");
-        tally.textContent = count === 1 ? "One catch so far." : `${count} catches so far.`;
-      }, 650);
-      hideTimer = setTimeout(() => card.classList.remove("show"), 5200);
-    });
-  </script>
 </body>
 </html>
