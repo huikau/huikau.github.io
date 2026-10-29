@@ -396,11 +396,15 @@
   setInterval(loadWeather, 20 * 60000);
 
   // ---------- The real moon phase ----------
+  const synodic = 29.530588853;
+  function moonPhase() { // 0 new, .5 full
+    if (params.has("moon")) return Math.min(.999, Math.max(0, Number(params.get("moon")) || 0));
+    const knownNew = Date.UTC(2000, 0, 6, 18, 14);
+    return (((Date.now() - knownNew) / 864e5 / synodic) % 1 + 1) % 1;
+  }
   const moonLit = $("moon-lit");
   if (moonLit) {
-    const synodic = 29.530588853, knownNew = Date.UTC(2000, 0, 6, 18, 14);
-    let phase = (((Date.now() - knownNew) / 864e5 / synodic) % 1 + 1) % 1; // 0 new, .5 full
-    if (params.has("moon")) phase = Math.min(.999, Math.max(0, Number(params.get("moon")) || 0));
+    const phase = moonPhase();
     const r = 24, cx = 27, top = 3, bottom = 51;
     const rx = (Math.abs(Math.cos(2 * Math.PI * phase)) * r).toFixed(2);
     // Lit limb on the right while waxing, on the left while waning; the terminator bulges toward the dark side for a gibbous moon.
@@ -592,6 +596,59 @@
   loadSurf();
   setInterval(loadSurf, 30 * 60000);
 
+  // ---------- Today on the water: sun, moon, and Ula's pick for when to go out ----------
+  let todaysTides = []; // filled in by loadTides: [{ m, high }]
+
+  function ulasPick(now, sun) {
+    // Anglers like moving water around a tide change, best of all near sunrise or sunset.
+    const daylight = (m) => m >= sun.rise - 45 && m <= sun.set + 45;
+    const upcoming = todaysTides.filter((t) => t.m >= now - 20 && daylight(t.m));
+    if (upcoming.length) {
+      const nearSun = (m) => Math.min(Math.abs(m - sun.rise), Math.abs(m - sun.set));
+      const best = upcoming.reduce((a, b) => (nearSun(b.m) < nearSun(a.m) ? b : a));
+      let when = "";
+      if (Math.abs(best.m - sun.set) <= 75) when = best.m <= sun.set ? ", just before sunset" : ", right after sunset";
+      else if (Math.abs(best.m - sun.rise) <= 75) when = best.m <= sun.rise ? ", just before sunrise" : ", right after sunrise";
+      const lead = best.m <= now + 10 ? "Ula's out now for" : "Ula's heading out for";
+      return `${lead} the ${clockTime(best.m)} ${best.high ? "high" : "low"} tide${when}.`;
+    }
+    if (now < sun.rise) return `Ula's heading out at sunrise, ${clockTime(sun.rise)}.`;
+    if (now < sun.set - 60) return `Ula's heading out for the evening bite, around ${clockTime(sun.set - 60)}.`;
+    if (now < sun.set) return "Ula's out now for the sunset bite.";
+    return `Ula's done for today. She'll be back out at sunrise, around ${clockTime(sun.rise)}.`;
+  }
+
+  function renderToday() {
+    const box = $("today");
+    if (!box) return;
+    const d = hstNow(), now = minutesOf(d), sun = sunTimes(d);
+    $("today-pick").textContent = ulasPick(now, sun);
+
+    const p = moonPhase();
+    const name = p < .034 || p > .966 ? "New moon" : p < .216 ? "Waxing crescent" : p < .284 ? "First quarter"
+      : p < .466 ? "Waxing gibbous" : p < .534 ? "Full moon" : p < .716 ? "Waning gibbous" : p < .784 ? "Last quarter" : "Waning crescent";
+    const lit = Math.round((1 - Math.cos(2 * Math.PI * p)) / 2 * 100);
+    const daysTo = (target) => ((target - p) % 1 + 1) % 1 * synodic;
+    const [nextName, days] = daysTo(.5) < daysTo(1) ? ["Full moon", daysTo(.5)] : ["New moon", daysTo(1)];
+    const inDays = days < 1 ? "tonight" : days < 2 ? "tomorrow" : `in ${Math.round(days)} days`;
+
+    const stats = $("today-stats");
+    stats.innerHTML = "";
+    for (const [k, v] of [
+      ["Sunrise", clockTime(sun.rise)],
+      ["Sunset", clockTime(sun.set)],
+      ["Moon", `${name}, ${lit}% lit`],
+      ["Coming up", `${nextName} ${inDays}`]
+    ]) {
+      const dt = document.createElement("dt"), dd = document.createElement("dd");
+      dt.textContent = k;
+      dd.textContent = v;
+      stats.append(dt, dd);
+    }
+  }
+  renderToday();
+  setInterval(renderToday, 60000);
+
   // ---------- Tides at Honolulu Harbor, from NOAA ----------
   async function loadTides() {
     const box = $("tides");
@@ -611,6 +668,7 @@
       for (const p of list) {
         const [hh, mm] = p.t.slice(11).split(":").map(Number);
         const m = hh * 60 + mm;
+        todaysTides.push({ m, high: p.type === "H" });
         const li = document.createElement("li");
         const isNext = !marked && m >= now;
         if (isNext) { li.className = "next"; marked = true; }
@@ -620,6 +678,7 @@
         ul.appendChild(li);
       }
       box.hidden = false;
+      renderToday();
     } catch {
       // No tides today; the card stays hidden.
     }
