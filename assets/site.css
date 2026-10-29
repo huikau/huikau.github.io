@@ -666,8 +666,14 @@ img { display: block; max-width: 100%; }
 .tides li.next { color: var(--mango); font-weight: 600; }
 .tides li.next .height { color: var(--mango); }
 .tides li.past { opacity: .5; }
-.tides-source { margin: 12px 0 0; font-size: .8rem; color: rgba(247, 238, 219, .45); }
-.tides-source a { color: inherit; }
+.card-source { margin: 12px 0 0; font-size: .8rem; color: rgba(247, 238, 219, .45); }
+.card-source a { color: inherit; }
+
+.surf { margin-top: 40px; max-width: 460px; }
+.surf-call { margin: 0 0 14px; font-family: var(--display); font-size: 1.6rem; line-height: 1.15; color: var(--sand); }
+.surf-stats { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; }
+.surf-stats dt { color: rgba(247, 238, 219, .6); }
+.surf-stats dd { margin: 0; color: rgba(247, 238, 219, .9); font-variant-numeric: tabular-nums; }
 
 footer {
   max-width: 1040px;

@@ -50,7 +50,8 @@
     return m ? `${h} hr ${m} min` : `${h} hr`;
   };
 
-  const weather = { text: "", rain: false, clouds: 0, calm: 1 };
+  const weather = { text: "", rain: false, clouds: 0, calm: 1, wind: null };
+  let redrawSurf = () => {}; // set once the surf report loads, so a later wind reading can update it
 
   function updateSky() {
     const now = hstNow(), m = minutesOf(now), sun = sunTimes(now);
@@ -380,6 +381,9 @@
       weather.clouds = Math.max(0, ...(p.cloudLayers || []).map((c) => amounts[c.amount] ?? 0));
       if (weather.rain) weather.clouds = Math.max(weather.clouds, 3);
       const wind = p.windSpeed && p.windSpeed.value; // km/h
+      const windFrom = p.windDirection && p.windDirection.value;
+      weather.wind = wind == null ? null : { mph: Math.round(wind / 1.609), from: windFrom };
+      redrawSurf();
       if (wind != null) weather.calm = Math.min(1.15, Math.max(.45, 1 - (wind - 12) / 50));
       const c = p.temperature && p.temperature.value;
       weather.text = [desc && desc.charAt(0) + desc.slice(1).toLowerCase(), c != null && `${Math.round(c * 9 / 5 + 32)}°F`].filter(Boolean).join(", ");
@@ -536,6 +540,57 @@
       }
     });
   }
+
+  // ---------- Surf report off Honolulu, from Open-Meteo's marine forecast ----------
+  const compass = (deg) => deg == null ? "" :
+    ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"][Math.round(deg / 22.5) % 16];
+  async function loadSurf() {
+    const box = $("surf");
+    if (!box) return;
+    try {
+      const res = await fetch("https://marine-api.open-meteo.com/v1/marine?latitude=21.26&longitude=-157.84"
+        + "&current=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,sea_surface_temperature"
+        + "&length_unit=imperial&timezone=Pacific%2FHonolulu");
+      if (!res.ok) return;
+      const c = (await res.json()).current;
+      if (!c || c.wave_height == null) return;
+      const h = c.wave_height;
+      $("surf-call").textContent =
+        h < 1 ? "Flat. A good day for fishing." :
+        h < 3 ? "Small and friendly." :
+        h < 6 ? "Fun-size surf." :
+        h < 10 ? "Solid. Experienced surfers only." :
+        "Big. Watch from the beach.";
+      const rows = [["Waves", `${h.toFixed(1)} ft from the ${compass(c.wave_direction)}`]];
+      if (c.swell_wave_height != null) {
+        rows.push(["Swell", `${c.swell_wave_height.toFixed(1)} ft at ${Math.round(c.swell_wave_period)} s from the ${compass(c.swell_wave_direction)}`]);
+      }
+      if (c.sea_surface_temperature != null) rows.push(["Water", `${Math.round(c.sea_surface_temperature * 9 / 5 + 32)}°F`]);
+      const stats = $("surf-stats");
+      const draw = () => {
+        stats.innerHTML = "";
+        const all = rows.slice();
+        const hasWind = !!(weather.wind && weather.wind.mph != null);
+        $("surf-wind-source").hidden = !hasWind;
+        if (hasWind) {
+          all.push(["Wind", weather.wind.mph < 2 ? "Calm" : `${weather.wind.mph} mph${weather.wind.from != null ? ` from the ${compass(weather.wind.from)}` : ""}`]);
+        }
+        for (const [k, v] of all) {
+          const dt = document.createElement("dt"), dd = document.createElement("dd");
+          dt.textContent = k;
+          dd.textContent = v;
+          stats.append(dt, dd);
+        }
+      };
+      draw();
+      redrawSurf = draw;
+      box.hidden = false;
+    } catch {
+      // No surf data; the card stays hidden.
+    }
+  }
+  loadSurf();
+  setInterval(loadSurf, 30 * 60000);
 
   // ---------- Tides at Honolulu Harbor, from NOAA ----------
   async function loadTides() {
