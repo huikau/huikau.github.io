@@ -28,9 +28,27 @@
   <main>
     <section class="scene" aria-label="The view from Ula's fishing spot">
       <div class="stars" id="stars" aria-hidden="true"></div>
-      <div class="moon" aria-hidden="true"></div>
+      <svg class="moon" id="moon" viewBox="0 0 54 54" aria-hidden="true">
+        <circle class="moon-dark" cx="27" cy="27" r="24"/>
+        <path class="moon-lit" id="moon-lit" d="M27 3 A24 24 0 1 1 27 51 A24 24 0 1 1 27 3 Z"/>
+      </svg>
+      <div class="clouds" id="clouds" aria-hidden="true"></div>
       <div class="lights" id="lights" aria-hidden="true"></div>
       <div class="fireworks" id="fireworks" aria-hidden="true"></div>
+
+      <div class="shooting" id="shooting" aria-hidden="true"></div>
+      <svg class="iwa" id="iwa" viewBox="0 0 80 32" aria-hidden="true">
+        <path d="M0 13 L17 8 L29 14 L37 12 L40 15 L43 12 L51 14 L63 8 L80 13 L63 11 L51 18 L43 17 L44 30 L40 21 L36 30 L37 17 L29 18 L17 11 Z"/>
+      </svg>
+      <p class="wish" id="wish" role="status" aria-live="polite"></p>
+      <button class="sound" id="sound" type="button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>
+          <path class="sound-on" d="M16 8.5c1.2 1 1.8 2.2 1.8 3.5s-.6 2.5-1.8 3.5M18.5 6c2 1.6 3 3.6 3 6s-1 4.4-3 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path class="sound-off" d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span class="sr-only">Ocean sound</span>
+      </button>
 
       <p class="clock"><span class="friday" id="friday" hidden>It's Aloha Friday</span><span id="clock-text"></span></p>
 
@@ -39,7 +57,14 @@
         <button class="pine" id="pine" type="button" aria-label="Make it rain pineapples"></button>
       </div>
 
+      <div class="showers" id="showers" aria-hidden="true" hidden></div>
+
       <div class="sea" aria-hidden="true">
+        <span class="greenflash" id="greenflash"></span>
+        <div class="whale" id="whale">
+          <span class="spout"></span>
+          <svg class="fluke" viewBox="0 0 60 40"><path d="M28 40 C28 31 28.5 25 29 21 C23 13 12 8 2 9 C9 12 17 16 22 21 C25 23 27.5 21 30 18 C32.5 21 35 23 38 21 C43 16 51 12 58 9 C48 8 37 13 31 21 C31.5 25 32 31 32 40 Z"/></svg>
+        </div>
         <svg class="wave back" viewBox="0 0 2880 200" preserveAspectRatio="none">
           <path fill="currentColor" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44 V200 H0 Z"/>
         </svg>
@@ -108,13 +133,13 @@
         <h1>Gone fishin'.</h1>
         <p>Ula's out on the water and the rest of the site went with her. Check back when the tide turns, or tap the bobber to see what's biting.</p>
 
-        <div class="tackle">
-          <div class="tackle-head">
-            <h2>Ula's tackle box</h2>
-            <span class="tackle-count" id="tackle-count"></span>
+        <div class="basket" id="basket">
+          <div class="basket-head">
+            <h2>Ula's lauhala basket</h2>
+            <span class="basket-count" id="basket-count"></span>
           </div>
-          <ul class="tackle-grid" id="tackle-grid"></ul>
-          <button class="tackle-reset" id="tackle-reset" type="button" hidden>Empty the tackle box</button>
+          <ul class="basket-grid" id="basket-grid"></ul>
+          <button class="basket-reset" id="basket-reset" type="button" hidden>Empty the basket</button>
         </div>
       </div>
 

@@ -40,6 +40,9 @@ img { display: block; max-width: 100%; }
   --ink-shadow: 0 2px 8px rgba(110, 40, 20, .45);
   --stars: 0;
   --moon: 0;
+  --cloud: #FFD9C2;
+  --cloud-o: .8;
+  --bird: #2A1A12;
 
   position: relative;
   min-height: max(600px, 100svh);
@@ -51,6 +54,8 @@ img { display: block; max-width: 100%; }
   padding: 0 16px 34vh;
 }
 .scene[data-sky="dawn"] {
+  --cloud: #FFCFC8;
+  --cloud-o: .75;
   --sky: linear-gradient(180deg, #24365A 0%, #4F4F7A 22%, #9C6A8A 42%, #E8907A 62%, #F7B98A 78%, #FCE1B4 90%);
   --glow: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(255, 226, 190, .5), transparent 70%);
 }
@@ -61,6 +66,9 @@ img { display: block; max-width: 100%; }
   --w-mid: #1C7680;
   --ink: var(--abyss);
   --ink-shadow: none;
+  --cloud: #FFFFFF;
+  --cloud-o: .92;
+  --bird: #1B2A33;
 }
 .scene[data-sky="dusk"] {
   --sky: linear-gradient(180deg, #0B1B30 0%, #22284D 25%, #4B3560 45%, #8E4E6B 66%, #D9784A 86%);
@@ -68,6 +76,9 @@ img { display: block; max-width: 100%; }
   --w-back: #1A5A66;
   --w-mid: #123F48;
   --stars: .5;
+  --cloud: #8E7A9E;
+  --cloud-o: .6;
+  --bird: #120E1E;
 }
 .scene[data-sky="night"] {
   --sky: linear-gradient(180deg, #040B16 0%, #08182A 40%, #0E2840 75%, #133650 92%);
@@ -77,6 +88,8 @@ img { display: block; max-width: 100%; }
   --ink-shadow: 0 2px 10px rgba(0, 0, 0, .6);
   --stars: 1;
   --moon: 1;
+  --cloud: #3F5470;
+  --cloud-o: .6;
 }
 
 .logo-wrap { position: relative; width: min(820px, 92vw); }
@@ -110,7 +123,7 @@ img { display: block; max-width: 100%; }
   position: absolute;
   top: 18px;
   left: 24px;
-  right: 24px;
+  right: 72px;
   margin: 0;
   font-size: .92rem;
   color: var(--ink);
@@ -138,13 +151,14 @@ img { display: block; max-width: 100%; }
   right: 13%;
   width: 54px;
   height: 54px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 36%, #FFFDF4, #E9E4D0 70%);
-  box-shadow: 0 0 40px 10px rgba(235, 240, 255, .28);
+  overflow: visible;
+  filter: drop-shadow(0 0 16px rgba(235, 240, 255, .45));
   opacity: var(--moon);
   transition: opacity 2s ease;
   pointer-events: none;
 }
+.moon-dark { fill: rgba(220, 230, 255, .1); }
+.moon-lit { fill: #FBF7E6; }
 
 .sea {
   position: absolute;
@@ -160,9 +174,9 @@ img { display: block; max-width: 100%; }
   width: 200%;
   animation: drift linear infinite;
 }
-.wave.back  { height: 100%; color: var(--w-back); animation-duration: 46s; opacity: .9; }
-.wave.mid   { height: 78%;  color: var(--w-mid);  animation-duration: 32s; animation-direction: reverse; }
-.wave.front { height: 52%;  color: var(--abyss);  animation-duration: 22s; }
+.wave.back  { height: 100%; color: var(--w-back); animation-duration: calc(46s * var(--calm, 1)); opacity: .9; }
+.wave.mid   { height: 78%;  color: var(--w-mid);  animation-duration: calc(32s * var(--calm, 1)); animation-direction: reverse; }
+.wave.front { height: 52%;  color: var(--abyss);  animation-duration: calc(22s * var(--calm, 1)); }
 @keyframes drift { to { transform: translateX(-50%); } }
 
 /* the boat that sails by when someone types "aloha" */
@@ -312,6 +326,188 @@ img { display: block; max-width: 100%; }
   100% { transform: scale(1); opacity: 0; }
 }
 
+/* ---------- Weather: clouds and rain from the National Weather Service ---------- */
+.clouds { position: absolute; inset: 0 0 40% 0; pointer-events: none; overflow: hidden; }
+.clouds span {
+  position: absolute;
+  left: 0;
+  width: 160px;
+  height: 46px;
+  border-radius: 999px;
+  background: var(--cloud);
+  opacity: var(--cloud-o);
+  filter: blur(1.5px);
+  transform: translateX(-220px) scale(var(--s));
+  animation: cloud linear infinite;
+  transition: background 2s ease;
+}
+.clouds span::before, .clouds span::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: inherit;
+}
+.clouds span::before { width: 76px; height: 76px; left: 26px; top: -38px; }
+.clouds span::after  { width: 56px; height: 56px; left: 82px; top: -24px; }
+@keyframes cloud { to { transform: translateX(calc(100vw + 60px)) scale(var(--s)); } }
+
+.showers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(105deg, transparent 0 22px, rgba(235, 242, 255, .2) 22px 23px, transparent 23px 61px),
+    repeating-linear-gradient(105deg, transparent 0 37px, rgba(235, 242, 255, .12) 37px 38px, transparent 38px 89px),
+    linear-gradient(rgba(40, 55, 70, .22), rgba(40, 55, 70, .1));
+  background-size: 120px 260px, 180px 340px, auto;
+  animation: pour .5s linear infinite;
+}
+@keyframes pour { to { background-position: -46px 260px, -70px 340px, 0 0; } }
+
+/* ---------- Horizon: green flash and whales ---------- */
+.greenflash {
+  position: absolute;
+  left: 50%;
+  bottom: 74%;
+  width: 150px;
+  height: 10px;
+  margin-left: -75px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, #B8FF9C, #3DDC6A 45%, transparent 72%);
+  filter: blur(1px);
+  opacity: 0;
+}
+.greenflash.go { animation: greenflash 1.8s ease-out; }
+@keyframes greenflash {
+  0%   { opacity: 0; transform: scaleX(.4); }
+  20%  { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(.8); }
+}
+
+.whale { position: absolute; bottom: 70%; width: 58px; height: 72px; margin-left: -29px; }
+.whale .fluke { position: absolute; left: 0; bottom: 0; width: 58px; fill: #10303A; transform: translateY(38px); }
+.whale .spout {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 16px;
+  height: 34px;
+  margin-left: -8px;
+  border-radius: 50% 50% 40% 40%;
+  background: radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, .95), rgba(255, 255, 255, .2) 70%, transparent);
+  transform-origin: 50% 100%;
+  opacity: 0;
+}
+.whale.fluke-up .fluke { animation: fluke 5s ease-in-out; }
+.whale.spouting .spout { animation: spout 3s ease-out; }
+@keyframes fluke {
+  0%   { transform: translateY(38px) rotate(0); }
+  30%  { transform: translateY(2px) rotate(-6deg); }
+  60%  { transform: translateY(0) rotate(5deg); }
+  100% { transform: translateY(42px) rotate(10deg); }
+}
+@keyframes spout {
+  0%   { opacity: 0; transform: scale(.3, .1); }
+  25%  { opacity: .95; transform: scale(1, 1); }
+  100% { opacity: 0; transform: scale(1.6, 1.15) translateY(-6px); }
+}
+
+/* ---------- Shooting stars and wishes ---------- */
+.shooting { position: absolute; inset: 0 0 50% 0; pointer-events: none; }
+.shoot {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  animation: shoot 1.9s ease-in forwards;
+}
+.shoot::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 38px;
+  width: 60px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .95));
+  transform: rotate(22deg);
+  box-shadow: 0 0 6px rgba(255, 255, 255, .8);
+}
+@keyframes shoot {
+  0%   { opacity: 0; transform: translate(0, 0); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(260px, 105px); }
+}
+.wish {
+  position: absolute;
+  top: 64px;
+  left: 50%;
+  z-index: 4;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(247, 238, 219, .95);
+  color: var(--abyss);
+  font-size: .95rem;
+  text-align: center;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .35);
+  transform: translate(-50%, -8px);
+  opacity: 0;
+  transition: opacity .3s ease, transform .3s ease;
+  pointer-events: none;
+}
+.wish.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- An ʻiwa (frigatebird) gliding over ---------- */
+.iwa {
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  width: 70px;
+  fill: var(--bird);
+  visibility: hidden;
+  pointer-events: none;
+}
+.iwa.glide { visibility: visible; animation: glide 26s linear forwards, soar 6s ease-in-out infinite; }
+@keyframes glide {
+  from { translate: -100px 0; }
+  to   { translate: calc(100vw + 100px) 0; }
+}
+@keyframes soar {
+  0%, 100% { transform: rotate(-4deg) translateY(0); }
+  50%      { transform: rotate(5deg) translateY(16px); }
+}
+
+/* ---------- Ocean sound toggle ---------- */
+.sound {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .18);
+  color: var(--ink);
+  cursor: pointer;
+}
+.sound:hover { background: rgba(0, 0, 0, .3); }
+.sound svg { width: 22px; height: 22px; }
+.sound .sound-on { display: none; }
+.sound[aria-pressed="true"] .sound-on { display: inline; }
+.sound[aria-pressed="true"] .sound-off { display: none; }
+.season-winter .sound { top: 86px; }
+
 /* ---------- Pineapple rain ---------- */
 .rain { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
 .rain span {
@@ -396,37 +592,44 @@ img { display: block; max-width: 100%; }
 }
 .away > p { margin: 0; max-width: 34ch; font-size: 1.15rem; color: rgba(247, 238, 219, .88); }
 
-.tackle { margin-top: 40px; }
-.tackle-head { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; margin: 0 0 14px; }
-.tackle h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.35rem; color: var(--sand); }
-.tackle-count { font-size: .95rem; color: rgba(247, 238, 219, .65); }
-.tackle-grid {
+.basket { margin-top: 40px; }
+.basket-head { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; margin: 0 0 14px; }
+.basket h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.35rem; color: var(--sand); }
+.basket-count { font-size: .95rem; color: rgba(247, 238, 219, .65); }
+/* woven like a lauhala (pandanus leaf) basket: diagonal plait over warm tan strips */
+.basket-grid {
   list-style: none;
   margin: 0;
-  padding: 14px;
+  padding: 16px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
   gap: 8px;
   max-width: 460px;
-  background: rgba(0, 0, 0, .18);
-  border: 2px solid rgba(247, 238, 219, .12);
-  border-radius: 14px;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 240, 205, .22) 0 7px, transparent 7px 14px),
+    repeating-linear-gradient(45deg, rgba(110, 74, 34, .38) 0 1.5px, transparent 1.5px 14px),
+    repeating-linear-gradient(-45deg, rgba(110, 74, 34, .38) 0 1.5px, transparent 1.5px 14px),
+    linear-gradient(180deg, #DDBB80, #C49C5E);
+  border: 4px solid #8A6534;
+  border-radius: 22px;
+  box-shadow: inset 0 0 0 2px rgba(255, 236, 196, .35), inset 0 -10px 18px rgba(90, 58, 22, .3), 0 10px 24px rgba(0, 0, 0, .3);
 }
-.tackle-grid li {
+.basket-grid li {
   aspect-ratio: 1;
   display: grid;
   place-items: center;
   font-size: 1.6rem;
-  border-radius: 10px;
-  background: rgba(247, 238, 219, .06);
+  border-radius: 12px;
+  background: rgba(96, 62, 26, .22);
+  box-shadow: inset 0 2px 5px rgba(70, 42, 14, .4);
 }
-.tackle-grid li.missing span { filter: brightness(0); opacity: .35; }
-.tackle-grid li.rare { border: 2px dashed rgba(245, 166, 35, .55); }
-.tackle-grid li.rare.missing span { filter: none; opacity: .6; font-family: var(--display); font-size: 1.3rem; color: var(--mango); }
-.tackle-grid li.rare:not(.missing) { background: rgba(245, 166, 35, .2); border-style: solid; }
-.tackle-grid li.fresh { animation: pop .5s ease-out; }
+.basket-grid li.missing span { filter: brightness(0); opacity: .28; }
+.basket-grid li.rare { border: 2px dashed #7A4A12; }
+.basket-grid li.rare.missing span { filter: none; opacity: .8; font-family: var(--display); font-size: 1.3rem; color: #6B4416; }
+.basket-grid li.rare:not(.missing) { background: rgba(245, 166, 35, .45); border-style: solid; }
+.basket-grid li.fresh { animation: pop .5s ease-out; }
 @keyframes pop { 40% { transform: scale(1.25); } }
-.tackle-reset {
+.basket-reset {
   margin-top: 10px;
   padding: 0;
   border: 0;
@@ -438,7 +641,7 @@ img { display: block; max-width: 100%; }
   text-underline-offset: 3px;
   cursor: pointer;
 }
-.tackle-reset:hover { color: var(--sand); }
+.basket-reset:hover { color: var(--sand); }
 
 .side { display: grid; gap: 20px; }
 .card {
@@ -533,7 +736,7 @@ footer {
   .crew-name { font-size: 1.55rem; }
   .moon { display: none; }
   .friday { display: table; margin-bottom: 6px; }
-  .clock { left: 16px; right: 16px; font-size: .85rem; }
+  .clock { left: 16px; right: 64px; font-size: .85rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -18,7 +18,11 @@
   <main>
     <section class="scene" aria-label="Open water">
       <div class="stars" id="stars" aria-hidden="true"></div>
-      <div class="moon" aria-hidden="true"></div>
+      <svg class="moon" id="moon" viewBox="0 0 54 54" aria-hidden="true">
+        <circle class="moon-dark" cx="27" cy="27" r="24"/>
+        <path class="moon-lit" id="moon-lit" d="M27 3 A24 24 0 1 1 27 51 A24 24 0 1 1 27 3 Z"/>
+      </svg>
+      <div class="clouds" id="clouds" aria-hidden="true"></div>
 
       <div class="lost">
         <h1>Lost at sea.</h1>
@@ -26,7 +30,14 @@
         <a class="home-btn" href="/">Paddle back home</a>
       </div>
 
+      <div class="showers" id="showers" aria-hidden="true" hidden></div>
+
       <div class="sea" aria-hidden="true">
+        <span class="greenflash" id="greenflash"></span>
+        <div class="whale" id="whale">
+          <span class="spout"></span>
+          <svg class="fluke" viewBox="0 0 60 40"><path d="M28 40 C28 31 28.5 25 29 21 C23 13 12 8 2 9 C9 12 17 16 22 21 C25 23 27.5 21 30 18 C32.5 21 35 23 38 21 C43 16 51 12 58 9 C48 8 37 13 31 21 C31.5 25 32 31 32 40 Z"/></svg>
+        </div>
         <svg class="wave back" viewBox="0 0 2880 200" preserveAspectRatio="none">
           <path fill="currentColor" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44 V200 H0 Z"/>
         </svg>

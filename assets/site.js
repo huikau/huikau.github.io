@@ -50,6 +50,8 @@
     return m ? `${h} hr ${m} min` : `${h} hr`;
   };
 
+  const weather = { text: "", rain: false, clouds: 0, calm: 1 };
+
   function updateSky() {
     const now = hstNow(), m = minutesOf(now), sun = sunTimes(now);
     const forced = params.get("sky");
@@ -61,7 +63,9 @@
     if (m < sun.rise) next = `Sunrise in ${duration(sun.rise - m)}.`;
     else if (m < sun.set) next = `Sunset in ${duration(sun.set - m)}.`;
     else next = `Sunrise in ${duration(1440 - m + sun.rise)}.`;
-    clock.textContent = `${clockTime(m)} in Honolulu. ${next}`;
+    const toSunset = sun.set - m;
+    if (toSunset > 0 && toSunset <= 5) next = "Watch the horizon for the green flash.";
+    clock.textContent = `${clockTime(m)} in Honolulu. ${weather.text ? weather.text + ". " : ""}${next}`;
   }
   updateSky();
   setInterval(updateSky, 30000);
@@ -198,11 +202,12 @@
     const card = $("catch"), emoji = $("catch-emoji"), text = $("catch-text");
     const hint = $("hint"), ula = $("ula");
     const collection = [...catches, golden];
-    let caught = new Set(store.get("huikau-tackle", []));
+    // catches saved before the basket was renamed lived under "huikau-tackle"
+    let caught = new Set(store.get("huikau-basket", store.get("huikau-tackle", [])));
     let lastText = "", hideTimer, biteTimer;
 
-    const grid = $("tackle-grid"), count = $("tackle-count");
-    function renderTackle(fresh) {
+    const grid = $("basket-grid"), count = $("basket-count");
+    function renderBasket(fresh) {
       grid.innerHTML = "";
       for (const c of collection) {
         const li = document.createElement("li");
@@ -222,14 +227,40 @@
       }
       const n = collection.filter((c) => caught.has(c.id)).length;
       count.textContent = n === collection.length ? `All ${n} caught. Ula's impressed.` : `${n} of ${collection.length} caught`;
-      $("tackle-reset").hidden = n === 0;
+      $("basket-reset").hidden = n === 0;
     }
-    renderTackle();
+    renderBasket();
 
-    $("tackle-reset").addEventListener("click", () => {
+    // Glide down just far enough to show the basket, then pop the new catch in
+    function revealBasket(done) {
+      const overflow = $("basket").getBoundingClientRect().bottom + 24 - innerHeight;
+      if (overflow <= 0) { done(); return; }
+      const start = scrollY;
+      if (reduceMotion) { scrollTo(0, start + overflow); done(); return; }
+      const t0 = performance.now(), dur = 1600;
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        scrollTo(0, start + overflow);
+        done();
+      };
+      const step = (t) => {
+        if (finished) return;
+        const k = Math.min(1, (t - t0) / dur);
+        const ease = k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2;
+        scrollTo(0, start + overflow * ease);
+        if (k < 1) requestAnimationFrame(step); else finish();
+      };
+      requestAnimationFrame(step);
+      // background tabs can pause animation frames; make sure the glide always lands
+      setTimeout(finish, dur + 400);
+    }
+
+    $("basket-reset").addEventListener("click", () => {
       caught = new Set();
-      store.set("huikau-tackle", []);
-      renderTackle();
+      store.set("huikau-basket", []);
+      renderBasket();
     });
 
     function pick() {
@@ -263,8 +294,9 @@
         ula.classList.add(c.mood);
         if (c.id && !caught.has(c.id)) {
           caught.add(c.id);
-          store.set("huikau-tackle", [...caught]);
-          renderTackle(c.id);
+          store.set("huikau-basket", [...caught]);
+          // the basket isn't redrawn until the glide arrives, so the new catch pops in on screen
+          setTimeout(() => revealBasket(() => renderBasket(c.id)), 700);
         }
       }, 650);
       hideTimer = setTimeout(() => card.classList.remove("show"), c.rare ? 7000 : 5200);
@@ -309,6 +341,201 @@
     typed = (typed + e.key.toLowerCase()).slice(-5);
     if (typed === "aloha") sailBoat();
   });
+
+  // ---------- Weather in Honolulu, from the National Weather Service ----------
+  function applyWeather() {
+    const clouds = $("clouds"), showers = $("showers");
+    if (showers) showers.hidden = !weather.rain;
+    if (clouds) {
+      clouds.innerHTML = "";
+      const n = [0, 1, 3, 4, 6][weather.clouds] || 0;
+      for (let i = 0; i < n; i++) {
+        const c = document.createElement("span");
+        const dur = 110 + Math.random() * 90;
+        c.style.cssText = `top:${8 + Math.random() * 34}%;--s:${(.55 + Math.random() * .8).toFixed(2)};animation-duration:${dur}s;animation-delay:${-Math.random() * dur}s`;
+        clouds.appendChild(c);
+      }
+    }
+    scene.style.setProperty("--calm", weather.calm);
+    updateSky();
+  }
+
+  async function loadWeather() {
+    const forced = params.get("weather");
+    const presets = {
+      clear: { text: "Clear", rain: false, clouds: 0, calm: 1 },
+      cloudy: { text: "Mostly cloudy", rain: false, clouds: 3, calm: 1 },
+      rain: { text: "Light rain", rain: true, clouds: 4, calm: .9 },
+      windy: { text: "Breezy", rain: false, clouds: 2, calm: .45 }
+    };
+    if (presets[forced]) { Object.assign(weather, presets[forced]); applyWeather(); return; }
+    try {
+      const res = await fetch("https://api.weather.gov/stations/PHNL/observations/latest", { headers: { Accept: "application/geo+json" } });
+      if (!res.ok) return;
+      const p = (await res.json()).properties;
+      const raw = (p.presentWeather || []).map((w) => w.rawString || "").join(" ");
+      const desc = p.textDescription || "";
+      weather.rain = /RA|DZ|SH|TS/.test(raw) || /rain|shower|drizzle|thunder/i.test(desc);
+      const amounts = { CLR: 0, SKC: 0, FEW: 1, SCT: 2, BKN: 3, OVC: 4, VV: 4 };
+      weather.clouds = Math.max(0, ...(p.cloudLayers || []).map((c) => amounts[c.amount] ?? 0));
+      if (weather.rain) weather.clouds = Math.max(weather.clouds, 3);
+      const wind = p.windSpeed && p.windSpeed.value; // km/h
+      if (wind != null) weather.calm = Math.min(1.15, Math.max(.45, 1 - (wind - 12) / 50));
+      const c = p.temperature && p.temperature.value;
+      weather.text = [desc && desc.charAt(0) + desc.slice(1).toLowerCase(), c != null && `${Math.round(c * 9 / 5 + 32)}°F`].filter(Boolean).join(", ");
+      applyWeather();
+    } catch {
+      // No weather; the sky stays clear.
+    }
+  }
+  loadWeather();
+  setInterval(loadWeather, 20 * 60000);
+
+  // ---------- The real moon phase ----------
+  const moonLit = $("moon-lit");
+  if (moonLit) {
+    const synodic = 29.530588853, knownNew = Date.UTC(2000, 0, 6, 18, 14);
+    let phase = (((Date.now() - knownNew) / 864e5 / synodic) % 1 + 1) % 1; // 0 new, .5 full
+    if (params.has("moon")) phase = Math.min(.999, Math.max(0, Number(params.get("moon")) || 0));
+    const r = 24, cx = 27, top = 3, bottom = 51;
+    const rx = (Math.abs(Math.cos(2 * Math.PI * phase)) * r).toFixed(2);
+    // Lit limb on the right while waxing, on the left while waning; the terminator bulges toward the dark side for a gibbous moon.
+    const d = phase < .5
+      ? `M${cx} ${top} A${r} ${r} 0 0 1 ${cx} ${bottom} A${rx} ${r} 0 0 ${phase < .25 ? 0 : 1} ${cx} ${top} Z`
+      : `M${cx} ${top} A${r} ${r} 0 0 0 ${cx} ${bottom} A${rx} ${r} 0 0 ${phase < .75 ? 0 : 1} ${cx} ${top} Z`;
+    moonLit.setAttribute("d", d);
+  }
+
+  // ---------- Green flash at the moment of sunset ----------
+  const flash = $("greenflash");
+  if (flash && !reduceMotion) {
+    setInterval(() => {
+      const d = hstNow();
+      const m = minutesOf(d) + d.getUTCSeconds() / 60;
+      const clearSky = !weather.rain && weather.clouds < 4;
+      if (params.get("flash") === "1" || (Math.abs(m - sunTimes(d).set) < 1.5 && clearSky)) {
+        flash.classList.remove("go");
+        void flash.offsetWidth;
+        flash.classList.add("go");
+      }
+    }, 4000);
+  }
+
+  // ---------- Humpback whales, December through April ----------
+  const whale = $("whale");
+  const whaleTest = params.get("whale") === "1";
+  if (whale && !reduceMotion && (whaleTest || [12, 1, 2, 3, 4].includes(month))) {
+    const surface = () => {
+      whale.style.left = `${22 + Math.random() * 56}%`;
+      whale.className = `whale ${Math.random() < .5 ? "spouting" : "fluke-up"}`;
+      setTimeout(() => { whale.className = "whale"; }, 5200);
+      setTimeout(surface, whaleTest ? 7000 : 30000 + Math.random() * 50000);
+    };
+    setTimeout(surface, whaleTest ? 1500 : 8000 + Math.random() * 20000);
+  }
+
+  // ---------- Shooting stars after dark; click one to make a wish ----------
+  const shooting = $("shooting"), wish = $("wish");
+  if (shooting && !reduceMotion) {
+    const wishes = [
+      "Wish made. Ula promises not to tell.",
+      "Wish made. May your next cast be a big one.",
+      "Wish made. Calm seas and a full cooler.",
+      "Wish made. Watch for it on the next tide.",
+      "You caught a shooting star. That's rarer than a golden ulua."
+    ];
+    let wishTimer;
+    const launch = () => {
+      const sky = scene.dataset.sky;
+      if (sky === "night" || sky === "dusk" || params.get("shoot") === "1") {
+        const s = document.createElement("button");
+        s.type = "button";
+        s.className = "shoot";
+        s.tabIndex = -1;
+        s.style.left = `${5 + Math.random() * 60}%`;
+        s.style.top = `${4 + Math.random() * 40}%`;
+        s.addEventListener("click", () => {
+          wish.textContent = wishes[Math.floor(Math.random() * wishes.length)];
+          wish.classList.add("show");
+          clearTimeout(wishTimer);
+          wishTimer = setTimeout(() => wish.classList.remove("show"), 4500);
+          s.remove();
+        });
+        s.addEventListener("animationend", () => s.remove());
+        shooting.appendChild(s);
+      }
+      setTimeout(launch, params.get("shoot") === "1" ? 2500 : 9000 + Math.random() * 14000);
+    };
+    setTimeout(launch, 4000);
+  }
+
+  // ---------- An ʻiwa gliding over in daylight ----------
+  const iwa = $("iwa");
+  if (iwa && !reduceMotion) {
+    const iwaTest = params.get("iwa") === "1";
+    const fly = () => {
+      if (scene.dataset.sky !== "night" || iwaTest) {
+        iwa.style.top = `${10 + Math.random() * 22}%`;
+        iwa.classList.remove("glide");
+        void iwa.getBoundingClientRect();
+        iwa.classList.add("glide");
+      }
+      setTimeout(fly, iwaTest ? 28000 : 40000 + Math.random() * 50000);
+    };
+    iwa.addEventListener("animationend", (e) => { if (e.animationName === "glide") iwa.classList.remove("glide"); });
+    setTimeout(fly, iwaTest ? 800 : 12000 + Math.random() * 25000);
+  }
+
+  // ---------- Ocean sound, generated in the browser ----------
+  const soundBtn = $("sound");
+  if (soundBtn) {
+    let audio = null;
+    const makeSurf = (ctx) => {
+      // 12 seconds of brown noise shaped into two swells, quiet at the loop point so it repeats cleanly
+      const seconds = 12, rate = ctx.sampleRate, len = seconds * rate;
+      const buf = ctx.createBuffer(2, len, rate);
+      for (let ch = 0; ch < 2; ch++) {
+        const data = buf.getChannelData(ch);
+        let last = 0;
+        for (let i = 0; i < len; i++) {
+          const t = i / rate;
+          last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+          const swell = Math.max(
+            Math.exp(-((t - 3.2) ** 2) / 2.2),
+            0.75 * Math.exp(-((t - 8.6) ** 2) / 1.8)
+          );
+          data[i] = last * 3.2 * (0.04 + 0.96 * swell);
+        }
+      }
+      return buf;
+    };
+    soundBtn.addEventListener("click", async () => {
+      const on = soundBtn.getAttribute("aria-pressed") !== "true";
+      soundBtn.setAttribute("aria-pressed", String(on));
+      if (on) {
+        if (!audio) {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const src = ctx.createBufferSource();
+          src.buffer = makeSurf(ctx);
+          src.loop = true;
+          const filter = ctx.createBiquadFilter();
+          filter.type = "lowpass";
+          filter.frequency.value = 900;
+          const gain = ctx.createGain();
+          gain.gain.value = 0;
+          src.connect(filter).connect(gain).connect(ctx.destination);
+          src.start();
+          audio = { ctx, gain };
+        }
+        await audio.ctx.resume();
+        const level = weather.calm < .7 ? .75 : .55;
+        audio.gain.gain.setTargetAtTime(level, audio.ctx.currentTime, .6);
+      } else if (audio) {
+        audio.gain.gain.setTargetAtTime(0, audio.ctx.currentTime, .3);
+        setTimeout(() => { if (soundBtn.getAttribute("aria-pressed") !== "true") audio.ctx.suspend(); }, 1500);
+      }
+    });
+  }
 
   // ---------- Tides at Honolulu Harbor, from NOAA ----------
   async function loadTides() {
