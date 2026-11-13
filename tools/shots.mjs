@@ -9,6 +9,7 @@
 //   node tools/shots.mjs --label x --apis live|fixtures|down   (default fixtures)
 //   node tools/shots.mjs --label x --weather weather-full     choose a weather fixture
 //   node tools/shots.mjs --label x --extra "dive=?t=12:00#scroll=0.6"  add custom states
+//   node tools/shots.mjs --label x --sheet        also write shots/x/sheet-<viewport>.png contact sheets
 //
 // Determinism: time is frozen at 2026-11-12 (a Thursday, no season) at the state's
 // Honolulu time, Math.random is seeded, API calls are answered from tests/fixtures/,
@@ -202,6 +203,16 @@ async function diff(browser, a, b, out) {
   return { share: result.share, sizeChanged: result.sizeChanged };
 }
 
+// One image with every viewport-height shot of a viewport, captioned, for quick review.
+export async function sheet(browser, entries, out, w = 480, cols = 4) {
+  const imgs = await Promise.all(entries.map(async (e) => `<figure><img src="data:image/png;base64,${(await readFile(join(root, e.file))).toString("base64")}"><figcaption>${e.viewport} ${e.state}</figcaption></figure>`));
+  const page = await browser.newPage({ viewport: { width: cols * (w + 4) + 16, height: 400 } });
+  await page.setContent(`<style>body{margin:0;background:#222;display:grid;grid-template-columns:repeat(${cols},${w}px);gap:4px;padding:8px;font:12px sans-serif;color:#eee}figure{margin:0}img{width:100%;display:block}</style>${imgs.join("")}`);
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: out, fullPage: true });
+  await page.close();
+}
+
 async function main() {
   const server = await serve();
   const base = `http://127.0.0.1:${server.address().port}`;
@@ -234,6 +245,10 @@ async function main() {
     }
   }
   await writeFile(join(outDir, "report.json"), JSON.stringify(report, null, 2));
+  if (flag("sheet")) for (const vp of viewports) {
+    const files = log.filter((e) => e.file && e.viewport === vp.name && !e.state.startsWith("full"));
+    if (files.length) await sheet(browser, files, join(outDir, `sheet-${vp.name}.png`), vp.width > 1000 ? 480 : 260);
+  }
   await browser.close();
   server.close();
 
