@@ -31,65 +31,36 @@ img { display: block; max-width: 100%; }
 
 /* ---------- The scene: sky follows the time in Honolulu ---------- */
 .scene {
-  /* golden hour is the default, and what shows without JavaScript */
-  --sky: linear-gradient(180deg, #0E2B30 0%, #1D4F5A 16%, #6E4B5E 34%, #C85A3A 50%, #E8662A 60%, #F5A623 74%, #FBD68A 86%);
-  --glow: radial-gradient(ellipse 55% 38% at 50% 62%, rgba(255, 214, 140, .55), transparent 70%);
   --w-back: var(--lagoon);
   --w-mid: var(--deep);
   --ink: var(--sand);
   --ink-shadow: 0 2px 8px rgba(110, 40, 20, .45);
-  --stars: 0;
-  --moon: 0;
-  --cloud: #FFD9C2;
-  --cloud-o: .8;
   --bird: #2A1A12;
 
   position: relative;
   min-height: max(600px, 100svh);
   overflow: hidden;
   overflow: clip;
-  background: var(--glow), var(--sky);
   display: grid;
   place-items: center;
   padding: 0 16px 34vh;
 }
-.scene[data-sky="dawn"] {
-  --cloud: #FFCFC8;
-  --cloud-o: .75;
-  --sky: linear-gradient(180deg, #24365A 0%, #4F4F7A 22%, #9C6A8A 42%, #E8907A 62%, #F7B98A 78%, #FCE1B4 90%);
-  --glow: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(255, 226, 190, .5), transparent 70%);
-}
 .scene[data-sky="day"] {
-  --sky: linear-gradient(180deg, #2C86B4 0%, #4FA6CF 25%, #86C8E3 50%, #BFE5EE 72%, #EAF4EC 88%);
-  --glow: radial-gradient(ellipse 50% 35% at 50% 45%, rgba(255, 255, 255, .45), transparent 70%);
   --w-back: #2A9AA2;
   --w-mid: #1C7680;
   --ink: var(--abyss);
   --ink-shadow: none;
-  --cloud: #FFFFFF;
-  --cloud-o: .92;
   --bird: #1B2A33;
 }
 .scene[data-sky="dusk"] {
-  --sky: linear-gradient(180deg, #0B1B30 0%, #22284D 25%, #4B3560 45%, #8E4E6B 66%, #D9784A 86%);
-  --glow: radial-gradient(ellipse 40% 32% at 50% 42%, rgba(255, 214, 180, .5), transparent 76%), radial-gradient(ellipse 55% 30% at 50% 78%, rgba(240, 150, 100, .4), transparent 70%);
   --w-back: #1A5A66;
   --w-mid: #123F48;
-  --stars: .5;
-  --cloud: #8E7A9E;
-  --cloud-o: .6;
   --bird: #120E1E;
 }
 .scene[data-sky="night"] {
-  --sky: linear-gradient(180deg, #040B16 0%, #08182A 40%, #0E2840 75%, #133650 92%);
-  --glow: radial-gradient(ellipse 40% 32% at 50% 42%, rgba(240, 234, 214, .78), rgba(200, 214, 236, .28) 55%, transparent 78%);
   --w-back: #15485A;
   --w-mid: #0F3542;
   --ink-shadow: 0 2px 10px rgba(0, 0, 0, .6);
-  --stars: 1;
-  --moon: 1;
-  --cloud: #3F5470;
-  --cloud-o: .6;
 }
 
 .logo-wrap { position: relative; width: min(820px, 92vw); }
@@ -119,17 +90,6 @@ img { display: block; max-width: 100%; }
   cursor: pointer;
 }
 
-.clock {
-  position: absolute;
-  top: 18px;
-  left: 24px;
-  right: 72px;
-  margin: 0;
-  font-size: .92rem;
-  color: var(--ink);
-  text-shadow: var(--ink-shadow);
-  z-index: 3;
-}
 .friday {
   display: inline-block;
   margin-right: 10px;
@@ -140,25 +100,6 @@ img { display: block; max-width: 100%; }
   font-family: var(--display);
   text-shadow: none;
 }
-
-.stars { position: absolute; inset: 0 0 45% 0; opacity: var(--stars); transition: opacity 2s ease; pointer-events: none; }
-.stars span { position: absolute; border-radius: 50%; background: #fff; }
-.stars .twinkle { animation: twinkle 3.5s ease-in-out infinite; }
-@keyframes twinkle { 50% { opacity: .25; } }
-.moon {
-  position: absolute;
-  top: 11%;
-  right: 13%;
-  width: 54px;
-  height: 54px;
-  overflow: visible;
-  filter: drop-shadow(0 0 16px rgba(235, 240, 255, .45));
-  opacity: var(--moon);
-  transition: opacity 2s ease;
-  pointer-events: none;
-}
-.moon-dark { fill: rgba(220, 230, 255, .1); }
-.moon-lit { fill: #FBF7E6; }
 
 .sea {
   position: absolute;
@@ -307,7 +248,6 @@ img { display: block; max-width: 100%; }
 /* ---------- Seasonal extras ---------- */
 .lights, .fireworks { display: none; position: absolute; left: 0; right: 0; top: 0; pointer-events: none; }
 .season-winter .lights { display: block; height: 90px; }
-.season-winter .clock { top: 92px; }
 .lights circle { animation: glint 2.4s ease-in-out infinite; }
 .lights circle:nth-of-type(3n+1) { animation-delay: .8s; }
 .lights circle:nth-of-type(3n+2) { animation-delay: 1.6s; }
@@ -325,39 +265,6 @@ img { display: block; max-width: 100%; }
   70%  { opacity: 1; }
   100% { transform: scale(1); opacity: 0; }
 }
-
-/* ---------- Weather: clouds and rain from the National Weather Service ---------- */
-.clouds { position: absolute; inset: 0 0 40% 0; pointer-events: none; overflow: hidden; }
-.clouds span {
-  position: absolute;
-  left: 0;
-  width: 160px;
-  height: 46px;
-  border-radius: 999px;
-  background: var(--cloud);
-  opacity: var(--cloud-o);
-  filter: blur(1.5px);
-  transform: translateX(-220px) scale(var(--s));
-  animation: cloud linear infinite;
-  transition: background 2s ease;
-}
-.clouds span::before, .clouds span::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  background: inherit;
-}
-.clouds span::before { width: 76px; height: 76px; left: 26px; top: -38px; }
-.clouds span::after  { width: 56px; height: 56px; left: 82px; top: -24px; }
-@keyframes cloud { to { transform: translateX(calc(100vw + 60px)) scale(var(--s)); } }
-
-.showers {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(rgba(40, 55, 70, .22), rgba(40, 55, 70, .1));
-}
-.showers canvas { display: block; width: 100%; height: 100%; }
 
 /* ---------- Horizon: green flash and whales ---------- */
 .greenflash {
@@ -736,9 +643,7 @@ footer {
   .crew { grid-template-columns: 54px 1fr; gap: 14px; padding: 16px; }
   .crew-logo { width: 54px; }
   .crew-name { font-size: 1.55rem; }
-  .moon { display: none; }
   .friday { display: table; margin-bottom: 6px; }
-  .clock { left: 16px; right: 64px; font-size: .85rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

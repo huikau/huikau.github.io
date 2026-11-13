@@ -1,1 +1,187 @@
-/* scene.css */
+/* scene.css — see fable5.2-plan.md section 6 for ownership. */
+
+/* ---------- sky (WP3) ---------- */
+/* The sky is computed in JS from the sun's altitude and written to :root as --sky-top, --sky-mid,
+   --sky-horizon, --sun-glow(-soft), --haze and --text-on-sky. The fallbacks are a golden-hour sky for no-JS. */
+.scene {
+  --keyline: #0B2226;
+  background:
+    radial-gradient(ellipse var(--glow-rx, 62%) 44% at var(--sun-x, 50%) var(--sun-y, 62%), var(--sun-glow-soft, rgba(255, 162, 92, .6)), rgba(255, 162, 92, 0) 72%),
+    radial-gradient(ellipse 24% 28% at var(--moon-x, 50%) var(--moon-y, 20%), rgba(214, 224, 255, var(--moon-glow-a, 0)), rgba(214, 224, 255, 0) 80%),
+    linear-gradient(180deg, var(--sky-top, #1D3369) 0%, var(--sky-mid, #74477E) 42%, var(--sky-horizon, #F0875A) 74%, var(--sky-horizon, #F0875A) 100%);
+}
+
+/* stars: a canvas; opacity is set by JS and the animation stops at zero */
+.stars {
+  position: absolute; inset: 0 0 28% 0; opacity: 0; pointer-events: none;
+  /* the canvas stops at the horizon line; fade its last stretch so the Milky Way glow never ends in a hard edge */
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
+}
+.stars canvas { display: block; width: 100%; height: 100%; }
+
+/* sun: flat rings and a disc with an ink keyline; position, size and colour come from JS */
+.sun {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  width: clamp(60px, 8vw, 100px);
+  height: auto;
+  aspect-ratio: 1;
+  overflow: visible;
+  pointer-events: none;
+  --sun-disc: #F5A04A;
+  --sun-ring: #EC8A3E;
+}
+.sun-halo { fill: var(--sun-ring); opacity: .2; }
+.sun-ring { fill: var(--sun-ring); opacity: .42; }
+.sun-disc { fill: var(--sun-disc); stroke: var(--keyline); stroke-width: 2.4; }
+
+/* moon: flat cream with an ink keyline; the unlit part takes the sky's colour */
+.moon {
+  position: absolute;
+  left: 80%;
+  top: 20%;
+  width: clamp(40px, 4.6vw, 62px);
+  height: auto;
+  aspect-ratio: 1;
+  overflow: visible;
+  opacity: 0;
+  pointer-events: none;
+}
+.moon-dark { fill: var(--sky-mid, #2D2C68); opacity: .85; }
+.moon-lit { fill: #FBF7E6; }
+.moon-key { fill: none; stroke: var(--keyline); stroke-width: 2; }
+
+/* clouds: keyline, shade, body, highlight; the highlight sits on the sun's side (--lit is -1 or 1) */
+.clouds { position: absolute; inset: 0 0 28% 0; pointer-events: none; overflow: hidden; --lit: 1; }
+/* The resting position (left) is where the cloud sits in a still render; the drift is added on top with `translate`. */
+.cloud {
+  position: absolute;
+  left: calc(var(--xv, 20) * 1vw);
+  opacity: var(--far, 1);
+  animation: cloud-drift linear infinite;
+}
+.cloud.still { animation: none; }
+.cloud svg { display: block; width: 100%; height: auto; overflow: visible; }
+.cl-key { fill: var(--keyline); opacity: .55; }
+.cl-shade { fill: var(--cloud-shade, #6D6A92); }
+.cl-body { fill: var(--cloud-body, #D8C0B8); transform: translate(calc(var(--lit) * 7px), -9px); }
+.cl-hi { fill: var(--cloud-hi, #FFE9D0); transform: translate(calc(var(--lit) * 13px), -15px); }
+@keyframes cloud-drift {
+  from { translate: calc(var(--xv, 20) * -1vw - 420px) 0; }
+  to   { translate: calc(100vw - var(--xv, 20) * 1vw + 120px) 0; }
+}
+
+/* rain: a canvas over the whole scene, with a slight dimming */
+.showers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(rgba(40, 55, 70, .22), rgba(40, 55, 70, .1));
+}
+.showers canvas { display: block; width: 100%; height: 100%; }
+
+/* clock line and Time Machine */
+.skybar {
+  position: absolute;
+  top: 18px;
+  left: 24px;
+  right: 72px;
+  z-index: 3;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+.season-winter .skybar { top: 92px; }
+.og .skybar { display: none; }
+.skybar .clock {
+  position: static;
+  margin: 0;
+  font-size: .92rem;
+  color: var(--text-on-sky, #FFF9EC);
+  transition: color .4s ease;
+}
+
+.timemachine {
+  --tm: var(--text-on-sky, #FFF9EC);
+  width: min(460px, 100%);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "label out" "row row";
+  align-items: baseline;
+  column-gap: 12px;
+  row-gap: 2px;
+  color: var(--tm);
+  font-size: .78rem;
+  line-height: 1.2;
+  transition: color .4s ease;
+}
+.tm-label { grid-area: label; font-weight: 600; }
+.tm-readout { grid-area: out; font-variant-numeric: tabular-nums; text-align: right; }
+.timemachine.scrubbed .tm-readout { font-weight: 600; }
+.tm-row { grid-area: row; display: flex; align-items: flex-start; gap: 12px; }
+.tm-track { position: relative; flex: 1; min-width: 0; padding-bottom: 15px; }
+.tm-range {
+  display: block;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  --tm-fill: 0%;
+}
+.tm-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--mango, #F5A623) var(--tm-fill), color-mix(in srgb, var(--tm) 38%, transparent) var(--tm-fill));
+}
+.tm-range::-moz-range-track { height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--tm) 38%, transparent); }
+.tm-range::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--mango, #F5A623); }
+.tm-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px; margin-top: -8px;
+  border-radius: 50%;
+  background: var(--sand, #F7EEDB);
+  border: 3px solid var(--keyline);
+  box-shadow: 0 0 0 2px var(--mango, #F5A623);
+}
+.tm-range::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--sand, #F7EEDB);
+  border: 3px solid var(--keyline);
+  box-shadow: 0 0 0 2px var(--mango, #F5A623);
+}
+.tm-range:focus-visible { outline: none; }
+.tm-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--mango, #F5A623), 0 0 0 6px var(--keyline); }
+.tm-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--mango, #F5A623), 0 0 0 6px var(--keyline); }
+.tm-ticks { position: absolute; inset: 19px 0 0 0; margin: 0; padding: 0; list-style: none; font-size: .68rem; }
+.tm-ticks li { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; padding-top: 4px; }
+.tm-ticks li::before { content: ""; position: absolute; left: 50%; top: -3px; width: 1.5px; height: 6px; margin-left: -.75px; background: currentColor; opacity: .7; }
+.tm-ticks li[data-t="midnight"] { transform: none; }
+.tm-ticks li[data-t="midnight"]::before { left: 0; margin-left: 0; }
+.tm-live {
+  flex: none;
+  min-height: 30px;
+  padding: 3px 14px;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tm-live:hover:not(:disabled) { background: color-mix(in srgb, var(--tm) 16%, transparent); }
+.tm-live[aria-pressed="true"] { background: var(--mango, #F5A623); border-color: var(--keyline); color: var(--keyline); cursor: default; }
+.tm-live[aria-pressed="true"]::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: var(--keyline); vertical-align: 1px; }
+.tm-live:disabled { opacity: 1; }
+
+@media (max-width: 720px) {
+  .skybar { left: 16px; right: 64px; }
+  .skybar { gap: 6px; }
+  .skybar .clock { font-size: .85rem; }
+}

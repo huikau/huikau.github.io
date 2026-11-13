@@ -41,9 +41,15 @@
     <section class="scene" aria-label="The view from Ula's fishing spot">
       <!-- wp:sky -->
       <div class="stars" id="stars" aria-hidden="true"></div>
+      <svg class="sun" id="sun" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="sun-halo" cx="50" cy="50" r="49"/>
+        <circle class="sun-ring" cx="50" cy="50" r="38"/>
+        <circle class="sun-disc" cx="50" cy="50" r="28"/>
+      </svg>
       <svg class="moon" id="moon" viewBox="0 0 54 54" aria-hidden="true">
         <circle class="moon-dark" cx="27" cy="27" r="24"/>
         <path class="moon-lit" id="moon-lit" d="M27 3 A24 24 0 1 1 27 51 A24 24 0 1 1 27 3 Z"/>
+        <circle class="moon-key" cx="27" cy="27" r="24"/>
       </svg>
       <div class="clouds" id="clouds" aria-hidden="true"></div>
       <!-- /wp:sky -->
@@ -69,7 +75,10 @@
       <!-- /wp:sound -->
 
       <!-- wp:sky -->
-      <p class="clock"><span class="friday" id="friday" hidden>It's Aloha Friday</span><span id="clock-text"></span></p>
+      <div class="skybar">
+        <p class="clock"><span class="friday" id="friday" hidden>It's Aloha Friday</span><span id="clock-text"></span></p>
+        <div class="timemachine" id="timemachine" hidden></div>
+      </div>
       <!-- /wp:sky -->
 
       <!-- wp:land -->
