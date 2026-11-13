@@ -15,6 +15,9 @@ import { initEggs, initGreenFlash, initWhales, initShootingStars, initIwa } from
 import { initFishing } from "./game/fishing.js";
 import { initSound } from "./ui/sound.js";
 import { initInstruments } from "./ui/instruments.js";
+import { initSurface } from "./scene/surface.js";
+import { initDive } from "./scene/dive.js";
+import { initReef } from "./scene/reef.js";
 
 const mod = {};
 const p = params();
@@ -57,6 +60,10 @@ initWhales({ month: mod.seasons.month });
 initShootingStars();
 initIwa();
 initSound();
+mod.surface = initSurface({ clock, bus, weather });
+mod.dive = initDive({ bus });
+mod.reef = initReef({ bus });
+mod.sky.updateSky(); // the sky event fired before the surface and dive were listening
 
 // ---------- Surf and tides ----------
 async function refreshSurf() {

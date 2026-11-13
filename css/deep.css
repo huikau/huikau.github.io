@@ -1,1 +1,210 @@
-/* deep.css — see fable5.2-plan.md section 6 for ownership. */
+/* deep.css — the water surface at the foot of the hero and the dive underneath it (WP5).
+   See fable5.2-plan.md section 6 for ownership. Everything below the waterline lives in .shore:
+   the .deep layer stack sits behind the content (z-index -1) and the content stays readable on it. */
+
+/* ======================================================================================
+   The surface (hero)
+   ====================================================================================== */
+.sea {
+  --sea-back: color-mix(in srgb, var(--lagoon) 58%, var(--sky-horizon, #9C4A36));
+  --sea-mid: color-mix(in srgb, var(--lagoon) 84%, var(--sky-horizon, #9C4A36));
+  --sea-front: var(--lagoon);
+  --wave-speed: 1;
+  position: absolute;
+  inset: auto 0 -2px 0;
+  height: 28%;
+  overflow: clip;
+  pointer-events: none;
+}
+.wave {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 200%;
+  animation: wave-drift linear infinite;
+}
+.wave.back  { height: 100%; color: var(--sea-back);  animation-duration: calc(46s * var(--calm, 1)); }
+.wave.mid   { height: 78%;  color: var(--sea-mid);   animation-duration: calc(32s * var(--calm, 1)); animation-direction: reverse; }
+.wave.front { height: 52%;  color: var(--sea-front); animation-duration: calc(22s * var(--calm, 1)); }
+@keyframes wave-drift { to { transform: translateX(-50%); } }
+.w-fill { fill: currentColor; }
+.w-crest { fill: none; stroke: var(--ink); stroke-width: 2.5px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.wave.back .w-crest { stroke: var(--foam); stroke-width: 2px; opacity: .55; }
+/* broken foam lines just under each crest */
+.w-foam {
+  fill: none; stroke: var(--foam); stroke-width: 3px; stroke-linecap: round;
+  stroke-dasharray: 70 130 26 90 44 160; vector-effect: non-scaling-stroke; opacity: .75;
+}
+.wave.back .w-foam { opacity: .4; stroke-dasharray: 40 150 20 110; }
+.glints { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* ======================================================================================
+   Below the waterline
+   ====================================================================================== */
+body { background: var(--ink); }
+
+.shore {
+  --zone-h: clamp(440px, 80vh, 780px);
+  position: relative;
+  isolation: isolate;
+  max-width: none;
+  margin: 0;
+  min-height: 150vh;
+  padding: 240px max(24px, calc(50% - 496px)) var(--zone-h);
+  overflow-x: clip;
+  /* the depth grade: --lagoon at the surface down to --ink */
+  background: linear-gradient(180deg,
+    var(--lagoon) 0, color-mix(in srgb, var(--lagoon) 55%, var(--deep)) 80px, var(--deep) 190px,
+    color-mix(in srgb, var(--deep) 62%, var(--abyss)) 340px, var(--abyss) 30%, color-mix(in srgb, var(--abyss) 50%, var(--ink)) 70%, var(--ink) 100%);
+}
+@media (max-width: 720px) { .shore { padding-top: 200px; } }
+
+.away h1 { color: var(--mango); text-shadow: 0 2px 0 var(--ink); }
+
+.deep {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: clip; /* clip, not hidden: the sticky layers inside must keep sticking to the viewport */
+  pointer-events: none;
+  --light: 1; --night: 0; --lean: 0deg; --depth: 0;
+  --r-far: color-mix(in srgb, var(--deep) 58%, var(--abyss));
+  --r-far-hi: color-mix(in srgb, var(--deep) 92%, var(--abyss));
+  --r-dome: color-mix(in srgb, var(--deep) 42%, var(--ink));
+  --r-dome-hi: color-mix(in srgb, var(--deep) 88%, var(--lagoon));
+  --r-fan: color-mix(in srgb, var(--hibiscus) 50%, var(--ink));
+  --r-fan-hi: color-mix(in srgb, var(--hibiscus) 70%, var(--ink));
+  --r-stag: color-mix(in srgb, var(--mango) 52%, var(--ink));
+  --r-table: color-mix(in srgb, var(--lagoon) 68%, var(--ink));
+  --r-table-hi: color-mix(in srgb, var(--lagoon) 92%, var(--foam));
+  --f-back: color-mix(in srgb, var(--lauhala) 38%, var(--deep));
+  --f-front: color-mix(in srgb, var(--lauhala) 54%, var(--deep));
+  --k-a: color-mix(in srgb, var(--lagoon) 62%, var(--ink));
+  --k-b: color-mix(in srgb, var(--lagoon) 100%, var(--foam) 10%);
+}
+
+/* ---------- the surface seen from below ---------- */
+.deep-ceil { position: absolute; left: 0; right: 0; top: 0; height: 190px; overflow: clip; }
+.ceil { position: absolute; left: 0; top: 0; width: 200%; height: 100%; animation: wave-drift linear infinite; }
+.ceil-c { animation-duration: 90s; }
+.ceil-b { animation-duration: 64s; animation-direction: reverse; }
+.ceil-a { animation-duration: 46s; }
+.ceil-fill.ceil-a { fill: color-mix(in srgb, var(--lagoon) 76%, var(--foam)); }
+.ceil-fill.ceil-b { fill: color-mix(in srgb, var(--lagoon) 88%, var(--foam)); }
+.ceil-fill.ceil-c { fill: var(--lagoon); } /* the top sheet is the hero's front wave colour: no seam at the waterline */
+.ceil-foam { fill: none; stroke: var(--foam); stroke-width: 2.5px; stroke-linecap: round; stroke-dasharray: 80 110 30 140; vector-effect: non-scaling-stroke; opacity: .6; }
+
+/* ---------- viewport-sized layers that ride with the screen ---------- */
+.deep-view { position: absolute; inset: 0; }
+.deep-stick { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.deep-rays {
+  position: absolute; left: -20%; top: -6%; width: 140%; height: 112%; transform-origin: 50% 0;
+  opacity: calc(var(--light) * .4);
+  animation: rays-sway 11s ease-in-out infinite alternate;
+}
+.deep-rays svg { display: block; width: 100%; height: 100%; }
+@keyframes rays-sway { from { transform: rotate(calc(var(--lean) - 1.6deg)); } to { transform: rotate(calc(var(--lean) + 1.6deg)); } }
+.deep-motes { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.deep-grain { position: absolute; inset: 0; background-image: var(--grain); background-size: 200px 200px; opacity: .09; }
+.deep-dim { position: absolute; inset: 0; background: var(--ink); }
+.deep-dim--night { opacity: calc(var(--night) * .55); }
+.deep-dim--depth { opacity: calc(var(--depth) * .3); }
+
+/* ---------- the reef: far, near, foreground ---------- */
+.reef-zone { position: absolute; left: 0; right: 0; bottom: 0; height: var(--zone-h); }
+.reef { position: absolute; left: 0; width: 100%; bottom: -40px; display: block; }
+.reef-far { height: calc(var(--zone-h) * .58); bottom: calc(var(--zone-h) * .14); }
+.reef-near { height: calc(var(--zone-h) * .52); bottom: calc(var(--zone-h) * .08); }
+.reef-floor { height: calc(var(--zone-h) * .3); }
+.rf-a { fill: var(--r-far); }
+.rf-b { fill: var(--r-far-hi); }
+.rn-dome, .rn-fan, .rn-table { stroke: var(--ink); stroke-width: 3px; stroke-linejoin: round; }
+.rn-dome { fill: var(--r-dome); }
+.rn-dome-hi { fill: var(--r-dome-hi); }
+.rn-ridge { fill: none; stroke: var(--ink); stroke-width: 2.4px; stroke-linecap: round; opacity: .7; }
+.rn-fan { fill: var(--r-fan); }
+.rn-fan-hi { fill: var(--r-fan-hi); }
+.rn-table { fill: var(--r-table); }
+.rn-table-hi { fill: var(--r-table-hi); }
+.rn-stag-key, .rn-stag { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.rn-stag-key { stroke: var(--ink); stroke-width: 15px; }
+.rn-stag { stroke: var(--r-stag); stroke-width: 8px; }
+.fl-back { fill: var(--f-back); stroke: var(--ink); stroke-width: 3px; }
+.fl-front { fill: var(--f-front); stroke: var(--ink); stroke-width: 3px; }
+.fl-peb { fill: var(--ink); opacity: .75; }
+
+.reef-fish { position: absolute; inset: 0; }
+.fish { position: absolute; left: 0; top: 0; display: block; will-change: transform; }
+.fish svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.fish--new { animation: fish-in .6s ease-out both; }
+@keyframes fish-in { from { opacity: 0; } }
+.reef-honu { position: absolute; left: 0; top: var(--honu-y, 25%); width: 120px; opacity: 0; pointer-events: none; }
+.reef-honu svg { display: block; width: 100%; height: auto; transform: scaleX(-1); }
+.reef-honu.swim { animation: honu-glide 38s linear forwards; }
+@keyframes honu-glide { 0% { opacity: 1; transform: translate3d(-160px, 0, 0); } 100% { opacity: 1; transform: translate3d(calc(100vw + 40px), 18px, 0); } }
+.reef-slipper { position: absolute; left: 21%; bottom: calc(var(--zone-h) * .06); width: 64px; rotate: -16deg; display: block; z-index: 1; }
+.reef-slipper svg { display: block; width: 100%; height: auto; }
+
+.deep-kelp { position: absolute; left: 0; right: 0; bottom: -40px; height: 0; }
+.kelp { position: absolute; bottom: 0; left: var(--x); width: 60px; height: var(--h); transform-origin: 50% 100%; overflow: visible; animation: kelp-sway var(--d) ease-in-out var(--o) infinite alternate; }
+.kp-key { fill: var(--ink); stroke: var(--ink); stroke-width: 5px; stroke-linejoin: round; }
+.kp-a { fill: var(--k-a); }
+.kp-b { fill: var(--k-b); opacity: .55; }
+@keyframes kelp-sway { from { rotate: -2.5deg; } to { rotate: 3deg; } }
+
+.reef-note {
+  position: absolute; left: 50%; top: 26%; translate: -50% 0; z-index: 2;
+  width: max-content; max-width: min(340px, 80vw); margin: 0;
+  padding: var(--space-4) var(--space-5); text-align: center; font-size: var(--step-0); line-height: 1.35;
+}
+
+/* animations run only while the water is on screen */
+.deep:not(.live) .ceil, .deep:not(.live) .deep-rays, .deep:not(.live) .kelp { animation-play-state: paused; }
+
+/* ---------- parallax and grading: scroll-driven where the browser can, --depth elsewhere ---------- */
+.reef-far { --k: 70; }
+.reef-near { --k: 30; }
+.reef-floor, .deep-kelp { --k: -50; }
+.reef-far, .reef-near, .reef-floor, .deep-kelp { translate: 0 calc((var(--depth) - .5) * var(--k) * 1px); }
+.deep-view--back { opacity: calc(1 - var(--depth) * .88); }
+@supports (animation-timeline: scroll()) {
+  .reef-far, .reef-near, .reef-floor, .deep-kelp {
+    translate: none;
+    animation: par linear;
+    animation-timeline: scroll(root);
+    animation-range: var(--dive-start, 30%) 100%;
+  }
+  .deep-view--back { opacity: 1; animation: rays-fade linear; animation-timeline: scroll(root); animation-range: var(--dive-start, 30%) 100%; }
+  .deep-dim--depth { opacity: 0; animation: depth-dim linear; animation-timeline: scroll(root); animation-range: var(--dive-start, 30%) 100%; }
+}
+@keyframes par { from { translate: 0 calc(var(--k) * -.5px); } to { translate: 0 calc(var(--k) * .5px); } }
+@keyframes rays-fade { from { opacity: 1; } to { opacity: .12; } }
+@keyframes depth-dim { to { opacity: .3; } }
+
+/* ---------- the depth gauge ---------- */
+.gauge {
+  position: fixed; right: 8px; top: 50%; z-index: var(--z-gauge, 50);
+  width: 34px; height: min(44vh, 360px); translate: 0 -50%;
+  opacity: 0; transition: opacity .4s ease; pointer-events: none;
+}
+.gauge.on { opacity: 1; }
+.gauge-track { position: absolute; right: 12px; top: 0; bottom: 0; width: 4px; border-radius: 2px; background: var(--sand); box-shadow: 0 0 0 2px var(--ink); display: flex; flex-direction: column; justify-content: space-between; }
+.gauge-track i { display: block; width: 12px; height: 2px; margin-left: -9px; background: var(--sand); box-shadow: 0 0 0 1.5px var(--ink); }
+.gauge-mark { position: absolute; right: 0; top: 0; width: 28px; height: 0; will-change: transform; }
+.gauge-mark::after { content: ""; position: absolute; right: 7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: var(--mango); border: 3px solid var(--ink); box-sizing: border-box; }
+.gauge-read {
+  position: absolute; right: 32px; top: -12px; display: none; padding: 2px 8px; border-radius: 999px;
+  background: var(--ink); color: var(--sand); font-size: .78rem; font-weight: 600; line-height: 1.4; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+@media (min-width: 1240px) { .gauge-read { display: block; } }
+@media (max-width: 720px) { .gauge { right: 0; width: 20px; } .gauge-track { right: 4px; } .gauge-mark { width: 20px; } .gauge-mark::after { right: 0; } }
+.og .gauge { display: none; }
+
+/* ---------- still and complete under reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .wave, .ceil, .deep-rays, .kelp, .reef-honu { animation: none !important; }
+  .deep-rays { transform: rotate(var(--lean)); }
+  .reef-far, .reef-near, .reef-floor, .deep-kelp, .deep-view--back, .deep-dim--depth { animation: none !important; translate: none; }
+  .deep-view--back { opacity: .7; }
+  .deep-dim--depth { opacity: .15; }
+}

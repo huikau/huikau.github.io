@@ -101,25 +101,6 @@ img { display: block; max-width: 100%; }
   text-shadow: none;
 }
 
-.sea {
-  position: absolute;
-  inset: auto 0 -2px 0;
-  height: 28%;
-  overflow: clip;
-  pointer-events: none;
-}
-.wave {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 200%;
-  animation: drift linear infinite;
-}
-.wave.back  { height: 100%; color: var(--w-back); animation-duration: calc(46s * var(--calm, 1)); opacity: .9; }
-.wave.mid   { height: 78%;  color: var(--w-mid);  animation-duration: calc(32s * var(--calm, 1)); animation-direction: reverse; }
-.wave.front { height: 52%;  color: var(--abyss);  animation-duration: calc(22s * var(--calm, 1)); }
-@keyframes drift { to { transform: translateX(-50%); } }
-
 /* the boat that sails by when someone types "aloha" */
 .boat { position: absolute; left: 0; bottom: 62%; width: 120px; transform: translateX(-160px); visibility: hidden; }
 .boat svg { width: 100%; height: auto; animation: rock 2.6s ease-in-out infinite; transform-origin: 50% 90%; }
