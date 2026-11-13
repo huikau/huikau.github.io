@@ -9,7 +9,7 @@ const test = (name, fn) => { try { fn(); console.log(`ok   ${name}`); } catch (e
 
 for (const r of s.rows) test(`${r.type} first load is ${r.kb.toFixed(1)} KB, within ${BUDGETS[r.type]} KB`, () => assert.ok(r.ok, `${r.type}: ${r.kb.toFixed(1)} KB > ${BUDGETS[r.type]} KB`));
 test("only the allowed hosts are contacted", () => assert.deepEqual(s.badHosts, []));
-test("the dev-only fishart-gallery and the lazy postcard painter are not part of the first load", () => {
+test("the lazy postcard painter (and the retired fishart-gallery) are not part of the first load", () => {
   const urls = m.files.map((f) => f.url);
   assert.ok(!urls.some((u) => /fishart-gallery|ui\/postcard\.js/.test(u)), urls.filter((u) => /fishart-gallery|postcard\.js/.test(u)).join(", "));
   assert.ok(!urls.some((u) => /\/og\.png$/.test(u)), "og.png is for link previews, never loaded by the page");

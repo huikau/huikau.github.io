@@ -14,7 +14,7 @@
 //                       x-huikau-sw: cache and x-huikau-sw-time: <ms when it was fetched>; js/core/store.js turns those
 //                       into status "cached"
 //   never stored        opaque responses, anything not 200 OK, partial content, non-GET requests
-const VERSION = "2026-11-13.3";
+const VERSION = "2026-11-13.4";
 const STATIC_CACHE = `huikau-static-${VERSION}`;
 const API_CACHE = "huikau-api"; // not versioned: the last good tide, surf and weather survive a deploy
 
@@ -30,7 +30,7 @@ const PRECACHE = [
   "/js/main.js",
   "/js/core/astro.js", "/js/core/bus.js", "/js/core/clock.js", "/js/core/dom.js", "/js/core/motion.js", "/js/core/perf.js", "/js/core/store.js",
   "/js/data/hawaiian.js", "/js/data/species.js", "/js/data/surf.js", "/js/data/tides.js", "/js/data/weather.js",
-  "/js/game/basket.js", "/js/game/fishart-gallery.js", "/js/game/fishart.js", "/js/game/fishing.js",
+  "/js/game/basket.js", "/js/game/fishart.js", "/js/game/fishing.js",
   "/js/scene/crew.js", "/js/scene/dive.js", "/js/scene/land.js", "/js/scene/reef.js", "/js/scene/surface.js", "/js/scene/ula.js",
   "/js/sky/bodies.js", "/js/sky/clouds.js", "/js/sky/palette.js", "/js/sky/rain.js", "/js/sky/sky.js", "/js/sky/stars.js", "/js/sky/timemachine.js",
   "/js/ui/bottle.js", "/js/ui/eggs.js", "/js/ui/instruments.js", "/js/ui/postcard.js", "/js/ui/seasons.js", "/js/ui/sound.js", "/js/ui/summary.js",
