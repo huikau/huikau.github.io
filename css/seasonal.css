@@ -1,0 +1,265 @@
+/* seasonal.css — WP9 (seasons, secrets, Things to find).
+   Island screenprint: flat fills, an ink keyline, no glows. Things that belong in a still (string lights,
+   fireworks, the Friday lei) sit visible at rest; transient ones (stars, boat, whale, flash, ʻiwa) only
+   show when triggered. */
+
+/* ---------- string lights along the shoreline (winter, halloween) ---------- */
+/* the lights used to hang from the top of the scene; they stand on the sand now, so the clock and the logo keep their place */
+.season-winter .skybar { top: 18px; }
+.season-winter .scene { --logo-lift: 0px; }
+.season-winter .sound { top: 12px; }
+.lights { position: absolute; left: 0; right: 0; bottom: 25%; height: 100px; z-index: 1; pointer-events: none; overflow: hidden; }
+.lights svg { display: block; }
+.bulb { animation: bulb-twinkle 2.6s ease-in-out infinite; }
+.bulb:nth-of-type(3n+1) { animation-delay: .9s; }
+.bulb:nth-of-type(3n+2) { animation-delay: 1.7s; }
+@keyframes bulb-twinkle { 50% { opacity: .62; } }
+
+/* ---------- fireworks over the ridge, with reflections on the water ---------- */
+.fireworks { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.burst {
+  position: absolute;
+  width: clamp(90px, 11vw, 160px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+}
+.burst svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.burst-ref { position: absolute; width: clamp(48px, 6vw, 88px); transform: translate(-50%, 0) scale(var(--s, 1)); opacity: .38; }
+.burst-ref svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+@media (max-width: 720px) {
+  .burst { margin-top: 96px; }   /* clear of the clock and the Time Machine */
+  .lights { bottom: 44%; }       /* above the dock sign, which fills the shoreline on a phone */
+}
+
+/* ---------- Aloha Friday: the badge, and the lei (on Ula's frame and the canoe) ---------- */
+.friday {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 2px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--mango);
+  color: var(--ink);
+  font-family: var(--font-display);
+  text-shadow: none;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+@media (max-width: 720px) { .friday { display: table; margin-bottom: 6px; } }
+
+/* ---------- pineapple rain (from the pineapple in the logo) ---------- */
+.pine { position: absolute; left: 0; top: 12%; width: 21%; height: 88%; padding: 0; border: 0; background: none; border-radius: 40%; cursor: pointer; }
+.rain { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
+.rain span { position: absolute; top: -90px; line-height: 0; animation: pine-fall var(--d) linear var(--delay) forwards; }
+.rain svg { display: block; overflow: visible; }
+@keyframes pine-fall { to { transform: translateY(calc(100vh + 140px)) rotate(var(--r)); } }
+
+/* ---------- the "aloha" boat: sails behind the waves ---------- */
+.boat { position: absolute; left: 0; bottom: 66%; width: clamp(104px, 11vw, 140px); transform: translateX(-180px); visibility: hidden; }
+.boat svg { display: block; width: 100%; height: auto; overflow: visible; transform-origin: 50% 90%; animation: boat-rock 2.6s ease-in-out infinite; }
+.boat.sail { visibility: visible; animation: boat-sail 18s linear forwards; }
+@keyframes boat-sail { to { transform: translateX(calc(100vw + 40px)); } }
+@keyframes boat-rock {
+  0%, 100% { transform: rotate(-3deg) translateY(0); }
+  50%      { transform: rotate(3deg) translateY(3px); }
+}
+.bt-hull { fill: var(--sunset); stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+.bt-stripe { fill: none; stroke: var(--sand); stroke-width: 3.4; stroke-linecap: round; }
+.bt-mast { fill: none; stroke: var(--ink); stroke-width: 3.4; stroke-linecap: round; }
+.bt-sail { fill: var(--sand); stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+.bt-jib { fill: var(--mango); stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+.bt-flag { fill: var(--hibiscus); stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.bt-text { fill: var(--ink); font-family: var(--font-display); font-size: 17px; }
+
+/* ---------- the green flash: a thin line on the horizon at the sun's x ---------- */
+.greenflash {
+  position: absolute;
+  left: var(--sun-x, 50%);
+  top: 23%;
+  z-index: 3;
+  width: clamp(100px, 11vw, 170px);
+  translate: -50% 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.greenflash svg { display: block; width: 100%; height: auto; overflow: visible; }
+.gf-outer { fill: #4FD36F; }
+.gf-inner { fill: #DFFFC4; }
+.greenflash.go { animation: greenflash 2s ease-out; }
+@keyframes greenflash {
+  0%   { opacity: 0; transform: scaleX(.4); }
+  18%  { opacity: 1; transform: scaleX(1); }
+  60%  { opacity: 1; }
+  100% { opacity: 0; transform: scaleX(.8); }
+}
+
+/* ---------- a humpback: back, spout and fluke rise from behind the far waves ---------- */
+.whale { position: absolute; bottom: 70%; width: 150px; height: 114px; margin-left: -75px; visibility: hidden; }
+.whale.spouting, .whale.fluke-up { visibility: visible; }
+.whale svg { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; overflow: visible; opacity: 0; }
+.whale .humpback { height: auto; }
+.whale .fluke { left: 30%; width: 40%; }
+.whale .spout { left: 38%; width: 22%; bottom: 44px; transform-origin: 50% 100%; }
+.wh-body { fill: #24566A; stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+.wh-belly { fill: #8FC3CC; stroke: none; }
+.wh-fin { fill: #24566A; stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+.wh-line { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; opacity: .5; }
+.sp-a, .sp-b, .sp-c { fill: var(--foam); stroke: var(--ink); stroke-width: 1.8; stroke-linejoin: round; }
+.whale.spouting .humpback { opacity: 1; animation: whale-back 5s ease-in-out; }
+.whale.spouting .spout { animation: whale-spout 3s ease-out; }
+.whale.fluke-up .fluke { opacity: 1; animation: whale-fluke 5s ease-in-out; }
+@keyframes whale-back {
+  0%   { transform: translateY(80%) rotate(-4deg); }
+  25%  { transform: translateY(18%) rotate(-2deg); }
+  65%  { transform: translateY(14%) rotate(3deg); }
+  100% { transform: translateY(90%) rotate(8deg); }
+}
+@keyframes whale-spout {
+  0%   { opacity: 0; transform: scale(.3, .1); }
+  22%  { opacity: 0; transform: scale(.3, .1); }
+  42%  { opacity: 1; transform: scale(1, 1); }
+  100% { opacity: 0; transform: scale(1.3, 1.1) translateY(-6px); }
+}
+@keyframes whale-fluke {
+  0%   { transform: translateY(100%) rotate(0); }
+  30%  { transform: translateY(4%) rotate(-5deg); }
+  62%  { transform: translateY(0) rotate(4deg); }
+  100% { transform: translateY(104%) rotate(10deg); }
+}
+
+/* ---------- shooting stars and wishes ---------- */
+.shooting { position: absolute; inset: 0 0 50% 0; z-index: 1; pointer-events: none; }
+.shoot {
+  position: absolute;
+  width: 100px;
+  height: 50px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  animation: shoot 1.9s ease-in forwards;
+}
+.shoot svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.ss-tail { fill: var(--sand); opacity: .85; }
+.ss-tail2 { fill: var(--mango); }
+.ss-head { fill: #FFF9EC; }
+@keyframes shoot {
+  0%   { opacity: 0; transform: translate(0, 0); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(270px, 80px); }
+}
+.wish {
+  position: absolute;
+  top: 64px;
+  left: 50%;
+  z-index: 4;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 8px 16px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--sand);
+  color: var(--ink);
+  font-size: .95rem;
+  text-align: center;
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: translate(-50%, -8px);
+  opacity: 0;
+  transition: opacity .3s ease, transform .3s ease;
+  pointer-events: none;
+}
+.wish.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- an ʻiwa gliding over ---------- */
+.iwa { position: absolute; left: 0; z-index: 1; width: clamp(70px, 7vw, 96px); visibility: hidden; pointer-events: none; overflow: visible; }
+.iwa-wing { fill: #14363E; stroke: var(--ink); stroke-width: 1.8; stroke-linejoin: round; }
+.iwa-hi { fill: none; stroke: #3E8F9A; stroke-width: 1.6; stroke-linecap: round; }
+.iwa-pouch { fill: var(--hibiscus); }
+.iwa.glide { visibility: visible; animation: glide 26s linear forwards, soar 6s ease-in-out infinite; }
+@keyframes glide {
+  from { translate: -100px 0; }
+  to   { translate: calc(100vw + 100px) 0; }
+}
+@keyframes soar {
+  0%, 100% { transform: rotate(-4deg) translateY(0); }
+  50%      { transform: rotate(5deg) translateY(16px); }
+}
+
+/* ---------- Things to find (footer) ---------- */
+.finds { margin-top: 14px; max-width: 36rem; }
+.finds summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+  color: rgba(247, 238, 219, .78);
+  font-size: .85rem;
+  cursor: pointer;
+  list-style: none;
+}
+.finds summary::-webkit-details-marker { display: none; }
+.finds summary::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform .2s ease;
+}
+.finds[open] summary::before { transform: rotate(45deg); }
+.finds summary:hover { color: var(--sand); }
+.finds-count { color: var(--mango); font-variant-numeric: tabular-nums; }
+.finds-body {
+  margin-top: 8px;
+  padding: 16px 18px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--sand);
+  color: var(--ink);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, .55);
+}
+.finds-intro { margin: 0 0 10px; font-size: .88rem; }
+.finds-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.finds-list li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; font-size: .9rem; line-height: 1.35; }
+.finds-list svg { width: 20px; height: 20px; margin-top: 1px; }
+.fb-box { fill: #FBF3DF; stroke: var(--ink); stroke-width: 2; }
+.fb-tick { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+.is-found .fb-box { fill: var(--mango); }
+.is-found .fb-tick { opacity: 1; }
+.finds-name { display: block; font-family: var(--font-display); font-size: .92rem; }
+.is-found .finds-text { color: #3B3A33; }
+
+.found-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  z-index: 60;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  margin: 0;
+  padding: 8px 16px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--sand);
+  color: var(--ink);
+  font-size: .9rem;
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: translate(-50%, 24px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease;
+}
+.found-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- reduced motion: still, but complete ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .boat.sail { transform: translateX(46vw); }
+  .iwa.glide { translate: 40vw 0; }
+  .greenflash.go { opacity: 1; }
+  .whale.spouting .spout { opacity: 1; }
+  .whale.spouting .humpback { transform: translateY(16%); }
+  .rain span { top: 0; }
+}

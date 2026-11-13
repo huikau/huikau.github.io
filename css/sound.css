@@ -1,0 +1,33 @@
+/* sound.css — WP8. The ocean sound toggle: a screenprint sticker button at the top right of the hero.
+   aria-pressed carries the state for screen readers; the icon carries it for everyone else
+   (waves when on, a cross when off), so it never relies on colour alone. */
+.sound {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--sand);
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, background-color .2s ease;
+}
+.sound:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+.sound:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--ink); }
+.sound[aria-pressed="true"] { background: var(--mango); }
+.sound svg { width: 24px; height: 24px; }
+.sound .sound-on { display: none; }
+.sound[aria-pressed="true"] .sound-on { display: inline; }
+.sound[aria-pressed="true"] .sound-off { display: none; }
+.season-winter .sound { top: 86px; }
+.og .sound { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .sound, .sound:hover, .sound:active { transition: none; }
+}

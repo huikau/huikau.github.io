@@ -4,174 +4,456 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Huikau</title>
-  <meta name="description" content="Huikau. Gone fishin'. Back when the tide turns.">
+  <!-- wp:head -->
+  <meta name="description" content="Huikau. Gone fishin'. Back when the tide turns. A living view of Honolulu: the sky, the tide, the surf, and Captain Ula's fishing game.">
   <meta name="theme-color" content="#0E2B30">
+  <meta name="color-scheme" content="dark light">
   <link rel="canonical" href="https://huikau.com/">
+  <link rel="manifest" href="manifest.webmanifest">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Huikau">
+  <meta property="og:locale" content="en_US">
   <meta property="og:url" content="https://huikau.com/">
   <meta property="og:title" content="Huikau">
   <meta property="og:description" content="Gone fishin'. Back when the tide turns.">
   <meta property="og:image" content="https://huikau.com/assets/og.png">
+  <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="The Huikau logo over a sunset, with Captain Ula fishing on the waves">
+  <meta property="og:image:alt" content="The Huikau logo over a golden-hour sky, with Lēʻahi on the horizon and Captain Ula fishing from her canoe on the water.">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Huikau">
+  <meta name="twitter:description" content="Gone fishin'. Back when the tide turns.">
+  <meta name="twitter:image" content="https://huikau.com/assets/og.png">
+  <meta name="twitter:image:alt" content="The Huikau logo over a golden-hour sky, with Lēʻahi on the horizon and Captain Ula fishing from her canoe on the water.">
+  <meta name="apple-mobile-web-app-title" content="Huikau">
+  <meta name="mobile-web-app-capable" content="yes">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caprasimo&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="preload" href="assets/fonts/caprasimo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/figtree-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="assets/site.css">
-  <script src="assets/site.js" defer></script>
+  <link rel="stylesheet" href="css/scene.css">
+  <link rel="stylesheet" href="css/game.css">
+  <link rel="stylesheet" href="css/instruments.css">
+  <link rel="stylesheet" href="css/deep.css">
+  <link rel="stylesheet" href="css/sound.css">
+  <link rel="stylesheet" href="css/seasonal.css">
+  <link rel="stylesheet" href="css/postcard.css">
+  <script type="module" src="js/main.js"></script>
+  <!-- /wp:head -->
 </head>
 <body>
+  <!--
+    Redesign mount points (see fable5.2-plan.md section 6). Each region between
+    <!- - wp:NAME - -> and <!- - /wp:NAME - -> belongs to one work package. A name may
+    appear more than once; a region nested inside another belongs to the inner name.
+    Owners: head WP10 · sky WP3 · land, crew WP4 · water, reef WP5 · game, basket WP6 ·
+    instruments WP7 · sound WP8 · seasonal WP9 · postcard WP10.
+  -->
   <main>
+    <p class="sr-only" id="right-now">Right now in Honolulu: loading the view.</p>
     <section class="scene" aria-label="The view from Ula's fishing spot">
+      <!-- wp:sky -->
       <div class="stars" id="stars" aria-hidden="true"></div>
+      <svg class="sun" id="sun" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="sun-halo" cx="50" cy="50" r="49"/>
+        <circle class="sun-ring" cx="50" cy="50" r="38"/>
+        <circle class="sun-disc" cx="50" cy="50" r="28"/>
+      </svg>
       <svg class="moon" id="moon" viewBox="0 0 54 54" aria-hidden="true">
         <circle class="moon-dark" cx="27" cy="27" r="24"/>
         <path class="moon-lit" id="moon-lit" d="M27 3 A24 24 0 1 1 27 51 A24 24 0 1 1 27 3 Z"/>
+        <circle class="moon-key" cx="27" cy="27" r="24"/>
       </svg>
       <div class="clouds" id="clouds" aria-hidden="true"></div>
+      <!-- /wp:sky -->
+      <!-- wp:seasonal -->
       <div class="lights" id="lights" aria-hidden="true"></div>
       <div class="fireworks" id="fireworks" aria-hidden="true"></div>
-
       <div class="shooting" id="shooting" aria-hidden="true"></div>
-      <svg class="iwa" id="iwa" viewBox="0 0 80 32" aria-hidden="true">
-        <path d="M0 13 L17 8 L29 14 L37 12 L40 15 L43 12 L51 14 L63 8 L80 13 L63 11 L51 18 L43 17 L44 30 L40 21 L36 30 L37 17 L29 18 L17 11 Z"/>
+      <svg class="iwa" id="iwa" viewBox="0 0 120 50" aria-hidden="true" focusable="false">
+        <path class="iwa-wing" d="M2 20C20 8 40 12 52 22L60 24L68 22C80 12 100 8 118 20C100 18 82 22 70 30L65 34L67 48L60 39L53 48L55 34L50 30C38 22 20 18 2 20Z"/>
+        <path class="iwa-hi" d="M10 19C26 14 38 17 49 23M110 19C94 14 82 17 71 23"/>
+        <ellipse class="iwa-pouch" cx="60" cy="27" rx="3.2" ry="2.6"/>
       </svg>
       <p class="wish" id="wish" role="status" aria-live="polite"></p>
-      <button class="sound" id="sound" type="button" aria-pressed="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>
-          <path class="sound-on" d="M16 8.5c1.2 1 1.8 2.2 1.8 3.5s-.6 2.5-1.8 3.5M18.5 6c2 1.6 3 3.6 3 6s-1 4.4-3 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <path class="sound-off" d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- /wp:seasonal -->
+      <!-- wp:sound -->
+      <button class="sound" id="sound" type="button" aria-pressed="false" title="Ocean sound">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+          <path class="sound-on" d="M16 8.5c1.2 1 1.8 2.2 1.8 3.5s-.6 2.5-1.8 3.5M18.5 6c2 1.6 3 3.6 3 6s-1 4.4-3 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path class="sound-off" d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <span class="sr-only">Ocean sound</span>
       </button>
+      <!-- /wp:sound -->
+      <!-- wp:postcard -->
+      <button class="postcard-btn postcard-btn--hero" type="button" data-postcard aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span>Send a postcard</span>
+      </button>
+      <!-- /wp:postcard -->
 
-      <p class="clock"><span class="friday" id="friday" hidden>It's Aloha Friday</span><span id="clock-text"></span></p>
-
-      <div class="logo-wrap">
-        <img class="logo" src="assets/huikau-logo.webp" width="1400" height="497" alt="Huikau">
-        <button class="pine" id="pine" type="button" aria-label="Make it rain pineapples"></button>
+      <!-- wp:sky -->
+      <div class="skybar">
+        <p class="clock"><span class="friday" id="friday" hidden>It's Aloha Friday</span><span id="clock-text"></span></p>
+        <div class="timemachine" id="timemachine" hidden></div>
       </div>
+      <!-- /wp:sky -->
 
+      <!-- wp:land -->
+      <div class="land" id="land" aria-hidden="true"></div>
+      <div class="logo-wrap">
+        <img class="logo logo-halo" src="assets/huikau-logo.webp" width="1400" height="497" alt="" aria-hidden="true">
+        <img class="logo" src="assets/huikau-logo.webp" width="1400" height="497" alt="Huikau">
+        <!-- wp:seasonal -->
+        <button class="pine" id="pine" type="button" aria-label="Make it rain pineapples"></button>
+        <!-- /wp:seasonal -->
+      </div>
+      <!-- The logo's night treatment: a cream sticker keyline with a thin ink line outside it, cut from the logo's own alpha. -->
+      <svg class="land-defs" width="0" height="0" aria-hidden="true" focusable="false">
+        <defs>
+          <filter id="sticker-lg" x="-4%" y="-8%" width="108%" height="116%" color-interpolation-filters="sRGB">
+            <feMorphology in="SourceAlpha" operator="dilate" radius="7" result="outer"/>
+            <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="inner"/>
+            <feFlood flood-color="#0B2226" result="ink"/>
+            <feComposite in="ink" in2="outer" operator="in" result="inkline"/>
+            <feFlood flood-color="#FBF3DF" result="cream"/>
+            <feComposite in="cream" in2="inner" operator="in" result="sticker"/>
+            <feMerge><feMergeNode in="inkline"/><feMergeNode in="sticker"/></feMerge>
+          </filter>
+          <filter id="sticker-sm" x="-4%" y="-8%" width="108%" height="116%" color-interpolation-filters="sRGB">
+            <feMorphology in="SourceAlpha" operator="dilate" radius="3.5" result="outer"/>
+            <feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="inner"/>
+            <feFlood flood-color="#0B2226" result="ink"/>
+            <feComposite in="ink" in2="outer" operator="in" result="inkline"/>
+            <feFlood flood-color="#FBF3DF" result="cream"/>
+            <feComposite in="cream" in2="inner" operator="in" result="sticker"/>
+            <feMerge><feMergeNode in="inkline"/><feMergeNode in="sticker"/></feMerge>
+          </filter>
+          <pattern id="lauhala-weave" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="9" height="9" fill="#C49C5E"/>
+            <rect width="4.5" height="4.5" fill="#A27B3C"/>
+            <rect x="4.5" y="4.5" width="4.5" height="4.5" fill="#A27B3C"/>
+          </pattern>
+        </defs>
+      </svg>
+      <div class="scene-grain grain" aria-hidden="true"></div>
+      <!-- /wp:land -->
+
+      <!-- wp:water -->
       <div class="sea" aria-hidden="true">
-        <span class="greenflash" id="greenflash"></span>
-        <div class="whale" id="whale">
-          <span class="spout"></span>
-          <svg class="fluke" viewBox="0 0 60 40"><path d="M28 40 C28 31 28.5 25 29 21 C23 13 12 8 2 9 C9 12 17 16 22 21 C25 23 27.5 21 30 18 C32.5 21 35 23 38 21 C43 16 51 12 58 9 C48 8 37 13 31 21 C31.5 25 32 31 32 40 Z"/></svg>
-        </div>
+        <!-- wp:seasonal -->
+        <span class="greenflash" id="greenflash">
+          <svg viewBox="0 0 120 16" aria-hidden="true" focusable="false">
+            <path class="gf-outer" d="M2 10Q60-4 118 10Q60 16 2 10Z"/>
+            <path class="gf-inner" d="M28 9.5Q60 2 92 9.5Q60 13 28 9.5Z"/>
+          </svg>
+        </span>
+        <!-- /wp:seasonal -->
         <svg class="wave back" viewBox="0 0 2880 200" preserveAspectRatio="none">
-          <path fill="currentColor" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44 V200 H0 Z"/>
+          <path class="w-fill" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44 V200 H0 Z"/>
+          <path class="w-foam" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44" transform="translate(0 7)"/>
+          <path class="w-crest" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44"/>
         </svg>
-        <div class="boat" id="boat">
-          <svg viewBox="0 0 120 100">
-            <path d="M84 4 L84 12 L96 8 Z" fill="#E8662A"/>
-            <line x1="62" y1="6" x2="62" y2="80" stroke="#2A1A12" stroke-width="3"/>
-            <path d="M65 10 L65 74 L108 74 Z" fill="#F7EEDB"/>
-            <path d="M59 18 L59 74 L24 74 Z" fill="#E8662A"/>
-            <path d="M8 78 L114 78 L98 94 L24 94 Z" fill="#2A1A12"/>
+        <!-- wp:seasonal -->
+        <div class="whale" id="whale" aria-hidden="true">
+          <svg class="spout" viewBox="0 0 60 70" focusable="false">
+            <path class="sp-a" d="M30 70C24 52 26 40 30 22C34 40 36 52 30 70Z"/>
+            <path class="sp-b" d="M30 30C20 22 10 22 4 30C12 28 20 32 28 44ZM30 30C40 22 50 22 56 30C48 28 40 32 32 44Z"/>
+            <path class="sp-c" d="M30 14C26 8 28 4 30 0C32 4 34 8 30 14Z"/>
+          </svg>
+          <svg class="humpback" viewBox="0 0 120 50" focusable="false">
+            <path class="wh-body" d="M4 50C10 26 44 14 74 22C92 27 106 38 116 50Z"/>
+            <path class="wh-belly" d="M4 50C10 40 30 34 54 36C80 38 104 42 116 50Z"/>
+            <path class="wh-fin" d="M72 22L80 8L90 25Z"/>
+            <path class="wh-line" d="M16 40Q36 30 58 34M30 46Q54 38 80 42"/>
+          </svg>
+          <svg class="fluke" viewBox="0 0 60 44" focusable="false">
+            <path class="wh-body" d="M28 44C28 34 28.5 27 29 23C23 14 12 9 2 10C9 13 17 17 22 22C25 25 27.5 23 30 20C32.5 23 35 25 38 22C43 17 51 13 58 10C48 9 37 14 31 23C31.5 27 32 34 32 44Z"/>
+            <path class="wh-line" d="M30 22L30 38"/>
           </svg>
         </div>
+        <div class="boat" id="boat" aria-hidden="true">
+          <svg viewBox="0 0 150 120" focusable="false">
+            <path class="bt-flag" d="M92 4L92 16L108 10Z"/>
+            <path class="bt-mast" d="M72 6L72 90"/>
+            <path class="bt-sail" d="M76 14C96 32 108 58 112 84L76 84Z"/>
+            <path class="bt-jib" d="M68 22C54 40 42 62 36 84L68 84Z"/>
+            <text class="bt-text" x="93" y="72" text-anchor="middle" transform="rotate(-8 93 72)">aloha</text>
+            <path class="bt-hull" d="M10 88L140 88C134 104 120 112 104 112L40 112C24 110 14 100 10 88Z"/>
+            <path class="bt-stripe" d="M14 96L137 96"/>
+          </svg>
+        </div>
+        <!-- /wp:seasonal -->
         <svg class="wave mid" viewBox="0 0 2880 200" preserveAspectRatio="none">
-          <path fill="currentColor" d="M0 40 C80 18 160 18 240 40 S400 62 480 40 S640 18 720 40 S880 62 960 40 S1120 18 1200 40 S1360 62 1440 40 S1600 18 1680 40 S1840 62 1920 40 S2080 18 2160 40 S2320 62 2400 40 S2560 18 2640 40 S2800 62 2880 40 V200 H0 Z"/>
+          <path class="w-fill" d="M0 40 C80 18 160 18 240 40 S400 62 480 40 S640 18 720 40 S880 62 960 40 S1120 18 1200 40 S1360 62 1440 40 S1600 18 1680 40 S1840 62 1920 40 S2080 18 2160 40 S2320 62 2400 40 S2560 18 2640 40 S2800 62 2880 40 V200 H0 Z"/>
+          <path class="w-foam" d="M0 40 C80 18 160 18 240 40 S400 62 480 40 S640 18 720 40 S880 62 960 40 S1120 18 1200 40 S1360 62 1440 40 S1600 18 1680 40 S1840 62 1920 40 S2080 18 2160 40 S2320 62 2400 40 S2560 18 2640 40 S2800 62 2880 40" transform="translate(0 7)"/>
+          <path class="w-crest" d="M0 40 C80 18 160 18 240 40 S400 62 480 40 S640 18 720 40 S880 62 960 40 S1120 18 1200 40 S1360 62 1440 40 S1600 18 1680 40 S1840 62 1920 40 S2080 18 2160 40 S2320 62 2400 40 S2560 18 2640 40 S2800 62 2880 40"/>
         </svg>
+        <canvas class="glints" id="glints" aria-hidden="true"></canvas>
         <svg class="wave front" viewBox="0 0 2880 200" preserveAspectRatio="none">
-          <path fill="currentColor" d="M0 26 C60 10 120 10 180 26 S300 42 360 26 S480 10 540 26 S660 42 720 26 S840 10 900 26 S1020 42 1080 26 S1200 10 1260 26 S1380 42 1440 26 S1560 10 1620 26 S1740 42 1800 26 S1920 10 1980 26 S2100 42 2160 26 S2280 10 2340 26 S2460 42 2520 26 S2640 10 2700 26 S2820 42 2880 26 V200 H0 Z"/>
+          <path class="w-fill" d="M0 26 C60 10 120 10 180 26 S300 42 360 26 S480 10 540 26 S660 42 720 26 S840 10 900 26 S1020 42 1080 26 S1200 10 1260 26 S1380 42 1440 26 S1560 10 1620 26 S1740 42 1800 26 S1920 10 1980 26 S2100 42 2160 26 S2280 10 2340 26 S2460 42 2520 26 S2640 10 2700 26 S2820 42 2880 26 V200 H0 Z"/>
+          <path class="w-foam" d="M0 26 C60 10 120 10 180 26 S300 42 360 26 S480 10 540 26 S660 42 720 26 S840 10 900 26 S1020 42 1080 26 S1200 10 1260 26 S1380 42 1440 26 S1560 10 1620 26 S1740 42 1800 26 S1920 10 1980 26 S2100 42 2160 26 S2280 10 2340 26 S2460 42 2520 26 S2640 10 2700 26 S2820 42 2880 26" transform="translate(0 7)"/>
+          <path class="w-crest" d="M0 26 C60 10 120 10 180 26 S300 42 360 26 S480 10 540 26 S660 42 720 26 S840 10 900 26 S1020 42 1080 26 S1200 10 1260 26 S1380 42 1440 26 S1560 10 1620 26 S1740 42 1800 26 S1920 10 1980 26 S2100 42 2160 26 S2280 10 2340 26 S2460 42 2520 26 S2640 10 2700 26 S2820 42 2880 26"/>
         </svg>
       </div>
+      <!-- /wp:water -->
 
+      <!-- wp:sky -->
       <div class="showers" id="showers" aria-hidden="true" hidden></div>
+      <!-- /wp:sky -->
 
-      <a class="crew" href="https://fatboyfishn.com/" target="_blank" rel="noopener">
+      <!-- wp:crew -->
+      <a class="crew" href="https://fatboyfishn.com/" target="_blank" rel="noopener" aria-label="Fat Boy Fishing Club: shop the gear (opens in a new tab)">
         <span class="crew-note">Ula's cap came from here</span>
-        <img class="crew-logo" src="assets/fatboy-logo.webp" width="158" height="200" alt="">
-        <span class="crew-body">
-          <span class="crew-name">Fat Boy Fishing Club</span>
-          <span class="crew-line">Veteran-owned fishing apparel, built for big water and the dock after.</span>
-          <span class="crew-cta">Shop the gear</span>
+        <span class="crew-board">
+          <img class="crew-logo" src="assets/fatboy-logo.webp" width="158" height="200" alt="">
+          <span class="crew-body">
+            <span class="crew-name">Fat Boy Fishing Club</span>
+            <span class="crew-line">Veteran-owned fishing apparel<span class="crew-long">, built for big water and the dock after</span>.</span>
+            <span class="crew-cta">Shop the gear</span>
+          </span>
         </span>
+        <svg class="crew-posts" viewBox="0 0 400 64" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
+          <path class="crew-post" d="M50 0H90V50L70 59L50 50Z"/>
+          <path class="crew-post" d="M310 0H350V50L330 59L310 50Z"/>
+          <path class="crew-post-grain" d="M60 8V44M76 14V48M320 8V44M336 14V48"/>
+          <path class="crew-foam" d="M34 54Q44 48 54 54T78 54T102 54M294 54Q304 48 314 54T338 54T362 54"/>
+        </svg>
       </a>
+      <!-- /wp:crew -->
 
+      <!-- wp:game -->
       <div class="rig" id="rig">
         <svg class="line" viewBox="0 0 320 150" aria-hidden="true">
           <line class="rod" x1="78" y1="70" x2="150" y2="6"/>
           <path class="cord" d="M150 6 Q200 120 284 100"/>
         </svg>
-        <img class="ula" id="ula" src="assets/ula.webp" width="96" height="96" alt="Ula, smiling at sunset in her skull-and-crossbones cap">
-        <svg class="lei" id="lei" viewBox="0 0 120 120" aria-hidden="true" hidden></svg>
+        <!-- wp:land -->
+        <div class="ula-frame" id="ula-frame">
+          <img class="ula ula-boat" id="ula" src="assets/img/ula-boat.webp" width="270" height="180" decoding="async" alt="Captain Ula at the helm of her center-console boat, rod bent, in her skull-and-crossbones cap">
+          <svg class="lei" id="lei" viewBox="0 0 320 150" aria-hidden="true" hidden></svg>
+        </div>
+        <svg class="canoe" id="canoe" viewBox="0 0 320 150" aria-hidden="true"></svg>
         <span class="ula-tag">Captain Ula</span>
-        <button class="bobber" id="bobber" type="button" aria-label="Reel in Ula's line">
-          <svg viewBox="0 0 30 40" aria-hidden="true">
-            <line x1="15" y1="0" x2="15" y2="8" stroke="#2A1A12" stroke-width="2"/>
-            <g class="classic">
-              <path d="M3 22 A12 12 0 0 1 27 22 Z" fill="#E8662A"/>
-              <path d="M3 22 A12 12 0 0 0 27 22 Z" fill="#F7EEDB"/>
-              <rect x="3" y="20.5" width="24" height="3" fill="#0E2B30"/>
+        <!-- /wp:land -->
+        <svg class="reel-ring" id="reel-ring" viewBox="-70 -70 140 140" aria-hidden="true" focusable="false">
+          <ellipse class="ring-ripple r1" cx="0" cy="14" rx="14" ry="5"/>
+          <ellipse class="ring-ripple r2" cx="0" cy="14" rx="14" ry="5"/>
+          <circle class="ring-key" r="22"/>
+          <circle class="ring-target" r="22"/>
+          <circle class="ring-shrink" r="22"/>
+        </svg>
+        <button class="bobber" id="bobber" type="button" aria-label="Cast your line">
+          <svg viewBox="0 0 30 40" aria-hidden="true" focusable="false">
+            <g class="skin-classic">
+              <line x1="15" y1="0" x2="15" y2="9" stroke="#0B2226" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M3 22 A12 12 0 0 0 27 22 Z" fill="#F7EEDB" stroke="#0B2226" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M3 22 A12 12 0 0 1 27 22 Z" fill="#E8662A" stroke="#0B2226" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M8.5 15.5 A9 9 0 0 1 14 11" fill="none" stroke="#F5A623" stroke-width="2" stroke-linecap="round"/>
+              <rect x="2.5" y="20" width="25" height="4" rx="1" fill="#0B2226"/>
             </g>
-            <g class="pumpkin">
-              <rect x="13.5" y="6" width="3" height="5" rx="1" fill="#3B5B2A"/>
-              <ellipse cx="15" cy="22" rx="13" ry="11.5" fill="#E8662A"/>
-              <path d="M15 10.5 C9 14 9 30 15 33.5 C21 30 21 14 15 10.5" fill="none" stroke="#C24E1A" stroke-width="1.2"/>
-              <path d="M8 18 L11.5 21 L8 21 Z M22 18 L18.5 21 L22 21 Z" fill="#2A1A12"/>
-              <path d="M8.5 25 Q15 31 21.5 25 L19 26.5 L17.5 25.5 L15 27 L12.5 25.5 L11 26.5 Z" fill="#2A1A12"/>
+            <g class="skin-pumpkin">
+              <line x1="15" y1="0" x2="15" y2="9" stroke="#0B2226" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M13.2 6.5 Q15 3 17.5 4.5 L16.8 10 L13.4 10Z" fill="#3E8F5A" stroke="#0B2226" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M15 9.5 C7 7 2 14 2 22 C2 30 8 34 15 34 C22 34 28 30 28 22 C28 14 23 7 15 9.5Z" fill="#E8662A" stroke="#0B2226" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M15 10 C11 14 11 29 15 33.5 M15 10 C19 14 19 29 15 33.5" fill="none" stroke="#B8441A" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M7.5 19 L12 20.5 L8.5 24Z M22.5 19 L18 20.5 L21.5 24Z" fill="#F5A623" stroke="#0B2226" stroke-width="1.3" stroke-linejoin="round"/>
+              <path d="M8.5 27 L11 25.5 L13 27.5 L15 25.5 L17 27.5 L19 25.5 L21.5 27 Q15 31.5 8.5 27Z" fill="#F5A623" stroke="#0B2226" stroke-width="1.3" stroke-linejoin="round"/>
             </g>
           </svg>
         </button>
-        <span class="hint" id="hint">Tap the bobber</span>
-        <div class="catch" id="catch" role="status" aria-live="polite">
-          <span class="catch-emoji" id="catch-emoji" aria-hidden="true"></span>
-          <span class="catch-text" id="catch-text"></span>
+        <span class="hint" id="hint" aria-hidden="true">Cast your line</span>
+        <p class="visually-hidden" id="game-live" role="status" aria-live="polite"></p>
+        <div class="catch paper-card" id="catch">
+          <div class="catch-art" id="catch-art" aria-hidden="true"></div>
+          <div class="catch-body">
+            <p class="catch-kicker" id="catch-kicker"></p>
+            <h3 class="catch-name"><span id="catch-name"></span> <span class="catch-en" id="catch-en"></span></h3>
+            <p class="catch-text" id="catch-text"></p>
+          </div>
+          <button class="catch-close" id="catch-close" type="button" aria-label="Close catch card"><span aria-hidden="true">×</span></button>
         </div>
       </div>
     </section>
+      <!-- /wp:game -->
 
     <section class="shore">
       <div class="away">
+        <!-- wp:reef -->
+        <div class="deep" id="deep">
+          <div class="deep-ceil" aria-hidden="true">
+  <svg class="ceil ceil-c" viewBox="0 0 2880 190" preserveAspectRatio="none"><path class="ceil-fill ceil-a" d="M0 0 V150 C118.8 134 241.2 134 360 150 C478.8 166 601.2 166 720 150 C838.8 134 961.2 134 1080 150 C1198.8 166 1321.2 166 1440 150 C1558.8 134 1681.2 134 1800 150 C1918.8 166 2041.2 166 2160 150 C2278.8 134 2401.2 134 2520 150 C2638.8 166 2761.2 166 2880 150 V0 Z"/><path class="ceil-foam" d="M0 150 C118.8 134 241.2 134 360 150 C478.8 166 601.2 166 720 150 C838.8 134 961.2 134 1080 150 C1198.8 166 1321.2 166 1440 150 C1558.8 134 1681.2 134 1800 150 C1918.8 166 2041.2 166 2160 150 C2278.8 134 2401.2 134 2520 150 C2638.8 166 2761.2 166 2880 150"/></svg>
+  <svg class="ceil ceil-b" viewBox="0 0 2880 190" preserveAspectRatio="none"><path class="ceil-fill ceil-b" d="M0 0 V110 C79.2 98 160.8 98 240 110 C319.2 122 400.8 122 480 110 C559.2 98 640.8 98 720 110 C799.2 122 880.8 122 960 110 C1039.2 98 1120.8 98 1200 110 C1279.2 122 1360.8 122 1440 110 C1519.2 98 1600.8 98 1680 110 C1759.2 122 1840.8 122 1920 110 C1999.2 98 2080.8 98 2160 110 C2239.2 122 2320.8 122 2400 110 C2479.2 98 2560.8 98 2640 110 C2719.2 122 2800.8 122 2880 110 V0 Z"/><path class="ceil-foam" d="M0 110 C79.2 98 160.8 98 240 110 C319.2 122 400.8 122 480 110 C559.2 98 640.8 98 720 110 C799.2 122 880.8 122 960 110 C1039.2 98 1120.8 98 1200 110 C1279.2 122 1360.8 122 1440 110 C1519.2 98 1600.8 98 1680 110 C1759.2 122 1840.8 122 1920 110 C1999.2 98 2080.8 98 2160 110 C2239.2 122 2320.8 122 2400 110 C2479.2 98 2560.8 98 2640 110 C2719.2 122 2800.8 122 2880 110"/></svg>
+  <svg class="ceil ceil-a" viewBox="0 0 2880 190" preserveAspectRatio="none"><path class="ceil-fill ceil-c" d="M0 0 V70 C59.4 61 120.6 61 180 70 C239.4 79 300.6 79 360 70 C419.4 61 480.6 61 540 70 C599.4 79 660.6 79 720 70 C779.4 61 840.6 61 900 70 C959.4 79 1020.6 79 1080 70 C1139.4 61 1200.6 61 1260 70 C1319.4 79 1380.6 79 1440 70 C1499.4 61 1560.6 61 1620 70 C1679.4 79 1740.6 79 1800 70 C1859.4 61 1920.6 61 1980 70 C2039.4 79 2100.6 79 2160 70 C2219.4 61 2280.6 61 2340 70 C2399.4 79 2460.6 79 2520 70 C2579.4 61 2640.6 61 2700 70 C2759.4 79 2820.6 79 2880 70 V0 Z"/><path class="ceil-foam" d="M0 70 C59.4 61 120.6 61 180 70 C239.4 79 300.6 79 360 70 C419.4 61 480.6 61 540 70 C599.4 79 660.6 79 720 70 C779.4 61 840.6 61 900 70 C959.4 79 1020.6 79 1080 70 C1139.4 61 1200.6 61 1260 70 C1319.4 79 1380.6 79 1440 70 C1499.4 61 1560.6 61 1620 70 C1679.4 79 1740.6 79 1800 70 C1859.4 61 1920.6 61 1980 70 C2039.4 79 2100.6 79 2160 70 C2219.4 61 2280.6 61 2340 70 C2399.4 79 2460.6 79 2520 70 C2579.4 61 2640.6 61 2700 70 C2759.4 79 2820.6 79 2880 70"/></svg>
+</div>
+          <div class="deep-view deep-view--back"><div class="deep-stick">
+            <div class="deep-rays"><svg viewBox="0 0 1000 800" preserveAspectRatio="none" focusable="false"><defs><linearGradient id="ray-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFE5EE" stop-opacity="0"/><stop offset=".1" stop-color="#BFE5EE" stop-opacity=".55"/><stop offset=".8" stop-color="#BFE5EE" stop-opacity="0"/></linearGradient></defs><g fill="url(#ray-g)"><polygon points="70,0 90,0 220,800 -60,800" opacity="0.8"/><polygon points="193,0 207,0 305,800 95,800" opacity="0.55"/><polygon points="298,0 322,0 475,800 145,800" opacity="1"/><polygon points="432,0 448,0 555,800 325,800" opacity="0.6"/><polygon points="546,0 574,0 740,800 380,800" opacity="0.9"/><polygon points="673,0 687,0 780,800 580,800" opacity="0.5"/><polygon points="780,0 800,0 940,800 640,800" opacity="0.85"/><polygon points="902,0 918,0 1035,800 785,800" opacity="0.6"/></g></svg></div>
+          </div></div>
+          <div class="reef-zone" id="reef-zone">
+            <svg class="reef reef-far" viewBox="0 0 1440 360" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+  <defs><path id="rf-p" d="M44.5 364 C39.4 294.8 57.4 210.9 95.8 199.7 C100.9 204.4 121.4 208 126.6 186.7 C131.7 176.4 152.2 186.3 157.3 187.9 C162.5 173.9 183 174.5 188.1 195.7 C193.2 197.9 213.7 206.4 218.8 203.5 C224 178.3 244.5 180.8 249.6 195.2 C288.1 229.5 306 304.1 300.9 364 ZM213.4 364 C215.4 299.9 209 263.8 235.5 239.7 C262 263.8 255.6 299.9 257.6 364 ZM254.6 364 C256.6 290.6 250.4 249 275.5 221.2 C300.6 249 294.5 290.6 296.5 364 ZM290.7 364 C292.7 297.9 285.8 260.7 315.5 235.8 C345.2 260.7 338.3 297.9 340.3 364 ZM395.5 364 C392.3 288.5 403.4 196.5 427.2 184.2 C430.4 178.2 439.9 192.5 443.1 196.5 C446.2 164.6 455.7 168.3 458.9 195.2 C462.1 168 471.6 173.7 474.8 171.6 C477.9 190.9 487.5 198.3 490.6 172.5 C493.8 168.4 503.3 171.4 506.5 184.2 C509.6 181.7 519.2 194.9 522.3 182.7 C546.1 216.9 557.2 298.7 554 364 ZM511.2 364 C507.9 276.6 519.3 169.3 543.6 155 C546.9 122 559.9 142.3 563.1 168.9 C566.4 155.7 579.3 160.7 582.6 156.1 C585.8 129.7 598.8 142.8 602.1 166.8 C605.3 147.2 618.3 147.6 621.5 139.1 C624.8 127.9 637.8 144.2 641 169.3 C665.4 193.1 676.7 288.5 673.5 364 ZM624.4 364 C620 312.7 635.1 251.9 667.4 243.8 C671.7 224.4 684.7 234.8 689 238.4 C693.3 241.2 706.2 244 710.5 235.1 C714.8 244.8 727.7 246.3 732 235.3 C736.3 234.5 749.3 246.9 753.6 241.8 C757.9 230.1 770.8 234.6 775.1 241.3 C779.4 223.6 792.3 226.2 796.6 234.8 C828.9 265.4 844 319.5 839.7 364 ZM790.2 364 C786.2 309 800.3 243.5 830.6 234.8 C834.6 211.7 856.8 219.8 860.8 240.5 C864.9 239.8 887.1 247.6 891.1 238.2 C895.2 228.8 917.4 238.5 921.4 228.1 C925.4 230.9 947.6 231.3 951.7 228.1 C982 258.1 996.1 316.3 992 364 ZM912.4 364 C914.4 235.7 908.8 161.2 930.7 111.5 C952.7 161.2 947 235.7 949 364 ZM952.5 364 C954.5 258.9 948.9 198.2 970.7 157.8 C992.5 198.2 986.9 258.9 988.9 364 ZM1170.1 364 C1166.9 289.6 1178.3 199 1202.7 186.9 C1206 194.9 1219 200.9 1222.3 183.7 C1225.5 192.1 1238.6 203.5 1241.8 183.4 C1245.1 183.6 1258.1 190.6 1261.4 173.8 C1264.6 161.8 1277.7 165.3 1280.9 178.9 C1284.2 179.5 1297.2 180.5 1300.5 176.4 C1324.9 219.1 1336.3 299.6 1333.1 364 ZM1251.7 364 C1253.7 297.3 1246.5 259.8 1277.3 234.7 C1308.1 259.8 1301 297.3 1303 364 ZM1290.7 364 C1292.7 274.6 1285.4 223.4 1317.3 189.2 C1349.2 223.4 1341.9 274.6 1343.9 364 ZM1332 364 C1334 286.7 1326.9 242.8 1357.3 213.5 C1387.8 242.8 1380.7 286.7 1382.7 364 ZM1437.3 364 C1434.3 312.1 1444.8 250.4 1467.4 242.2 C1470.4 233.3 1486.9 237.4 1489.9 250.3 C1492.9 230.8 1509.4 231.7 1512.4 241.2 C1515.4 233.5 1531.9 238.5 1534.9 238.4 C1537.9 241.6 1554.4 246.6 1557.4 233.1 C1580 264.1 1590.5 318.9 1587.5 364 Z"/><clipPath id="rf-c"><use href="#rf-p"/></clipPath></defs>
+  <use href="#rf-p" class="rf-a"/><g clip-path="url(#rf-c)"><use href="#rf-p" class="rf-b" transform="translate(-10 -8)"/></g>
+</svg>
+            <svg class="reef reef-near" viewBox="0 0 1440 340" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+  <defs><path id="rn-d" d="M20 344 C20 213.7 57.2 199.7 113.1 199.7 C168.9 199.7 206.1 213.7 206.1 344 ZM619 344 C619 213.3 662.7 199.2 728.3 199.2 C793.9 199.2 837.6 213.3 837.6 344 ZM1227.4 344 C1227.4 247.9 1272.2 237.7 1339.4 237.7 C1406.6 237.7 1451.4 247.9 1451.4 344 Z"/><path id="rn-t" d="M251.3 344 L253.4 178.4 L270.3 178.4 L272.4 344 Z M203.1 176.4 C220.7 156.4 303 156.4 320.6 176.4 C297.1 188.4 226.6 188.4 203.1 176.4 ZM899.3 344 L901.7 209.8 L920.4 209.8 L922.8 344 Z M846 207.8 C865.5 187.8 956.6 187.8 976.1 207.8 C950.1 219.8 872 219.8 846 207.8 Z"/><path id="rn-s" d="M384.1 344 L390.1 278.7 M390.1 278.7 L370 238.2 M370 238.2 L346 216.7 M346 216.7 L326.9 210.1 M346 216.7 L339.2 198.4 M370 238.2 L368.7 204.7 M368.7 204.7 L353.9 184.6 M368.7 204.7 L378.4 182.6 M370 238.2 L357.5 216.7 M357.5 216.7 L343.5 205.9 M357.5 216.7 L355.3 201.7 M357.5 216.7 L350.7 204.8 M390.1 278.7 L409.8 237.3 M409.8 237.3 L410 205.8 M410 205.8 L399.3 187.4 M410 205.8 L419.7 189.5 M410 205.8 L408.8 188.5 M409.8 237.3 L430.1 217.9 M430.1 217.9 L435.2 201.6 M430.1 217.9 L450.3 213.2 M430.1 217.9 L442 208.2 M390.1 278.7 L393.8 242.8 M393.8 242.8 L386.8 217 M386.8 217 L375.9 203.3 M386.8 217 L388.9 199.3 M386.8 217 L383.6 202.7 M393.8 242.8 L403.6 222.9 M403.6 222.9 L403.5 207 M403.6 222.9 L416.8 214.5 M403.6 222.9 L408.8 211.8 M393.8 242.8 L397 223.3 M397 223.3 L392.7 211.8 M397 223.3 L405.7 213.3 M1009.1 344 L1003.5 284.6 M1003.5 284.6 L983.2 247.3 M983.2 247.3 L959.3 226.8 M959.3 226.8 L940.2 223.3 M959.3 226.8 L948.4 206.3 M983.2 247.3 L984.4 218.7 M984.4 218.7 L975.9 203.1 M984.4 218.7 L994.7 204.5 M1003.5 284.6 L1021.6 250.6 M1021.6 250.6 L1024.5 223 M1024.5 223 L1016.8 207.4 M1024.5 223 L1035.1 209.9 M1021.6 250.6 L1043.6 238.4 M1043.6 238.4 L1053.1 224 M1043.6 238.4 L1059.7 236.9 M1021.6 250.6 L1032.3 232.4 M1032.3 232.4 L1034.8 216.8 M1032.3 232.4 L1044 224.7 "/><path id="rn-f" d="M527.5 344 L529.5 292.5 L595.6 308.7 Q604.2 278.7 595.3 275.1 Q587.9 244.9 578.4 246.2 Q556.8 223.6 549.3 229.5 Q519.4 220.6 515.7 229.5 Q485.4 236.7 486.6 246.2 Q463.9 267.5 469.6 275.1 Q460.5 304.9 469.3 308.7 L535.5 292.5 L537.5 344 ZM1139 344 L1141 290 L1204.8 305.7 Q1213.1 276.8 1204.5 273.3 Q1197.3 244.2 1188.2 245.4 Q1167.4 223.7 1160.1 229.3 Q1131.3 220.8 1127.8 229.3 Q1098.6 236.3 1099.7 245.4 Q1077.9 266 1083.4 273.3 Q1074.6 302 1083.1 305.7 L1147 290 L1149 344 Z"/>
+  <clipPath id="rn-dc"><use href="#rn-d"/></clipPath><clipPath id="rn-tc"><use href="#rn-t"/></clipPath><clipPath id="rn-fc"><use href="#rn-f"/></clipPath></defs>
+  <use href="#rn-d" class="rn-dome"/><g clip-path="url(#rn-dc)"><use href="#rn-d" class="rn-dome-hi" transform="translate(-9 -7)"/></g><path class="rn-ridge" d="M60.9 290.9 q26.1 -9 52.1 0 t48.4 0 M60.9 260 q26.1 -9 52.1 0 t48.4 0 M60.9 229.2 q26.1 -9 52.1 0 t48.4 0 M667.1 290.7 q30.6 -9 61.2 0 t56.8 0 M667.1 259.8 q30.6 -9 61.2 0 t56.8 0 M667.1 228.8 q30.6 -9 61.2 0 t56.8 0 M1276.7 304.2 q31.4 -9 62.7 0 t58.2 0 M1276.7 281.7 q31.4 -9 62.7 0 t58.2 0 M1276.7 259.1 q31.4 -9 62.7 0 t58.2 0 "/>
+  <use href="#rn-f" class="rn-fan"/><path class="rn-ridge" d="M532.5 292.5 L592.5 299.8 M532.5 292.5 L592.2 284.7 M532.5 292.5 L576.1 271.6 M532.5 292.5 L548.4 264.1 M532.5 292.5 L516.5 264.1 M532.5 292.5 L488.9 271.6 M532.5 292.5 L472.8 284.7 M532.5 292.5 L472.5 299.8 M1144 290 L1201.8 297.1 M1144 290 L1201.5 282.5 M1144 290 L1186 270 M1144 290 L1159.3 262.7 M1144 290 L1128.6 262.7 M1144 290 L1102 270 M1144 290 L1086.4 282.5 M1144 290 L1086.2 297.1 "/><g clip-path="url(#rn-fc)"><use href="#rn-f" class="rn-fan-hi" transform="translate(-7 -6)"/></g>
+  <use href="#rn-s" class="rn-stag-key"/><use href="#rn-s" class="rn-stag"/>
+  <use href="#rn-t" class="rn-table"/><g clip-path="url(#rn-tc)"><use href="#rn-t" class="rn-table-hi" transform="translate(-6 -7)"/></g>
+</svg>
+            <div class="reef-fish" id="reef-fish"></div>
+            <span class="reef-honu" id="reef-honu" aria-hidden="true"></span>
+            <svg class="reef reef-floor" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+  <path class="fl-back" d="M0 200 L0 70 C120 56 240 56 360 70 C480 84 600 84 720 70 C840 56 960 56 1080 70 C1200 84 1320 84 1440 70 L1440 200 Z"/><path class="fl-front" d="M0 200 L0 112 C80 124 160 124 240 112 C320 100 400 100 480 112 C560 124 640 124 720 112 C800 100 880 100 960 112 C1040 124 1120 124 1200 112 C1280 100 1360 100 1440 112 L1440 200 Z"/><path class="fl-peb" d="M107.2 162.3 a21.9 13.2 0 1 1 43.8 0 z M942.7 110.6 a9.5 5.7 0 1 1 19 0 z M962.8 164.1 a17.8 10.7 0 1 1 35.6 0 z M780.6 174.4 a10.3 6.2 0 1 1 20.6 0 z M1203.8 110.9 a18.9 11.3 0 1 1 37.7 0 z M637 146.4 a10.9 6.6 0 1 1 21.9 0 z M103.5 142.9 a10.8 6.5 0 1 1 21.6 0 z M1000.1 149 a14.1 8.5 0 1 1 28.3 0 z M96 131.2 a8.4 5 0 1 1 16.7 0 z M1227.4 148.9 a20.3 12.2 0 1 1 40.6 0 z M226.3 131.6 a16.5 9.9 0 1 1 32.9 0 z M511.3 169.7 a16.4 9.9 0 1 1 32.9 0 z M1329.7 161.8 a15.7 9.4 0 1 1 31.5 0 z M482.1 163.9 a19.4 11.7 0 1 1 38.9 0 z M1304.5 159.7 a20.6 12.4 0 1 1 41.2 0 z M346.3 162.9 a9.4 5.7 0 1 1 18.8 0 z "/>
+</svg>
+            <span class="reef-slipper" id="reef-slipper" aria-hidden="true"></span>
+            <div class="deep-kelp" aria-hidden="true"><svg class="kelp" style="--x:3%;--h:250px;--d:5.0s;--o:0.0s" viewBox="0 0 60 250" focusable="false"><path class="kp-key" d="M17 250 C6.800000000000001 162.5 61 100 34.8 8 C68.80000000000001 105 22.4 165 43 250 Z"/><path class="kp-a" d="M17 250 C6.800000000000001 162.5 61 100 34.8 8 C68.80000000000001 105 22.4 165 43 250 Z"/><path class="kp-b" d="M25.5 250 C23.200000000000003 162.5 39.5 100 32.4 8 C42.2 105 28.6 165 34.5 250 Z"/></svg><svg class="kelp" style="--x:9%;--h:330px;--d:6.1s;--o:-0.9s" viewBox="0 0 60 330" focusable="false"><path class="kp-key" d="M17 330 C6.800000000000001 214.5 61 132 34.8 8 C68.80000000000001 138.6 22.4 217.8 43 330 Z"/><path class="kp-a" d="M17 330 C6.800000000000001 214.5 61 132 34.8 8 C68.80000000000001 138.6 22.4 217.8 43 330 Z"/><path class="kp-b" d="M25.5 330 C23.200000000000003 214.5 39.5 132 32.4 8 C42.2 138.6 28.6 217.8 34.5 330 Z"/></svg><svg class="kelp" style="--x:17%;--h:210px;--d:7.2s;--o:-1.8s" viewBox="0 0 60 210" focusable="false"><path class="kp-key" d="M17 210 C6.800000000000001 136.5 61 84 34.8 8 C68.80000000000001 88.2 22.4 138.6 43 210 Z"/><path class="kp-a" d="M17 210 C6.800000000000001 136.5 61 84 34.8 8 C68.80000000000001 88.2 22.4 138.6 43 210 Z"/><path class="kp-b" d="M25.5 210 C23.200000000000003 136.5 39.5 84 32.4 8 C42.2 88.2 28.6 138.6 34.5 210 Z"/></svg><svg class="kelp" style="--x:29%;--h:290px;--d:8.3s;--o:-2.7s" viewBox="0 0 60 290" focusable="false"><path class="kp-key" d="M17 290 C6.800000000000001 188.5 61 116 34.8 8 C68.80000000000001 121.8 22.4 191.4 43 290 Z"/><path class="kp-a" d="M17 290 C6.800000000000001 188.5 61 116 34.8 8 C68.80000000000001 121.8 22.4 191.4 43 290 Z"/><path class="kp-b" d="M25.5 290 C23.200000000000003 188.5 39.5 116 32.4 8 C42.2 121.8 28.6 191.4 34.5 290 Z"/></svg><svg class="kelp" style="--x:41%;--h:340px;--d:5.0s;--o:-3.6s" viewBox="0 0 60 340" focusable="false"><path class="kp-key" d="M17 340 C6.800000000000001 221 61 136 34.8 8 C68.80000000000001 142.79999999999998 22.4 224.4 43 340 Z"/><path class="kp-a" d="M17 340 C6.800000000000001 221 61 136 34.8 8 C68.80000000000001 142.79999999999998 22.4 224.4 43 340 Z"/><path class="kp-b" d="M25.5 340 C23.200000000000003 221 39.5 136 32.4 8 C42.2 142.79999999999998 28.6 224.4 34.5 340 Z"/></svg><svg class="kelp" style="--x:53%;--h:230px;--d:6.1s;--o:-4.5s" viewBox="0 0 60 230" focusable="false"><path class="kp-key" d="M17 230 C6.800000000000001 149.5 61 92 34.8 8 C68.80000000000001 96.6 22.4 151.8 43 230 Z"/><path class="kp-a" d="M17 230 C6.800000000000001 149.5 61 92 34.8 8 C68.80000000000001 96.6 22.4 151.8 43 230 Z"/><path class="kp-b" d="M25.5 230 C23.200000000000003 149.5 39.5 92 32.4 8 C42.2 96.6 28.6 151.8 34.5 230 Z"/></svg><svg class="kelp" style="--x:64%;--h:300px;--d:7.2s;--o:-5.4s" viewBox="0 0 60 300" focusable="false"><path class="kp-key" d="M17 300 C6.800000000000001 195 61 120 34.8 8 C68.80000000000001 126 22.4 198 43 300 Z"/><path class="kp-a" d="M17 300 C6.800000000000001 195 61 120 34.8 8 C68.80000000000001 126 22.4 198 43 300 Z"/><path class="kp-b" d="M25.5 300 C23.200000000000003 195 39.5 120 32.4 8 C42.2 126 28.6 198 34.5 300 Z"/></svg><svg class="kelp" style="--x:76%;--h:360px;--d:8.3s;--o:-6.3s" viewBox="0 0 60 360" focusable="false"><path class="kp-key" d="M17 360 C6.800000000000001 234 61 144 34.8 8 C68.80000000000001 151.2 22.4 237.60000000000002 43 360 Z"/><path class="kp-a" d="M17 360 C6.800000000000001 234 61 144 34.8 8 C68.80000000000001 151.2 22.4 237.60000000000002 43 360 Z"/><path class="kp-b" d="M25.5 360 C23.200000000000003 234 39.5 144 32.4 8 C42.2 151.2 28.6 237.60000000000002 34.5 360 Z"/></svg><svg class="kelp" style="--x:84%;--h:240px;--d:5.0s;--o:-7.2s" viewBox="0 0 60 240" focusable="false"><path class="kp-key" d="M17 240 C6.800000000000001 156 61 96 34.8 8 C68.80000000000001 100.8 22.4 158.4 43 240 Z"/><path class="kp-a" d="M17 240 C6.800000000000001 156 61 96 34.8 8 C68.80000000000001 100.8 22.4 158.4 43 240 Z"/><path class="kp-b" d="M25.5 240 C23.200000000000003 156 39.5 96 32.4 8 C42.2 100.8 28.6 158.4 34.5 240 Z"/></svg><svg class="kelp" style="--x:92%;--h:320px;--d:6.1s;--o:-8.1s" viewBox="0 0 60 320" focusable="false"><path class="kp-key" d="M17 320 C6.800000000000001 208 61 128 34.8 8 C68.80000000000001 134.4 22.4 211.20000000000002 43 320 Z"/><path class="kp-a" d="M17 320 C6.800000000000001 208 61 128 34.8 8 C68.80000000000001 134.4 22.4 211.20000000000002 43 320 Z"/><path class="kp-b" d="M25.5 320 C23.200000000000003 208 39.5 128 32.4 8 C42.2 134.4 28.6 211.20000000000002 34.5 320 Z"/></svg><svg class="kelp" style="--x:97%;--h:220px;--d:7.2s;--o:-9.0s" viewBox="0 0 60 220" focusable="false"><path class="kp-key" d="M17 220 C6.800000000000001 143 61 88 34.8 8 C68.80000000000001 92.39999999999999 22.4 145.20000000000002 43 220 Z"/><path class="kp-a" d="M17 220 C6.800000000000001 143 61 88 34.8 8 C68.80000000000001 92.39999999999999 22.4 145.20000000000002 43 220 Z"/><path class="kp-b" d="M25.5 220 C23.200000000000003 143 39.5 88 32.4 8 C42.2 92.39999999999999 28.6 145.20000000000002 34.5 220 Z"/></svg></div>
+            <p class="reef-note paper-card" id="reef-note" hidden>Nothing lives on the reef yet. Catch a fish and it will swim down to stay.</p>
+          </div>
+          <div class="deep-dim deep-dim--night"></div>
+          <div class="deep-dim deep-dim--depth"></div>
+          <div class="deep-view deep-view--front"><div class="deep-stick">
+            <canvas class="deep-motes" id="deep-motes"></canvas>
+            <div class="deep-grain"></div>
+          </div></div>
+        </div>
         <h1>Gone fishin'.</h1>
         <p>Ula's out on the water and the rest of the site went with her. Check back when the tide turns, or tap the bobber to see what's biting.</p>
+        <p class="sr-only" id="reef-summary"></p>
+        <div class="gauge" id="gauge" aria-hidden="true">
+          <div class="gauge-track"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="gauge-mark" id="gauge-mark"><span class="gauge-read" id="gauge-read">0 m</span></div>
+        </div>
+        <!-- /wp:reef -->
 
+        <!-- wp:basket -->
         <div class="basket" id="basket">
           <div class="basket-head">
-            <h2>Ula's lauhala basket</h2>
+            <h2 id="basket-title">Ula's lauhala basket</h2>
             <span class="basket-count" id="basket-count"></span>
           </div>
-          <ul class="basket-grid" id="basket-grid"></ul>
+          <p class="basket-sub">A field guide to what is biting. Tap a catch to read about it.</p>
+          <div class="basket-grid" id="basket-grid"></div>
           <button class="basket-reset" id="basket-reset" type="button" hidden>Empty the basket</button>
+          <dialog class="guide-dialog paper-card" id="guide-dialog" aria-labelledby="guide-name">
+            <div class="guide-art" id="guide-art" aria-hidden="true"></div>
+            <h3 class="guide-title"><span id="guide-name"></span> <span class="guide-en" id="guide-en"></span></h3>
+            <p class="guide-rarity" id="guide-rarity"></p>
+            <p class="guide-fact" id="guide-fact"></p>
+            <dl class="guide-facts" id="guide-facts"></dl>
+            <button class="btn btn--secondary" id="guide-close" type="button">Close</button>
+          </dialog>
         </div>
+        <!-- /wp:basket -->
 
-        <aside class="card surf" id="surf" aria-labelledby="surf-label" hidden>
-          <p class="card-label" id="surf-label">Surf report off Honolulu</p>
-          <p class="surf-call" id="surf-call"></p>
-          <dl class="stats" id="surf-stats"></dl>
-          <p class="card-source">Model forecast for the water off Honolulu from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a><span id="surf-wind-source" hidden>, wind from the <a href="https://www.weather.gov/hfo/" target="_blank" rel="noopener">National Weather Service</a></span>.</p>
-        </aside>
+        <!-- wp:instruments -->
+        <section class="paper-card inst inst--surf" id="surf" aria-labelledby="surf-label" data-state="loading">
+          <header class="inst__head">
+            <h2 class="inst__title heading" id="surf-label">Surf report off Honolulu</h2>
+            <span class="inst__stale" id="surf-stale" hidden></span>
+          </header>
+          <div class="inst__body" id="surf-body"></div>
+          <p class="inst__source">Model forecast for the water off Honolulu from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a><span id="surf-wind-source" hidden>, wind from the <a href="https://www.weather.gov/hfo/" target="_blank" rel="noopener">National Weather Service</a></span><span id="surf-forecast-source" hidden>, wind from its hourly forecast</span>.</p>
+        </section>
+        <!-- /wp:instruments -->
       </div>
 
       <div class="side">
-        <aside class="card word" aria-labelledby="word-label">
-          <p class="card-label" id="word-label">Today's Hawaiian word</p>
-          <p class="word-term" id="word-term" lang="haw">huikau</p>
-          <p class="word-meaning" id="word-meaning">Mixed up, jumbled, confused. In the best way.</p>
+        <!-- wp:instruments -->
+        <div class="bottle">
+          <button class="bottle__btn" id="bottle-open" type="button" aria-haspopup="dialog" aria-expanded="false">
+            <span class="bottle__tag">Today's word</span>
+            <span class="visually-hidden">: open the message in a bottle</span>
+            <span class="bottle__float" aria-hidden="true">
+              <svg class="bottle__art" viewBox="0 0 120 48" focusable="false">
+                <path class="b-glass" d="M26 11h60c7 0 12 5 12 13s-5 13-12 13H26c-7 0-12-5-12-13s5-13 12-13z"/>
+                <path class="b-neck" d="M96 17h10v14H96z"/>
+                <rect class="b-cork" x="104" y="15" width="10" height="18" rx="3"/>
+                <g class="b-scroll"><rect x="30" y="16" width="52" height="16" rx="3"/><path d="M38 21h34M38 26h26"/></g>
+                <path class="b-shine" d="M24 15h46"/>
+              </svg>
+            </span>
+          </button>
+          <dialog class="bottle__dialog" id="bottle-card" aria-labelledby="word-label">
+            <div class="paper-card bottle__card">
+              <div class="bottle__head">
+                <h2 class="inst__title heading" id="word-label">Today's Hawaiian word</h2>
+                <button class="btn btn--secondary btn--small" id="bottle-close" type="button">Close</button>
+              </div>
+              <div class="bottle__word" aria-live="polite" aria-atomic="true">
+                <p class="word-term" id="word-term" lang="haw">huikau</p>
+                <p class="word-meaning" id="word-meaning">Mixed up, jumbled, confused. In the best way.</p>
+              </div>
+              <div class="bottle__nav">
+                <button class="btn btn--water" id="bottle-prev" type="button" aria-label="Previous word">Previous</button>
+                <span class="bottle__count" id="bottle-count">1 of 16</span>
+                <button class="btn btn--water" id="bottle-next" type="button" aria-label="Next word" autofocus>Next</button>
+              </div>
+              <button class="btn btn--quiet btn--small bottle__today" id="bottle-today" type="button" hidden>Back to today's word</button>
+            </div>
+          </dialog>
+        </div>
+
+        <section class="paper-card inst inst--tides" id="tides" aria-labelledby="tides-label" data-state="loading">
+          <header class="inst__head">
+            <h2 class="inst__title heading" id="tides-label">Today's tides in Honolulu</h2>
+            <span class="inst__stale" id="tides-stale" hidden></span>
+          </header>
+          <div class="inst__body" id="tides-body"></div>
+          <p class="inst__source">Predictions for Honolulu Harbor from <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=1612340" target="_blank" rel="noopener">NOAA</a>.</p>
+        </section>
+
+        <aside class="note" aria-labelledby="note-label">
+          <p class="note__label" id="note-label">Ula's pick</p>
+          <p class="note__text" id="today-pick">Ula's checking the tide chart…</p>
+          <svg class="note__scribble" viewBox="0 0 120 10" aria-hidden="true" focusable="false"><path d="M2 6c10-6 14 4 24-1s14 4 24-1 14 4 24-1 14 4 22 0"/></svg>
         </aside>
 
-        <aside class="card tides" id="tides" aria-labelledby="tides-label" hidden>
-          <p class="card-label" id="tides-label">Today's tides in Honolulu</p>
-          <ul id="tides-list"></ul>
-          <p class="card-source">Predictions for Honolulu Harbor from <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=1612340" target="_blank" rel="noopener">NOAA</a>.</p>
-        </aside>
+        <section class="paper-card inst inst--today" id="today" aria-labelledby="today-label" data-state="live">
+          <header class="inst__head">
+            <h2 class="inst__title heading" id="today-label">Today on the water</h2>
+          </header>
+          <div class="inst__body" id="today-body"></div>
+        </section>
 
-        <aside class="card today" id="today" aria-labelledby="today-label">
-          <p class="card-label" id="today-label">Today on the water</p>
-          <p class="today-pick" id="today-pick"></p>
-          <dl class="stats" id="today-stats"></dl>
-        </aside>
+        <section class="paper-card inst inst--weather" id="weather" aria-labelledby="weather-label" data-state="loading">
+          <header class="inst__head">
+            <h2 class="inst__title heading" id="weather-label">Weather in Honolulu</h2>
+            <span class="inst__stale" id="weather-stale" hidden></span>
+          </header>
+          <div class="inst__body" id="weather-body"></div>
+          <p class="inst__source">Conditions from the <a href="https://www.weather.gov/hfo/" target="_blank" rel="noopener">National Weather Service</a><span id="weather-forecast-source" hidden>; wind and temperature from the <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> hourly forecast</span>.</p>
+        </section>
+        <!-- /wp:instruments -->
       </div>
     </section>
   </main>
 
-  <footer>© <span id="year">2026</span> Huikau. Made on island time.</footer>
+  <footer>© <span id="year">2026</span> Huikau. Made on island time.
+    <!-- wp:postcard -->
+    <button class="postcard-btn postcard-btn--foot" type="button" data-postcard aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span>Send a postcard</span>
+    </button>
+    <!-- /wp:postcard -->
+    <!-- wp:seasonal -->
+    <details class="finds" id="finds">
+      <summary>Things to find <span class="finds-count" id="finds-count"></span></summary>
+      <div class="finds-body">
+        <p class="finds-intro">A few secrets are hiding on this page. Each riddle ticks off when you find its secret.</p>
+        <ul class="finds-list" id="finds-list"></ul>
+        <p class="sr-only" id="finds-status" role="status" aria-live="polite"></p>
+      </div>
+    </details>
+    <!-- /wp:seasonal -->
+  </footer>
 </body>
 </html>

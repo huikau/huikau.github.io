@@ -1,0 +1,84 @@
+/* Design tokens. The single source of truth for colour, type, space, motion. */
+:root {
+  /* Palette (plan section 4.2) */
+  --ink: #0B2226;
+  --abyss: #0E2B30;
+  --deep: #164E56;
+  --lagoon: #1E6E78;
+  --foam: #BFE5EE;
+  --sunset: #E8662A;
+  --mango: #F5A623;
+  --hibiscus: #D8456B;
+  --sand: #F7EEDB;
+  --lauhala: #C49C5E;
+  --fb-ink: #0A171B;
+  --fb-teal: #2DD4C8;
+
+  /* Live sky. WP3 overwrites these from JS; defaults are a calm dusk that passes AA. */
+  --sky-top: #24365A;
+  --sky-mid: #5A4466;
+  --sky-horizon: #9C4A36;
+  --sun-glow: #F5A623;
+  --haze: #E8907A;
+  --text-on-sky: #F7EEDB;
+
+  /* Type */
+  --font-display: "Caprasimo", Georgia, "Times New Roman", serif;
+  --font-text: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sign: "Anton", Impact, "Arial Narrow", sans-serif;
+  --step--1: 0.85rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.328rem;
+  --step-2: 1.66rem;
+  --step-3: 2.075rem;
+  --step-4: 2.594rem;
+  --step-5: 3.242rem;
+  --leading-tight: 1.15;
+  --leading-text: 1.55;
+
+  /* Spacing (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* Shadows (screenprint: hard offset, plus one soft lift) */
+  --shadow-offset: 3px 3px 0 var(--ink);
+  --shadow-offset-lg: 6px 6px 0 var(--ink);
+  --shadow-soft: 0 10px 30px rgba(11, 34, 38, 0.35);
+  --shadow-inset: inset 0 2px 6px rgba(11, 34, 38, 0.35);
+
+  /* Z-index map */
+  --z-sky: 0;
+  --z-land: 10;
+  --z-water: 20;
+  --z-content: 30;
+  --z-instruments: 40;
+  --z-gauge: 50;
+  --z-overlay: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+  --z-grain: 90;
+
+  /* Motion */
+  --dur-fast: 120ms;
+  --dur-base: 240ms;
+  --dur-slow: 480ms;
+  --dur-scene: 1200ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Focus */
+  --focus-ring: 3px solid var(--mango);
+}

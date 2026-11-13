@@ -1,0 +1,197 @@
+/* instruments.css: the drawn instruments on paper panels, Ula's note and the message in a bottle.
+   Owned by WP7 (fable5.2-plan.md section 6). Panels are opaque paper so text stays AA on any water depth. */
+
+.shore { position: relative; }
+.away, .side { min-width: 0; }
+.side { gap: var(--space-5); }
+.away > .inst { margin-top: var(--space-6); }
+
+/* ---------- Panels ---------- */
+.inst {
+  --soft: #3B5156;            /* ink at reduced strength: 7:1 on sand */
+  color: var(--ink);
+}
+.inst__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-3); margin-bottom: var(--space-3); }
+.inst__title { margin: 0; font-size: var(--step-1); color: var(--ink); }
+.inst__stale {
+  font-size: var(--step--1); font-weight: 600; color: var(--soft);
+  border: 1.5px dashed var(--soft); border-radius: var(--radius-pill); padding: 0 var(--space-3);
+}
+.inst__msg { margin: var(--space-2) 0 0; font-size: var(--step-0); color: var(--soft); }
+.inst__source { margin: var(--space-3) 0 0; font-size: var(--step--1); line-height: 1.4; color: var(--soft); }
+.inst__source a { color: inherit; text-underline-offset: 2px; }
+.paper-card :where(a, button, [tabindex]):focus-visible { outline-color: var(--ink); }
+
+.stats { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-4); }
+.stats dt { color: var(--soft); }
+.stats dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ---------- Charts (inline SVG, screenprint: flat fills, ink keylines) ---------- */
+.chart { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--font-text); fill: var(--ink); }
+.chart .tick { font-size: 12.5px; fill: var(--soft); }
+.chart .tick--dir { font-size: 14px; font-weight: 700; fill: var(--ink); }
+.chart .lbl { font-size: 13.5px; font-weight: 700; }
+.chart .lbl--sub { font-weight: 500; }
+.chart .lbl--now { font-size: 14px; }
+.chart .lbl--halo { font-size: 12.5px; paint-order: stroke; stroke: var(--foam); stroke-width: 4px; stroke-linejoin: round; }
+.chart .ax { stroke: var(--ink); stroke-width: 1.5; }
+.chart .ax--major { stroke-width: 2.5; }
+
+/* tide */
+.chart--tide .area { fill: var(--foam); }
+.chart--tide .past { fill: url(#tide-hatch); }
+.chart--tide .hatch { stroke: var(--lagoon); stroke-width: 2; opacity: 0.55; }
+.chart--tide .curve { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.chart--tide .lead { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0.55; }
+.chart--tide .dot { stroke: var(--ink); stroke-width: 2.5; }
+.chart--tide .dot--high { fill: var(--ink); }
+.chart--tide .dot--low { fill: var(--sand); }
+.chart--tide .nowline { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 5 4; }
+.chart--tide .nowdot { fill: var(--sunset); stroke: var(--ink); stroke-width: 3; }
+.chart .sk-line { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 3 9; opacity: 0.5; }
+.tide__next { margin: var(--space-3) 0 0; font-weight: 600; font-size: var(--step-0); }
+
+/* compass */
+.chart--compass .ring { fill: var(--foam); stroke: var(--ink); stroke-width: 3; }
+.chart--compass .ring--in { fill: none; stroke-width: 1.5; stroke-dasharray: 3 4; }
+.chart--compass .ring--sk { fill: none; stroke-dasharray: 3 8; opacity: 0.5; }
+.chart--compass .hub { fill: var(--ink); }
+.arrow { stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+.arrow--swell { fill: var(--sunset); }
+.arrow--waves { fill: var(--sand); stroke-dasharray: 4 3; }
+.surf__call { margin: 0 0 var(--space-4); font-family: var(--font-display); font-size: var(--step-2); line-height: var(--leading-tight); }
+.surf__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: var(--space-4) var(--space-5); align-items: center; }
+.surf__fig { margin: 0; justify-self: center; width: min(100%, 220px); }
+.surf__fig figcaption { margin-top: var(--space-2); }
+.legend { list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; gap: var(--space-4); font-size: var(--step--1); font-weight: 600; }
+.legend li { display: inline-flex; align-items: center; gap: var(--space-2); }
+.legend__glyph { width: 26px; height: 14px; }
+.surf__text .stats dd { font-size: var(--step-0); }
+
+/* sun and moon dial */
+.chart--dial .sky { fill: var(--foam); transition: fill var(--dur-slow, .6s) ease; }
+.chart--dial-golden .sky { fill: #F6D7A6; }
+.chart--dial-twilight .sky { fill: #5B4E86; }
+.chart--dial-night .sky { fill: #12284A; }
+.dial-star { fill: var(--sand); opacity: .85; }
+.chart--dial .sea { fill: var(--deep); }
+.chart--dial .horizon { stroke: var(--ink); stroke-width: 2.5; }
+.chart--dial .arc { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+.chart--dial .arc--todo { stroke-dasharray: 1 8; stroke-width: 4; }
+.chart--dial-twilight .arc, .chart--dial-night .arc { stroke: var(--sand); }
+.chart--dial .ax { stroke: var(--sunset); stroke-width: 3.5; }
+.chart--dial .tick--sea { fill: var(--sand); font-size: 13px; font-weight: 600; }
+.chart--dial .tick--dir.tick--sea { font-size: 13px; }
+.sun__disc { fill: var(--mango); stroke: var(--ink); stroke-width: 2.5; }
+.sun__ray { stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+.moon__dark { fill: var(--abyss); }
+.moon__lit { fill: var(--sand); }
+.moon__rim { fill: none; stroke: var(--ink); stroke-width: 3; }
+.dial__rows { display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: center; margin-top: var(--space-4); }
+.moonphase { width: 56px; height: 56px; }
+
+/* weather strip */
+.wx { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.wx__cell {
+  display: grid; grid-template-columns: auto 1fr; column-gap: var(--space-3); align-items: center;
+  padding: var(--space-3); border: 2px solid var(--ink); border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--foam) 45%, var(--sand));
+}
+.wx__cell--wind { grid-column: 1 / -1; }
+.wx__cell dt { grid-column: 2; font-size: var(--step--1); color: var(--soft); }
+.wx__cell dd { grid-column: 2; margin: 0; font-weight: 600; font-size: var(--step-0); line-height: 1.25; }
+.wx__cell .wx__icon { grid-column: 1; grid-row: 1 / span 2; }
+.wx__cell:not(:has(.wx__icon)) { grid-template-columns: 1fr; }
+.wx__cell:not(:has(.wx__icon)) dt, .wx__cell:not(:has(.wx__icon)) dd { grid-column: 1; }
+.wx__none-text { color: var(--soft); font-weight: 500; }
+.wx__icon { width: 44px; height: 44px; }
+.wx__sun { fill: var(--mango); stroke: var(--ink); stroke-width: 2.5; }
+.wx__ray { stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+.wx__cloud { fill: var(--foam); stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+.wx__drop { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+.wx__none { fill: none; stroke: var(--soft); stroke-width: 2.5; stroke-dasharray: 3 5; }
+
+/* loading: the skeleton line drifts; no-data: it stays flat and still */
+[data-state="loading"] .sk-line, [data-state="loading"] .ring--sk { animation: sk-drift 1.8s linear infinite; }
+[data-state="loading"] .wx__none { animation: sk-drift 1.8s linear infinite; }
+[data-state="none"] .sk-line { opacity: 0.35; }
+@keyframes sk-drift { to { stroke-dashoffset: -24; } }
+
+/* ---------- Ula's note ---------- */
+.note {
+  --soft: #3B5156;
+  position: relative; margin: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
+  padding: var(--space-5) var(--space-5) var(--space-4); color: var(--ink);
+  background-color: color-mix(in srgb, var(--mango) 16%, var(--sand));
+  background-image: repeating-linear-gradient(to bottom, transparent 0 31px, color-mix(in srgb, var(--lagoon) 38%, transparent) 31px 32px);
+  background-position: 0 var(--space-4);
+  border: 2px solid var(--ink); border-radius: 4px;
+  box-shadow: var(--shadow-offset-lg);
+  transform: rotate(-1.4deg);
+}
+.note::before {
+  content: ""; position: absolute; top: -13px; left: 50%; width: 86px; height: 24px; margin-left: -43px;
+  background: color-mix(in srgb, var(--lauhala) 75%, transparent); border: 1.5px solid var(--ink);
+  transform: rotate(3deg);
+}
+.note__label { margin: 0 0 var(--space-1); font-size: var(--step--1); font-weight: 700; color: var(--soft); }
+.note__text { margin: 0; font-family: var(--font-display); font-size: var(--step-1); line-height: 32px; }
+.note__scribble { display: block; width: 120px; height: 10px; margin-top: var(--space-2); }
+.note__scribble path { fill: none; stroke: var(--sunset); stroke-width: 2.5; stroke-linecap: round; }
+
+/* ---------- The message in a bottle ---------- */
+.bottle { position: absolute; top: 10px; right: max(16px, calc((100% - 1040px) / 2 + 24px)); z-index: var(--z-instruments); }
+.bottle__btn {
+  display: flex; align-items: center; gap: var(--space-1); min-height: 48px; padding: 0 var(--space-1) 0 0;
+  background: none; border: 0; color: var(--ink); font: inherit; cursor: pointer;
+}
+.bottle__tag {
+  background: var(--sand); color: var(--ink); border: 2px solid var(--ink); border-radius: var(--radius-pill);
+  padding: 1px var(--space-3); font-weight: 700; font-size: var(--step--1); line-height: 1.5; box-shadow: var(--shadow-offset);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.bottle__btn:hover .bottle__tag { transform: translate(-1px, -1px); }
+.bottle__float { display: block; transform: rotate(-8deg); transform-origin: 50% 60%; }
+.bottle__float.is-bobbing { animation: bottle-bob 4.5s var(--ease-in-out) infinite; }
+@keyframes bottle-bob {
+  0%, 100% { transform: translateY(-3px) rotate(-10deg); }
+  50% { transform: translateY(4px) rotate(-5deg); }
+}
+.bottle__art { display: block; width: 92px; height: auto; overflow: visible; }
+.b-glass { fill: var(--foam); stroke: var(--ink); stroke-width: 3; }
+.b-neck { fill: var(--foam); stroke: var(--ink); stroke-width: 3; }
+.b-cork { fill: var(--lauhala); stroke: var(--ink); stroke-width: 3; }
+.b-scroll rect { fill: var(--sand); stroke: var(--ink); stroke-width: 2; }
+.b-scroll path { fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; }
+.b-shine { fill: none; stroke: var(--sand); stroke-width: 3; stroke-linecap: round; opacity: 0.8; }
+.bottle__btn:focus-visible { outline-offset: 2px; }
+
+.bottle__dialog {
+  width: min(92vw, 26rem); max-width: none; padding: 0; border: 0; background: transparent; color: var(--ink); overflow: visible;
+}
+.bottle__dialog::backdrop { background: rgba(11, 34, 38, 0.66); }
+.bottle__dialog[open] { animation: bottle-open var(--dur-slow) var(--ease-spring); }
+@keyframes bottle-open { from { opacity: 0; transform: translateY(14px) scale(0.94) rotate(-2deg); } }
+.bottle__card { --soft: #3B5156; text-align: center; }
+.bottle__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); text-align: left; }
+.bottle__word .word-term { margin: var(--space-5) 0 var(--space-2); font-family: var(--font-display); font-size: var(--step-5); line-height: 1.05; overflow-wrap: anywhere; }
+.bottle__word .word-meaning { margin: 0; font-size: var(--step-1); line-height: 1.35; }
+.bottle__nav { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-5); }
+.bottle__count { font-weight: 600; color: var(--soft); font-variant-numeric: tabular-nums; }
+.bottle__today { margin-top: var(--space-4); }
+
+/* ---------- Phone: one designed column ---------- */
+@media (max-width: 720px) {
+  .inst.paper-card, .bottle__card { padding: var(--space-4); }
+  .inst__title { font-size: var(--step-0); }
+  .away > .inst { margin-top: var(--space-5); }
+  .note { margin-inline: var(--space-1); padding-inline: var(--space-4); }
+  .surf__call { font-size: var(--step-1); }
+  .bottle { right: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bottle__float.is-bobbing, [data-state="loading"] .sk-line, [data-state="loading"] .ring--sk, [data-state="loading"] .wx__none,
+  .bottle__dialog[open] { animation: none; }
+  .bottle__tag { transition: none; }
+}

@@ -1,0 +1,403 @@
+/* scene.css — see fable5.2-plan.md section 6 for ownership. */
+
+/* ---------- sky (WP3) ---------- */
+/* The sky is computed in JS from the sun's altitude and written to :root as --sky-top, --sky-mid,
+   --sky-horizon, --sun-glow(-soft), --haze and --text-on-sky. The fallbacks are a golden-hour sky for no-JS. */
+.scene {
+  --keyline: #0B2226;
+  background:
+    radial-gradient(ellipse var(--glow-rx, 62%) 44% at var(--sun-x, 50%) var(--sun-y, 62%), var(--sun-glow-soft, rgba(255, 162, 92, .6)), rgba(255, 162, 92, 0) 72%),
+    radial-gradient(ellipse 24% 28% at var(--moon-x, 50%) var(--moon-y, 20%), rgba(214, 224, 255, var(--moon-glow-a, 0)), rgba(214, 224, 255, 0) 80%),
+    linear-gradient(180deg, var(--sky-top, #1D3369) 0%, var(--sky-mid, #74477E) 42%, var(--sky-horizon, #F0875A) 74%, var(--sky-horizon, #F0875A) 100%);
+}
+
+/* stars: a canvas; opacity is set by JS and the animation stops at zero */
+.stars {
+  position: absolute; inset: 0 0 28% 0; opacity: 0; pointer-events: none;
+  /* the canvas stops at the horizon line; fade its last stretch so the Milky Way glow never ends in a hard edge */
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
+}
+.stars canvas { display: block; width: 100%; height: 100%; }
+
+/* sun: flat rings and a disc with an ink keyline; position, size and colour come from JS */
+.sun {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  width: clamp(60px, 8vw, 100px);
+  height: auto;
+  aspect-ratio: 1;
+  overflow: visible;
+  pointer-events: none;
+  --sun-disc: #F5A04A;
+  --sun-ring: #EC8A3E;
+}
+.sun-halo { fill: var(--sun-ring); opacity: .2; }
+.sun-ring { fill: var(--sun-ring); opacity: .42; }
+.sun-disc { fill: var(--sun-disc); stroke: var(--keyline); stroke-width: 2.4; }
+
+/* moon: flat cream with an ink keyline; the unlit part takes the sky's colour */
+.moon {
+  position: absolute;
+  left: 80%;
+  top: 20%;
+  width: clamp(40px, 4.6vw, 62px);
+  height: auto;
+  aspect-ratio: 1;
+  overflow: visible;
+  opacity: 0;
+  pointer-events: none;
+}
+.moon-dark { fill: var(--sky-mid, #2D2C68); opacity: .85; }
+.moon-lit { fill: #FBF7E6; }
+.moon-key { fill: none; stroke: var(--keyline); stroke-width: 2; }
+
+/* clouds: keyline, shade, body, highlight; the highlight sits on the sun's side (--lit is -1 or 1) */
+.clouds { position: absolute; inset: 0 0 28% 0; pointer-events: none; overflow: hidden; --lit: 1; }
+/* The resting position (left) is where the cloud sits in a still render; the drift is added on top with `translate`. */
+.cloud {
+  position: absolute;
+  left: calc(var(--xv, 20) * 1vw);
+  opacity: var(--far, 1);
+  animation: cloud-drift linear infinite;
+}
+.cloud.still { animation: none; }
+.cloud svg { display: block; width: 100%; height: auto; overflow: visible; }
+.cl-key { fill: var(--keyline); opacity: .55; }
+.cl-shade { fill: var(--cloud-shade, #6D6A92); }
+.cl-body { fill: var(--cloud-body, #D8C0B8); transform: translate(calc(var(--lit) * 7px), -9px); }
+.cl-hi { fill: var(--cloud-hi, #FFE9D0); transform: translate(calc(var(--lit) * 13px), -15px); }
+@keyframes cloud-drift {
+  from { translate: calc(var(--xv, 20) * -1vw - 420px) 0; }
+  to   { translate: calc(100vw - var(--xv, 20) * 1vw + 120px) 0; }
+}
+
+/* rain: a canvas over the whole scene, with a slight dimming */
+.showers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(rgba(40, 55, 70, .22), rgba(40, 55, 70, .1));
+}
+.showers canvas { display: block; width: 100%; height: 100%; }
+
+/* clock line and Time Machine */
+.skybar {
+  position: absolute;
+  top: 18px;
+  left: 24px;
+  right: 72px;
+  z-index: 3;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+.season-winter .skybar { top: 92px; }
+/* Legibility (WP11): a soft pool of ink behind the clock line and the Time Machine keeps the light text at 4.5:1 or better over
+   bright daytime sky, and the cloud layer starts below the bar, so no cloud drifts behind the text. */
+.skybar::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  inset: -22px -56px -22px -40px;
+  background: radial-gradient(ellipse 62% 70% at 36% 52%, color-mix(in srgb, var(--ink) 46%, transparent) 0, color-mix(in srgb, var(--ink) 34%, transparent) 55%, transparent 100%);
+}
+.og .skybar::before { display: none; }
+.clouds { top: 128px; }
+.season-winter .clouds { top: 196px; }
+@media (max-width: 720px) { .clouds { top: 150px; } .season-winter .clouds { top: 214px; } }
+.og .skybar { display: none; }
+.skybar .clock {
+  position: static;
+  margin: 0;
+  font-size: .92rem;
+  color: var(--text-on-sky, #FFF9EC);
+  transition: color .4s ease;
+}
+
+.timemachine {
+  --tm: var(--text-on-sky, #FFF9EC);
+  width: min(460px, 100%);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "label out" "row row";
+  align-items: baseline;
+  column-gap: 12px;
+  row-gap: 2px;
+  color: var(--tm);
+  font-size: .78rem;
+  line-height: 1.2;
+  transition: color .4s ease;
+}
+.tm-label { grid-area: label; font-weight: 600; }
+.tm-readout { grid-area: out; font-variant-numeric: tabular-nums; text-align: right; }
+.timemachine.scrubbed .tm-readout { font-weight: 600; }
+.tm-row { grid-area: row; display: flex; align-items: flex-start; gap: 12px; }
+.tm-track { position: relative; flex: 1; min-width: 0; padding-bottom: 15px; }
+.tm-range {
+  display: block;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  --tm-fill: 0%;
+}
+.tm-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--mango, #F5A623) var(--tm-fill), color-mix(in srgb, var(--tm) 38%, transparent) var(--tm-fill));
+}
+.tm-range::-moz-range-track { height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--tm) 38%, transparent); }
+.tm-range::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--mango, #F5A623); }
+.tm-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px; margin-top: -8px;
+  border-radius: 50%;
+  background: var(--sand, #F7EEDB);
+  border: 3px solid var(--keyline);
+  box-shadow: 0 0 0 2px var(--mango, #F5A623);
+}
+.tm-range::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--sand, #F7EEDB);
+  border: 3px solid var(--keyline);
+  box-shadow: 0 0 0 2px var(--mango, #F5A623);
+}
+.tm-range:focus-visible { outline: none; }
+.tm-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--mango, #F5A623), 0 0 0 6px var(--keyline); }
+.tm-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--mango, #F5A623), 0 0 0 6px var(--keyline); }
+.tm-ticks { position: absolute; inset: 19px 0 0 0; margin: 0; padding: 0; list-style: none; font-size: .68rem; }
+.tm-ticks li { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; padding-top: 4px; }
+.tm-ticks li::before { content: ""; position: absolute; left: 50%; top: -3px; width: 1.5px; height: 6px; margin-left: -.75px; background: currentColor; opacity: .7; }
+.tm-ticks li[data-t="midnight"] { transform: none; }
+.tm-ticks li[data-t="midnight"]::before { left: 0; margin-left: 0; }
+.tm-live {
+  flex: none;
+  min-height: 30px;
+  padding: 3px 14px;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tm-live:hover:not(:disabled) { background: color-mix(in srgb, var(--tm) 16%, transparent); }
+.tm-live[aria-pressed="true"] { background: var(--mango, #F5A623); border-color: var(--keyline); color: var(--keyline); cursor: default; }
+.tm-live[aria-pressed="true"]::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: var(--keyline); vertical-align: 1px; }
+.tm-live:disabled { opacity: 1; }
+
+@media (max-width: 420px) {
+  /* narrow phones: the track is about 130 px, so "midnight" would sit on "dawn" (its tick stays) and Live drops its dot */
+  .tm-ticks li[data-t="midnight"] { font-size: 0; }
+  .tm-live { padding: 3px 11px; }
+  .tm-live[aria-pressed="true"]::before { display: none; }
+}
+@media (max-width: 720px) {
+  .skybar { left: 16px; right: 64px; }
+  .skybar { gap: 6px; }
+  .skybar .clock { font-size: .85rem; }
+}
+
+/* ---------- land (WP4) ---------- */
+/* Island screenprint: flat fills, 2-3 tones per object, an ink keyline where a shape meets the sky, paper grain over all of it.
+   Every colour here is a mix of the live sky tokens (--haze, --sky-horizon) and fixed island colours, darkened by --lit
+   (0 at night, 1 in daylight; written by js/scene/land.js). The far ridge takes the most haze, the near ridge less. */
+.scene {
+  --logo-base: clamp(116px, 13svh, 140px);
+  --logo-top: calc(var(--logo-base) + var(--logo-lift, 0px));
+  --logo-w: min(820px, 92vw, calc((84svh - 275px - var(--logo-top)) / .355));
+}
+
+.land { position: absolute; left: 0; right: 0; bottom: 17%; height: 0; pointer-events: none; --lit: .6; }
+.land-svg { position: absolute; bottom: 0; left: 50%; width: max(100%, 940px); max-width: none; height: auto; transform: translateX(-50%); overflow: visible; }
+.land {
+  --far-base: color-mix(in srgb, var(--haze, #E8907A) 54%, #4C8886);
+  --near-base: color-mix(in srgb, var(--haze, #E8907A) 16%, #2D6C55);
+  --sand-base: color-mix(in srgb, var(--haze, #E8907A) 26%, var(--sand));
+  --far: color-mix(in srgb, var(--far-base) calc(34% + 66% * var(--lit)), var(--ink));
+  --near: color-mix(in srgb, var(--near-base) calc(26% + 74% * var(--lit)), var(--ink));
+  --sand-c: color-mix(in srgb, var(--sand-base) calc(24% + 76% * var(--lit)), var(--ink));
+}
+.land-far { fill: var(--far); }
+.land-far-hi { fill: none; stroke: color-mix(in srgb, var(--far) 62%, var(--haze, #E8907A)); stroke-width: 3; stroke-linecap: round; opacity: .5; }
+.land-far-key { fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linejoin: round; opacity: .42; }
+.land-near { fill: var(--near); }
+.land-near-shade { fill: color-mix(in srgb, var(--near) 66%, var(--ink)); }
+.land-near-hi { fill: none; stroke: color-mix(in srgb, var(--near) 70%, var(--sun-glow, #F5A623)); stroke-width: 3; stroke-linecap: round; opacity: .42; }
+.land-near-key { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+.land-sand { fill: var(--sand-c); }
+.land-sand-hi { fill: none; stroke: color-mix(in srgb, var(--sand-c) 70%, var(--ink)); stroke-width: 2.4; stroke-linecap: round; opacity: .5; }
+.land-sand-key { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; opacity: .7; }
+.palm-trunk { fill: color-mix(in srgb, var(--near) 40%, var(--ink)); }
+.palm-leaf { stroke: var(--ink); stroke-width: 1.4; stroke-linejoin: round; }
+.palm-leaf-back { fill: color-mix(in srgb, var(--near) 55%, var(--ink)); }
+.palm-leaf-front { fill: color-mix(in srgb, var(--near) 88%, var(--haze, #E8907A)); }
+
+/* one paper-grain pass over the whole hero (WP2's .grain); it sits above the scene and never takes a click */
+.scene-grain { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+.scene-grain::after { z-index: auto; }
+.land-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* the logo: placed by the land, with a cream sticker keyline (the halo copy, cut from the logo's own alpha) that fades in as the sky darkens */
+.logo-wrap { position: absolute; left: 50%; top: var(--logo-top); width: var(--logo-w); translate: -50% 0; z-index: 2; --sticker-a: 0; animation: rise 1.6s cubic-bezier(.2, .7, .2, 1) both; }
+.logo { width: 100%; height: auto; position: relative; filter: drop-shadow(0 6px 14px rgba(11, 34, 38, .22)); animation: none; }
+.logo-halo { position: absolute; inset: 0; filter: url(#sticker-lg); opacity: var(--sticker-a); pointer-events: none; }
+.logo.logo-halo { width: 100%; height: 100%; }
+
+/* Ula in her boat: the illustration (assets/img/ula-boat.webp) in the rig's own 320 x 150 coordinates, a wash of foam along
+   the waterline, and the line from her rod tip (217, -13) to the bobber (285, 92). The boat and the line's near end move
+   together: every boat keyframe below has a matching cord keyframe that shifts the line's first point by the same amount. */
+.ula-frame { position: absolute; left: 0; top: 0; width: 320px; height: 150px; pointer-events: none; }
+.ula-boat {
+  position: absolute; left: -14px; top: -28px; width: 270px; height: 180px; max-width: none;
+  border: 0; border-radius: 0; box-shadow: none; background: none; object-fit: contain; pointer-events: auto; cursor: pointer;
+  filter: drop-shadow(0 5px 6px rgba(11, 34, 38, .28)); transition: filter 1.2s ease;
+}
+/* the light falls with the sky: warm at golden hour, dimmer at dusk, and at night a moonlit cut-out with a cream keyline */
+.scene[data-sky="golden"] .ula-boat { filter: sepia(.12) saturate(1.08) drop-shadow(0 5px 6px rgba(11, 34, 38, .28)); }
+.scene[data-sky="dusk"] .ula-boat { filter: brightness(.86) saturate(.92) drop-shadow(0 0 1.2px rgba(247, 238, 219, .5)) drop-shadow(0 5px 6px rgba(11, 34, 38, .3)); }
+.scene[data-sky="night"] .ula-boat { filter: brightness(.62) saturate(.8) hue-rotate(-6deg) drop-shadow(0 0 1.4px rgba(247, 238, 219, .6)) drop-shadow(0 4px 8px rgba(0, 0, 0, .35)); }
+.ula-frame .lei { position: absolute; left: 0; top: 0; width: 320px; height: 150px; overflow: visible; pointer-events: none; }
+.scene[data-sky="night"] .ula-frame .lei { filter: brightness(.8); }
+
+.canoe { position: absolute; left: 0; top: 0; width: 320px; height: 150px; overflow: visible; pointer-events: none; }
+.canoe path, .canoe circle { stroke-linejoin: round; }
+.ula-light { opacity: 0; transition: opacity 1.2s ease; mix-blend-mode: screen; }
+.scene[data-sky="dusk"] .ula-light { opacity: .7; }
+.scene[data-sky="night"] .ula-light { opacity: 1; }
+.ula-tip { fill: var(--sand); stroke: var(--ink); stroke-width: 1; }
+.ula-wash { fill: var(--lagoon); }
+.ula-wash-crest { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ula-spray { fill: none; stroke: var(--foam); stroke-width: 1.8; stroke-linecap: round; }
+.cord-key { fill: none; stroke: var(--ink); stroke-width: 3.2; stroke-linecap: round; opacity: .45; transition: d .3s ease; }
+.cord { fill: none; stroke: var(--sand); stroke-width: 1.3; stroke-linecap: round; transition: d .3s ease; }
+
+/* idle and waiting: the boat rides the swell with the bobber (2.8 s, like the bobber's bob), and the line rides with both */
+.ula-frame { animation: boat-bob 2.8s ease-in-out infinite; }
+.canoe[data-line="idle"] .cord, .canoe[data-line="idle"] .cord-key,
+.canoe[data-line="waiting"] .cord, .canoe[data-line="waiting"] .cord-key { animation: cord-bob 2.8s ease-in-out infinite; }
+@keyframes boat-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(1.5px); } }
+@keyframes cord-bob {
+  0%, 100% { d: path("M217 -13Q236 82 283.6 92"); }
+  50%      { d: path("M217 -11.5Q236 87 286.4 97"); }
+}
+/* a bite: the fish pulls, the bow dips toward it and the line snaps taut */
+.rig[data-state="bite"] .ula-frame { animation: boat-tug .6s ease-in-out 2; }
+.canoe[data-line="bite"] .cord, .canoe[data-line="bite"] .cord-key { animation: cord-dunk .6s ease-in-out 2; }
+@keyframes boat-tug { 0%, 100% { transform: translate(0, 0); } 40% { transform: translate(4px, 2px); } }
+@keyframes cord-dunk {
+  0%, 100% { d: path("M217 -13L285 92"); }
+  40%      { d: path("M221 -11L285 106"); }
+}
+/* reeling: the line holds its tension and the boat leans in a little */
+.rig[data-state="reel"] .ula-frame, .rig[data-state="cast"] .ula-frame { animation: none; transform: translate(2px, 1px); transition: transform .3s ease; }
+.rig[data-state="reel"] .canoe .cord, .rig[data-state="reel"] .canoe .cord-key { d: path("M219 -12Q256 47 285 92"); }
+.rig[data-state="cast"] .canoe .cord, .rig[data-state="cast"] .canoe .cord-key { d: path("M219 -12Q263 41 285 92"); }
+.rig[data-state="landed"] .ula-frame, .rig[data-state="gotaway"] .ula-frame { animation: none; }
+/* her reactions (ula.react): a double hop when she lands one, a sway back when it gets away */
+.ula-frame.yay { animation: boat-hop .45s ease-out 2; }
+.canoe.yay .cord, .canoe.yay .cord-key { animation: cord-hop .45s ease-out 2; }
+.ula-frame.meh { animation: boat-sway 1s ease-in-out; }
+.canoe.meh .cord, .canoe.meh .cord-key { animation: cord-sway 1s ease-in-out; }
+@keyframes boat-hop { 50% { transform: translateY(-8px); } }
+@keyframes cord-hop {
+  0%, 100% { d: path("M217 -13Q224 92 285 92"); }
+  50%      { d: path("M217 -21Q224 88 285 92"); }
+}
+@keyframes boat-sway { 30%, 70% { transform: translateX(-4px); } }
+@keyframes cord-sway {
+  0%, 100% { d: path("M217 -13Q212 122 285 92"); }
+  30%, 70% { d: path("M213 -13Q209 122 285 92"); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ula-frame, .rig[data-state] .ula-frame, .ula-frame.yay, .ula-frame.meh,
+  .canoe .cord, .canoe .cord-key, .canoe[data-line] .cord, .canoe[data-line] .cord-key { animation: none !important; transition: none; }
+}
+.ula-tag {
+  position: absolute; left: 10px; bottom: -30px;
+  font-family: var(--font-display); font-size: .95rem; color: var(--sand); white-space: nowrap;
+  text-shadow: 0 1px 0 var(--ink), 0 0 6px rgba(11, 34, 38, .6);
+}
+
+/* wide screens: the whole rig (boat, line, bobber, reel ring) grows from its bottom-left corner so Ula reads at a glance;
+   the words in it (the cue, the catch card, her name tag) scale back so the type stays the size it is everywhere else */
+@media (min-width: 1100px) {
+  .rig { --rig-k: 1.3; scale: var(--rig-k); transform-origin: left bottom; }
+  .rig .hint, .rig .catch, .rig .ula-tag { scale: calc(1 / var(--rig-k)); }
+  .rig .ula-tag { transform-origin: left top; }
+}
+@media (min-width: 1500px) { .rig { --rig-k: 1.45; } }
+
+/* the rod and line are part of the boat's overlay now */
+.rig > svg.line { display: none; }
+
+/* Fat Boy Fishing Club: a weathered dock sign standing in the shallows */
+.crew {
+  --speckle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='s' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 6 0 0 0 -4.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+  position: absolute; right: clamp(16px, 6vw, 120px); bottom: 16%; z-index: 1;
+  width: min(400px, calc(100% - 32px));
+  display: block; color: #fff; text-decoration: none; border-radius: 6px;
+}
+.crew-board {
+  position: relative; z-index: 1; display: grid; grid-template-columns: 72px 1fr; gap: 18px; align-items: center;
+  padding: 16px 20px 16px 18px;
+  background-color: var(--fb-ink);
+  background-image: radial-gradient(circle at 9px 9px, #6E8A90 0 2.4px, transparent 3px), radial-gradient(circle at calc(100% - 9px) 9px, #6E8A90 0 2.4px, transparent 3px);
+  border: 3px solid var(--ink); border-radius: 4px;
+  box-shadow: inset 0 0 0 3px var(--fb-ink), inset 0 0 0 5px var(--fb-teal), 5px 6px 0 var(--ink);
+  transform: rotate(-1.2deg); transition: transform var(--dur-base) var(--ease-out);
+}
+.crew-board::after {
+  /* weathering: sparse scuffs in a ring around the edge only, so nothing sits behind the text */
+  content: ""; position: absolute; inset: 0; border: 9px solid transparent; border-radius: inherit; pointer-events: none;
+  background: var(--speckle) 0 0 / 160px 160px border-box; opacity: .8;
+  -webkit-mask: linear-gradient(#000 0 0) border-box, linear-gradient(#000 0 0) padding-box; -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) border-box, linear-gradient(#000 0 0) padding-box; mask-composite: exclude;
+}
+.crew:hover .crew-board { transform: rotate(0) translateY(-3px); }
+.crew-note {
+  position: absolute; z-index: 2; left: 14px; top: -36px;
+  padding: 3px 11px 4px; background: var(--sand); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: 4px; box-shadow: 2px 3px 0 var(--ink);
+  font-family: var(--font-display); font-size: .98rem; line-height: 1.2; white-space: nowrap;
+  transform: rotate(-3deg);
+}
+.crew-logo { width: 72px; height: auto; }
+.crew-name { display: block; font-family: var(--font-sign); font-size: 1.9rem; line-height: 1; letter-spacing: .01em; text-transform: uppercase; }
+.crew-line { display: block; margin: 6px 0 10px; font-size: .9rem; line-height: 1.35; color: #fff; }
+.crew-cta { display: inline-block; padding: 7px 14px; background: var(--fb-teal); color: var(--fb-ink); font-size: .85rem; font-weight: 600; border-radius: 2px; }
+.crew:hover .crew-cta { background: #fff; }
+.crew:focus-visible { outline: 3px solid var(--mango); outline-offset: 5px; box-shadow: 0 0 0 5px var(--ink); }
+.crew-posts { display: block; width: 100%; height: auto; margin-top: -6px; overflow: visible; }
+.crew-post { fill: color-mix(in srgb, var(--lauhala) 50%, var(--ink)); stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+.crew-post-grain { fill: none; stroke: color-mix(in srgb, var(--lauhala) 40%, var(--ink)); stroke-width: 2; stroke-linecap: round; opacity: .7; }
+.crew-foam { fill: none; stroke: var(--foam); stroke-width: 3; stroke-linecap: round; animation: foam-lap 3.4s ease-in-out infinite; }
+.crew.paused .crew-foam { animation-play-state: paused; }
+@keyframes foam-lap { 0%, 100% { transform: translateX(-3px); } 50% { transform: translateX(3px); } }
+.scene[data-sky="night"] .crew-board, .scene[data-sky="dusk"] .crew-board { box-shadow: inset 0 0 0 3px var(--fb-ink), inset 0 0 0 5px var(--fb-teal), 5px 6px 0 var(--ink), 0 0 26px rgba(45, 212, 200, .28); }
+
+/* with the winter lights strung across the top, the skybar drops and the logo goes with it */
+.season-winter .scene { --logo-lift: 76px; }
+
+@media (max-width: 720px) {
+  .scene { --logo-base: 200px; --logo-w: min(92vw, 380px); }
+  .logo-halo { filter: url(#sticker-sm); }
+  .land-svg { left: calc(50% - 60px); }
+  /* the phone: a smaller sign, right-anchored and planted at the waterline, so the ridge and Lēʻahi show beside and behind it;
+     Ula's rig sits a little lower so her line never crosses the sign */
+  .rig { bottom: calc(28% * .52 - 58px); }
+  .crew { right: 12px; bottom: 24%; width: min(262px, calc(100% - 24px)); }
+  .crew-board { grid-template-columns: 40px 1fr; gap: 10px; padding: 12px 12px 12px 12px; }
+  .crew-logo { width: 40px; }
+  .crew-name { font-size: 1.2rem; }
+  .crew-line { font-size: .8rem; margin: 4px 0 8px; }
+  .crew-long { display: none; }
+  .crew-cta { padding: 8px 12px; font-size: .8rem; }
+  .crew-note { font-size: .85rem; left: 6px; top: -32px; }
+}
+.og .scene-grain { display: none; }
