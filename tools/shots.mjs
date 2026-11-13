@@ -39,9 +39,9 @@ const compare = opt("compare", "");
 const settle = Number(opt("settle", "1800"));
 const DATE = opt("date", "2026-11-12");
 
-// Until WP1 replaces assets/site.js, the old page only understands ?sky=.
+// The pre-WP1 page (assets/site.js) ignores ?t=, but it reads the frozen clock, so it
+// still renders the right sky for each state's time.
 const legacy = existsSync(join(root, "assets/site.js"));
-const legacySky = { "05:50": "dawn", "06:40": "dawn", "12:00": "day", "17:30": "golden", "18:10": "dusk", "22:00": "night" };
 
 const viewports = (opt("vp", "1440x900,1024x768,390x844")).split(",").map((s) => {
   const [width, height] = s.split("x").map(Number);
@@ -151,8 +151,7 @@ async function capture(browser, base, vp, [name, query, o = {}], outDir, log) {
   const t = (query.match(/[?&]t=(\d\d:\d\d)/) || [])[1] || "12:00";
   await page.clock.setFixedTime(hstToUtc(t));
 
-  let q = query;
-  if (legacy && legacySky[t] && !/[?&]sky=/.test(q)) q += `&sky=${legacySky[t]}`;
+  const q = query;
   const entry = { state: name, viewport: vp.name, url: q, console: [], errors: [], external: [] };
   page.on("console", (m) => { if (["error", "warning"].includes(m.type())) entry.console.push(`${m.type()}: ${m.text()}`); });
   page.on("pageerror", (e) => entry.errors.push(String(e)));
@@ -240,7 +239,7 @@ async function main() {
 
   const problems = log.filter((e) => e.errors.length || e.console.length);
   const external = [...new Set(log.flatMap((e) => e.external))].sort();
-  console.log(`${log.length} shots in shots/${label}/ (${legacy ? "legacy ?sky= mapping" : "?t= native"}, apis: ${apis})`);
+  console.log(`${log.length} shots in shots/${label}/ (${legacy ? "legacy page, time from frozen clock" : "?t= native"}, apis: ${apis})`);
   console.log(`external requests: ${external.length ? external.join(", ") : "none"}`);
   for (const e of problems) console.log(`  ${e.viewport} ${e.state}: ${[...e.errors, ...e.console].join(" | ")}`);
   if (!problems.length) console.log("no console errors, warnings or page errors");
