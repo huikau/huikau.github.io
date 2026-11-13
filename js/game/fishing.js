@@ -4,7 +4,7 @@ import { catches, golden, seasonal } from "../data/species.js";
 import { createBasket } from "./basket.js";
 import { sailBoat } from "../ui/eggs.js";
 
-export function initFishing({ season, bus }) {
+export function initFishing({ season, bus, ula: ulaApi = null }) {
   const rig = $("rig");
   if (!rig) return null;
   const card = $("catch"), emoji = $("catch-emoji"), text = $("catch-text");
@@ -32,6 +32,7 @@ export function initFishing({ season, bus }) {
     ula.classList.remove("yay", "meh");
     void rig.offsetWidth;
     rig.classList.add("bite");
+    ulaApi?.setLine("bite");
     hint.hidden = true;
 
     biteTimer = setTimeout(() => {
@@ -41,7 +42,7 @@ export function initFishing({ season, bus }) {
       card.classList.toggle("rare", !!c.rare);
       card.classList.add("show");
       rig.classList.remove("bite");
-      ula.classList.add(c.mood);
+      if (ulaApi) { ulaApi.setLine("idle"); ulaApi.react(c.mood); } else ula.classList.add(c.mood);
       const isNew = !!(c.id && !basket.has(c.id));
       if (isNew) {
         basket.add(c.id);

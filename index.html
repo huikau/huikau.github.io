@@ -82,12 +82,43 @@
       <!-- /wp:sky -->
 
       <!-- wp:land -->
+      <div class="land" id="land" aria-hidden="true"></div>
       <div class="logo-wrap">
+        <img class="logo logo-halo" src="assets/huikau-logo.webp" width="1400" height="497" alt="" aria-hidden="true">
         <img class="logo" src="assets/huikau-logo.webp" width="1400" height="497" alt="Huikau">
         <!-- wp:seasonal -->
         <button class="pine" id="pine" type="button" aria-label="Make it rain pineapples"></button>
         <!-- /wp:seasonal -->
       </div>
+      <!-- The logo's night treatment: a cream sticker keyline with a thin ink line outside it, cut from the logo's own alpha. -->
+      <svg class="land-defs" width="0" height="0" aria-hidden="true" focusable="false">
+        <defs>
+          <filter id="sticker-lg" x="-4%" y="-8%" width="108%" height="116%" color-interpolation-filters="sRGB">
+            <feMorphology in="SourceAlpha" operator="dilate" radius="7" result="outer"/>
+            <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="inner"/>
+            <feFlood flood-color="#0B2226" result="ink"/>
+            <feComposite in="ink" in2="outer" operator="in" result="inkline"/>
+            <feFlood flood-color="#FBF3DF" result="cream"/>
+            <feComposite in="cream" in2="inner" operator="in" result="sticker"/>
+            <feMerge><feMergeNode in="inkline"/><feMergeNode in="sticker"/></feMerge>
+          </filter>
+          <filter id="sticker-sm" x="-4%" y="-8%" width="108%" height="116%" color-interpolation-filters="sRGB">
+            <feMorphology in="SourceAlpha" operator="dilate" radius="3.5" result="outer"/>
+            <feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="inner"/>
+            <feFlood flood-color="#0B2226" result="ink"/>
+            <feComposite in="ink" in2="outer" operator="in" result="inkline"/>
+            <feFlood flood-color="#FBF3DF" result="cream"/>
+            <feComposite in="cream" in2="inner" operator="in" result="sticker"/>
+            <feMerge><feMergeNode in="inkline"/><feMergeNode in="sticker"/></feMerge>
+          </filter>
+          <pattern id="lauhala-weave" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="9" height="9" fill="#C49C5E"/>
+            <rect width="4.5" height="4.5" fill="#A27B3C"/>
+            <rect x="4.5" y="4.5" width="4.5" height="4.5" fill="#A27B3C"/>
+          </pattern>
+        </defs>
+      </svg>
+      <div class="scene-grain grain" aria-hidden="true"></div>
       <!-- /wp:land -->
 
       <!-- wp:water -->
@@ -134,14 +165,22 @@
       <!-- /wp:sky -->
 
       <!-- wp:crew -->
-      <a class="crew" href="https://fatboyfishn.com/" target="_blank" rel="noopener">
+      <a class="crew" href="https://fatboyfishn.com/" target="_blank" rel="noopener" aria-label="Fat Boy Fishing Club: shop the gear (opens in a new tab)">
         <span class="crew-note">Ula's cap came from here</span>
-        <img class="crew-logo" src="assets/fatboy-logo.webp" width="158" height="200" alt="">
-        <span class="crew-body">
-          <span class="crew-name">Fat Boy Fishing Club</span>
-          <span class="crew-line">Veteran-owned fishing apparel, built for big water and the dock after.</span>
-          <span class="crew-cta">Shop the gear</span>
+        <span class="crew-board">
+          <img class="crew-logo" src="assets/fatboy-logo.webp" width="158" height="200" alt="">
+          <span class="crew-body">
+            <span class="crew-name">Fat Boy Fishing Club</span>
+            <span class="crew-line">Veteran-owned fishing apparel<span class="crew-long">, built for big water and the dock after</span>.</span>
+            <span class="crew-cta">Shop the gear</span>
+          </span>
         </span>
+        <svg class="crew-posts" viewBox="0 0 400 64" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">
+          <path class="crew-post" d="M50 0H90V50L70 59L50 50Z"/>
+          <path class="crew-post" d="M310 0H350V50L330 59L310 50Z"/>
+          <path class="crew-post-grain" d="M60 8V44M76 14V48M320 8V44M336 14V48"/>
+          <path class="crew-foam" d="M34 54Q44 48 54 54T78 54T102 54M294 54Q304 48 314 54T338 54T362 54"/>
+        </svg>
       </a>
       <!-- /wp:crew -->
 
@@ -152,8 +191,15 @@
           <path class="cord" d="M150 6 Q200 120 284 100"/>
         </svg>
         <!-- wp:land -->
-        <img class="ula" id="ula" src="assets/ula.webp" width="96" height="96" alt="Ula, smiling at sunset in her skull-and-crossbones cap">
-        <svg class="lei" id="lei" viewBox="0 0 120 120" aria-hidden="true" hidden></svg>
+        <svg class="canoe" id="canoe" viewBox="0 0 320 150" aria-hidden="true"></svg>
+        <div class="ula-frame" id="ula-frame">
+          <svg class="ula-rim" viewBox="0 0 108 108" aria-hidden="true">
+            <circle cx="54" cy="54" r="52" fill="url(#lauhala-weave)" stroke="#0B2226" stroke-width="3"/>
+            <circle cx="54" cy="54" r="42" fill="none" stroke="#0B2226" stroke-width="3"/>
+          </svg>
+          <img class="ula" id="ula" src="assets/ula.webp" width="84" height="84" alt="Ula, smiling at sunset in her skull-and-crossbones cap">
+          <svg class="lei" id="lei" viewBox="0 0 120 120" aria-hidden="true" hidden></svg>
+        </div>
         <span class="ula-tag">Captain Ula</span>
         <!-- /wp:land -->
         <button class="bobber" id="bobber" type="button" aria-label="Reel in Ula's line">

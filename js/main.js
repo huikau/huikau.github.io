@@ -9,6 +9,9 @@ import { weather, weatherPresets, loadWeather, applyParsed, loadForecast, foreca
 import { loadTides, loadTidesHourly, tides, tidesHourly } from "./data/tides.js";
 import { loadSurf, surf } from "./data/surf.js";
 import { initSky } from "./sky/sky.js";
+import { initLand } from "./scene/land.js";
+import { initUla } from "./scene/ula.js";
+import { initCrew } from "./scene/crew.js";
 import { initMoon } from "./sky/bodies.js";
 import { initSeasons } from "./ui/seasons.js";
 import { initEggs, initGreenFlash, initWhales, initShootingStars, initIwa } from "./ui/eggs.js";
@@ -23,6 +26,11 @@ const mod = {};
 const p = params();
 if (p.get("og") === "1") document.body.classList.add("og");
 
+// The land and the cast listen for the first "sky" event, so they start before the sky does.
+mod.land = initLand({ bus });
+mod.ula = initUla({ bus, clock });
+mod.crew = initCrew();
+
 // The sky first (and its stars), then seasons, cards, fishing and eggs, in the same order as before.
 mod.sky = initSky({ clock, bus });
 setInterval(() => bus.emit("tick"), 30000);
@@ -30,7 +38,7 @@ clock.onChange(() => bus.emit("tick"));
 
 mod.seasons = initSeasons(clock);
 mod.instruments = initInstruments({ clock, bus, tides, weather });
-mod.fishing = initFishing({ season: mod.seasons.season, bus });
+mod.fishing = initFishing({ season: mod.seasons.season, bus, ula: mod.ula });
 initEggs();
 
 // ---------- Weather ----------

@@ -185,3 +185,161 @@
   .skybar { gap: 6px; }
   .skybar .clock { font-size: .85rem; }
 }
+
+/* ---------- land (WP4) ---------- */
+/* Island screenprint: flat fills, 2-3 tones per object, an ink keyline where a shape meets the sky, paper grain over all of it.
+   Every colour here is a mix of the live sky tokens (--haze, --sky-horizon) and fixed island colours, darkened by --lit
+   (0 at night, 1 in daylight; written by js/scene/land.js). The far ridge takes the most haze, the near ridge less. */
+.scene {
+  --logo-base: clamp(116px, 13svh, 140px);
+  --logo-top: calc(var(--logo-base) + var(--logo-lift, 0px));
+  --logo-w: min(820px, 92vw, calc((84svh - 275px - var(--logo-top)) / .355));
+}
+
+.land { position: absolute; left: 0; right: 0; bottom: 17%; height: 0; pointer-events: none; --lit: .6; }
+.land-svg { position: absolute; bottom: 0; left: 50%; width: max(100%, 940px); max-width: none; height: auto; transform: translateX(-50%); overflow: visible; }
+.land {
+  --far-base: color-mix(in srgb, var(--haze, #E8907A) 54%, #4C8886);
+  --near-base: color-mix(in srgb, var(--haze, #E8907A) 16%, #2D6C55);
+  --sand-base: color-mix(in srgb, var(--haze, #E8907A) 26%, var(--sand));
+  --far: color-mix(in srgb, var(--far-base) calc(34% + 66% * var(--lit)), var(--ink));
+  --near: color-mix(in srgb, var(--near-base) calc(26% + 74% * var(--lit)), var(--ink));
+  --sand-c: color-mix(in srgb, var(--sand-base) calc(24% + 76% * var(--lit)), var(--ink));
+}
+.land-far { fill: var(--far); }
+.land-far-hi { fill: none; stroke: color-mix(in srgb, var(--far) 62%, var(--haze, #E8907A)); stroke-width: 3; stroke-linecap: round; opacity: .5; }
+.land-far-key { fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linejoin: round; opacity: .42; }
+.land-near { fill: var(--near); }
+.land-near-shade { fill: color-mix(in srgb, var(--near) 66%, var(--ink)); }
+.land-near-hi { fill: none; stroke: color-mix(in srgb, var(--near) 70%, var(--sun-glow, #F5A623)); stroke-width: 3; stroke-linecap: round; opacity: .42; }
+.land-near-key { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+.land-sand { fill: var(--sand-c); }
+.land-sand-hi { fill: none; stroke: color-mix(in srgb, var(--sand-c) 70%, var(--ink)); stroke-width: 2.4; stroke-linecap: round; opacity: .5; }
+.land-sand-key { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; opacity: .7; }
+.palm-trunk { fill: color-mix(in srgb, var(--near) 40%, var(--ink)); }
+.palm-leaf { stroke: var(--ink); stroke-width: 1.4; stroke-linejoin: round; }
+.palm-leaf-back { fill: color-mix(in srgb, var(--near) 55%, var(--ink)); }
+.palm-leaf-front { fill: color-mix(in srgb, var(--near) 88%, var(--haze, #E8907A)); }
+
+/* one paper-grain pass over the whole hero (WP2's .grain); it sits above the scene and never takes a click */
+.scene-grain { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+.scene-grain::after { z-index: auto; }
+.land-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* the logo: placed by the land, with a cream sticker keyline (the halo copy, cut from the logo's own alpha) that fades in as the sky darkens */
+.logo-wrap { position: absolute; left: 50%; top: var(--logo-top); width: var(--logo-w); translate: -50% 0; z-index: 2; --sticker-a: 0; animation: rise 1.6s cubic-bezier(.2, .7, .2, 1) both; }
+.logo { width: 100%; height: auto; position: relative; filter: drop-shadow(0 6px 14px rgba(11, 34, 38, .22)); animation: none; }
+.logo-halo { position: absolute; inset: 0; filter: url(#sticker-lg); opacity: var(--sticker-a); pointer-events: none; }
+.logo.logo-halo { width: 100%; height: 100%; }
+
+/* Ula's canoe: hull, ama and iako, rod, line, and the lip of water that seats it */
+.canoe { position: absolute; left: 0; top: 0; width: 320px; height: 150px; overflow: visible; pointer-events: none; }
+.canoe path, .canoe circle { stroke-linejoin: round; }
+.ula-hull { fill: var(--sunset); stroke: var(--ink); stroke-width: 2.6; }
+.ula-hull-shade { fill: color-mix(in srgb, var(--sunset) 60%, var(--ink)); }
+.ula-gunwale { fill: none; stroke: var(--sand); stroke-width: 3.2; stroke-linecap: round; transform: translateY(2.6px); }
+.ula-float { fill: var(--sand); stroke: var(--ink); stroke-width: 2.4; }
+.ula-iako { fill: none; stroke: var(--ink); stroke-width: 4; stroke-linecap: round; }
+.ula-rod-key { fill: none; stroke: var(--ink); stroke-width: 6; stroke-linecap: round; transition: d .3s ease; }
+.ula-rod { fill: none; stroke: var(--lauhala); stroke-width: 2.8; stroke-linecap: round; transition: d .3s ease; }
+.ula-tip { fill: var(--sand); stroke: var(--ink); stroke-width: 1.4; transition: cx .3s ease, cy .3s ease; }
+.ula-foam { fill: var(--foam); stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.cord-key { fill: none; stroke: var(--ink); stroke-width: 3.2; stroke-linecap: round; opacity: .45; transition: d .3s ease; }
+.cord { fill: none; stroke: var(--sand); stroke-width: 1.3; stroke-linecap: round; transition: d .3s ease; }
+/* while waiting the line's far end rides the bobber (same 2.8s ease-in-out as the bobber's bob) */
+.canoe[data-line="idle"] .cord, .canoe[data-line="idle"] .cord-key,
+.canoe[data-line="waiting"] .cord, .canoe[data-line="waiting"] .cord-key { animation: cord-bob 2.8s ease-in-out infinite; }
+.canoe[data-line="bite"] .cord, .canoe[data-line="bite"] .cord-key { animation: cord-dunk .6s ease-in-out 2; }
+@keyframes cord-bob {
+  0%, 100% { d: path("M190 2Q232 92 283.6 92"); }
+  50%      { d: path("M190 2Q232 97 286.4 97"); }
+}
+@keyframes cord-dunk {
+  0%, 100% { d: path("M184 24L285 92"); }
+  40%      { d: path("M184 24L285 106"); }
+}
+
+/* the portrait: small, round, in a lauhala rim */
+.ula-frame { position: absolute; left: 6px; top: 18px; width: 108px; height: 108px; }
+.ula-rim { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ula-frame .ula { position: absolute; left: 12px; top: 12px; width: 84px; height: 84px; border: 0; box-shadow: none; }
+.ula-frame .lei { left: -6px; top: -6px; bottom: auto; }
+.lei { position: absolute; width: 120px; height: 120px; pointer-events: none; overflow: visible; }
+.ula-frame.yay { animation: hop .45s ease-out 2; }
+.ula-frame.meh .ula { animation: tilt 1s ease-in-out; }
+@keyframes hop { 50% { transform: translateY(-14px); } }
+@keyframes tilt { 30%, 70% { transform: rotate(-12deg); } }
+.ula-tag {
+  position: absolute; left: 10px; bottom: -30px;
+  font-family: var(--font-display); font-size: .95rem; color: var(--sand); white-space: nowrap;
+  text-shadow: 0 1px 0 var(--ink), 0 0 6px rgba(11, 34, 38, .6);
+}
+
+/* the rod and line are part of the canoe now */
+.rig > svg.line { display: none; }
+
+/* Fat Boy Fishing Club: a weathered dock sign standing in the shallows */
+.crew {
+  --speckle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='s' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.84 6 0 0 0 -4.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+  position: absolute; right: clamp(16px, 6vw, 120px); bottom: 16%; z-index: 1;
+  width: min(400px, calc(100% - 32px));
+  display: block; color: #fff; text-decoration: none; border-radius: 6px;
+}
+.crew-board {
+  position: relative; z-index: 1; display: grid; grid-template-columns: 72px 1fr; gap: 18px; align-items: center;
+  padding: 16px 20px 16px 18px;
+  background-color: var(--fb-ink);
+  background-image: radial-gradient(circle at 9px 9px, #6E8A90 0 2.4px, transparent 3px), radial-gradient(circle at calc(100% - 9px) 9px, #6E8A90 0 2.4px, transparent 3px);
+  border: 3px solid var(--ink); border-radius: 4px;
+  box-shadow: inset 0 0 0 3px var(--fb-ink), inset 0 0 0 5px var(--fb-teal), 5px 6px 0 var(--ink);
+  transform: rotate(-1.2deg); transition: transform var(--dur-base) var(--ease-out);
+}
+.crew-board::after {
+  /* weathering: sparse scuffs in a ring around the edge only, so nothing sits behind the text */
+  content: ""; position: absolute; inset: 0; border: 9px solid transparent; border-radius: inherit; pointer-events: none;
+  background: var(--speckle) 0 0 / 160px 160px border-box; opacity: .8;
+  -webkit-mask: linear-gradient(#000 0 0) border-box, linear-gradient(#000 0 0) padding-box; -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) border-box, linear-gradient(#000 0 0) padding-box; mask-composite: exclude;
+}
+.crew:hover .crew-board { transform: rotate(0) translateY(-3px); }
+.crew-note {
+  position: absolute; z-index: 2; left: 14px; top: -36px;
+  padding: 3px 11px 4px; background: var(--sand); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: 4px; box-shadow: 2px 3px 0 var(--ink);
+  font-family: var(--font-display); font-size: .98rem; line-height: 1.2; white-space: nowrap;
+  transform: rotate(-3deg);
+}
+.crew-logo { width: 72px; height: auto; }
+.crew-name { display: block; font-family: var(--font-sign); font-size: 1.9rem; line-height: 1; letter-spacing: .01em; text-transform: uppercase; }
+.crew-line { display: block; margin: 6px 0 10px; font-size: .9rem; line-height: 1.35; color: #fff; }
+.crew-cta { display: inline-block; padding: 7px 14px; background: var(--fb-teal); color: var(--fb-ink); font-size: .85rem; font-weight: 600; border-radius: 2px; }
+.crew:hover .crew-cta { background: #fff; }
+.crew:focus-visible { outline: 3px solid var(--mango); outline-offset: 5px; box-shadow: 0 0 0 5px var(--ink); }
+.crew-posts { display: block; width: 100%; height: auto; margin-top: -6px; overflow: visible; }
+.crew-post { fill: color-mix(in srgb, var(--lauhala) 50%, var(--ink)); stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+.crew-post-grain { fill: none; stroke: color-mix(in srgb, var(--lauhala) 40%, var(--ink)); stroke-width: 2; stroke-linecap: round; opacity: .7; }
+.crew-foam { fill: none; stroke: var(--foam); stroke-width: 3; stroke-linecap: round; animation: foam-lap 3.4s ease-in-out infinite; }
+.crew.paused .crew-foam { animation-play-state: paused; }
+@keyframes foam-lap { 0%, 100% { transform: translateX(-3px); } 50% { transform: translateX(3px); } }
+.scene[data-sky="night"] .crew-board, .scene[data-sky="dusk"] .crew-board { box-shadow: inset 0 0 0 3px var(--fb-ink), inset 0 0 0 5px var(--fb-teal), 5px 6px 0 var(--ink), 0 0 26px rgba(45, 212, 200, .28); }
+
+/* with the winter lights strung across the top, the skybar drops and the logo goes with it */
+.season-winter .scene { --logo-lift: 76px; }
+
+@media (max-width: 720px) {
+  .scene { --logo-base: 200px; --logo-w: min(92vw, 380px); }
+  .logo-halo { filter: url(#sticker-sm); }
+  .land-svg { left: calc(50% - 60px); }
+  /* the phone: a smaller sign, right-anchored and planted at the waterline, so the ridge and Lēʻahi show beside and behind it;
+     Ula's rig sits a little lower so her line never crosses the sign */
+  .rig { bottom: calc(28% * .52 - 58px); }
+  .crew { right: 12px; bottom: 24%; width: min(262px, calc(100% - 24px)); }
+  .crew-board { grid-template-columns: 40px 1fr; gap: 10px; padding: 12px 12px 12px 12px; }
+  .crew-logo { width: 40px; }
+  .crew-name { font-size: 1.2rem; }
+  .crew-line { font-size: .8rem; margin: 4px 0 8px; }
+  .crew-long { display: none; }
+  .crew-cta { padding: 8px 12px; font-size: .8rem; }
+  .crew-note { font-size: .85rem; left: 6px; top: -32px; }
+}
+.og .scene-grain { display: none; }

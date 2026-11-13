@@ -33,7 +33,7 @@ img { display: block; max-width: 100%; }
 .scene {
   --w-back: var(--lagoon);
   --w-mid: var(--deep);
-  --ink: var(--sand);
+  --on-sky: var(--sand);
   --ink-shadow: 0 2px 8px rgba(110, 40, 20, .45);
   --bird: #2A1A12;
 
@@ -48,7 +48,7 @@ img { display: block; max-width: 100%; }
 .scene[data-sky="day"] {
   --w-back: #2A9AA2;
   --w-mid: #1C7680;
-  --ink: var(--abyss);
+  --on-sky: var(--abyss);
   --ink-shadow: none;
   --bird: #1B2A33;
 }
@@ -63,15 +63,7 @@ img { display: block; max-width: 100%; }
   --ink-shadow: 0 2px 10px rgba(0, 0, 0, .6);
 }
 
-.logo-wrap { position: relative; width: min(820px, 92vw); }
-.logo {
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 10px 30px rgba(110, 40, 20, .25));
-  animation: rise 1.6s cubic-bezier(.2, .7, .2, 1) both;
-}
-.scene[data-sky="dusk"] .logo,
-.scene[data-sky="night"] .logo { filter: drop-shadow(0 0 10px rgba(255, 250, 232, .55)); }
+/* the logo and its wrapper live in css/scene.css (land, WP4) */
 @keyframes rise {
   from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: none; }
@@ -132,34 +124,7 @@ img { display: block; max-width: 100%; }
   object-fit: cover;
   background: var(--sunset);
 }
-.ula.yay { animation: hop .45s ease-out 2; }
-.ula.meh { animation: tilt 1s ease-in-out; }
-@keyframes hop { 50% { transform: translateY(-14px); } }
-@keyframes tilt {
-  30%, 70% { transform: rotate(-12deg); }
-}
-.lei { position: absolute; left: -12px; bottom: -12px; width: 120px; height: 120px; pointer-events: none; overflow: visible; }
-.ula-tag {
-  position: absolute;
-  left: 6px;
-  bottom: -30px;
-  font-family: var(--display);
-  font-size: .95rem;
-  color: var(--sand);
-  white-space: nowrap;
-}
-.line {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-.line .rod  { stroke: #2A1A12; stroke-width: 3.5; stroke-linecap: round; }
-.line .cord { stroke: rgba(247, 238, 219, .85); stroke-width: 1.2; fill: none; transition: d .35s ease; }
-.rig.bite .line .cord { d: path("M150 6 Q215 70 284 106"); }
-
+/* .lei, .ula-tag, .ula-frame and the canoe live in css/scene.css (land, WP4) */
 .bobber {
   position: absolute;
   left: 270px;
@@ -381,7 +346,7 @@ img { display: block; max-width: 100%; }
   border: 0;
   border-radius: 50%;
   background: rgba(0, 0, 0, .18);
-  color: var(--ink);
+  color: var(--on-sky);
   cursor: pointer;
 }
 .sound:hover { background: rgba(0, 0, 0, .3); }
@@ -400,60 +365,7 @@ img { display: block; max-width: 100%; }
 }
 @keyframes fall { to { transform: translateY(calc(100vh + 120px)) rotate(var(--r)); } }
 
-/* ---------- Fat Boy Fishing Club, out on the water ---------- */
-.crew {
-  position: absolute;
-  right: clamp(16px, 6vw, 120px);
-  bottom: calc(28% - 64px);
-  z-index: 1;
-  width: 400px;
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  gap: 18px;
-  align-items: center;
-  padding: 18px 22px 18px 18px;
-  background: var(--fb-ink);
-  border-top: 4px solid var(--fb-teal);
-  border-radius: 4px;
-  color: #fff;
-  text-decoration: none;
-  box-shadow: 0 18px 40px rgba(14, 43, 48, .45);
-  transform: rotate(-1.5deg);
-  transition: transform .25s ease, box-shadow .25s ease;
-}
-.crew:hover { transform: rotate(0) translateY(-4px); box-shadow: 0 24px 48px rgba(14, 43, 48, .55); }
-.crew:focus-visible { outline-color: var(--fb-teal); }
-.crew-note {
-  position: absolute;
-  left: 14px;
-  top: -40px;
-  font-family: var(--display);
-  font-size: 1.05rem;
-  color: var(--ink);
-  text-shadow: var(--ink-shadow);
-  transform: rotate(-3deg);
-  white-space: nowrap;
-}
-.crew-logo { width: 72px; height: auto; }
-.crew-name {
-  display: block;
-  font-family: "Anton", Impact, sans-serif;
-  font-size: 1.9rem;
-  line-height: 1;
-  letter-spacing: .01em;
-  text-transform: uppercase;
-}
-.crew-line { display: block; margin: 8px 0 12px; font-size: .92rem; line-height: 1.4; color: rgba(255, 255, 255, .78); }
-.crew-cta {
-  display: inline-block;
-  padding: 8px 14px;
-  background: var(--fb-teal);
-  color: var(--fb-ink);
-  font-size: .85rem;
-  font-weight: 600;
-  border-radius: 2px;
-}
-.crew:hover .crew-cta { background: #fff; }
+/* ---------- Fat Boy Fishing Club: the dock sign lives in css/scene.css (crew, WP4) ---------- */
 
 /* ---------- Below the waterline ---------- */
 .shore {
@@ -544,10 +456,10 @@ footer {
   font-weight: 400;
   font-size: clamp(3rem, 9vw, 5.5rem);
   line-height: 1;
-  color: var(--ink);
+  color: var(--on-sky);
   text-shadow: var(--ink-shadow);
 }
-.lost p { margin: 0 0 26px; font-size: 1.15rem; color: var(--ink); text-shadow: var(--ink-shadow); }
+.lost p { margin: 0 0 26px; font-size: 1.15rem; color: var(--on-sky); text-shadow: var(--ink-shadow); }
 .home-btn {
   display: inline-block;
   padding: 12px 22px;
@@ -580,19 +492,12 @@ footer {
 /* ---------- Responsive ---------- */
 @media (max-width: 1000px) {
   .scene { align-content: center; gap: 64px; }
-  .crew { position: relative; right: auto; bottom: auto; width: min(400px, 100%); }
-}
-@media (min-width: 1001px) and (max-height: 760px) {
-  .logo-wrap { width: min(640px, 60vw); }
 }
 @media (max-width: 720px) {
   .shore { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-top: 56px; }
   .scene { padding-bottom: 30vh; padding-top: 56px; }
   .rig { transform: scale(.85); transform-origin: left bottom; }
   .catch { left: 60px; max-width: 260px; }
-  .crew { grid-template-columns: 54px 1fr; gap: 14px; padding: 16px; }
-  .crew-logo { width: 54px; }
-  .crew-name { font-size: 1.55rem; }
   .friday { display: table; margin-bottom: 6px; }
 }
 
