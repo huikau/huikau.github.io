@@ -332,30 +332,6 @@ img { display: block; max-width: 100%; }
   50%      { transform: rotate(5deg) translateY(16px); }
 }
 
-/* ---------- Ocean sound toggle ---------- */
-.sound {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  z-index: 3;
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, .18);
-  color: var(--on-sky);
-  cursor: pointer;
-}
-.sound:hover { background: rgba(0, 0, 0, .3); }
-.sound svg { width: 22px; height: 22px; }
-.sound .sound-on { display: none; }
-.sound[aria-pressed="true"] .sound-on { display: inline; }
-.sound[aria-pressed="true"] .sound-off { display: none; }
-.season-winter .sound { top: 86px; }
-
 /* ---------- Pineapple rain ---------- */
 .rain { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
 .rain span {
