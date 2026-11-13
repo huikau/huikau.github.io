@@ -194,34 +194,83 @@
         <!-- /wp:basket -->
 
         <!-- wp:instruments -->
-        <aside class="card surf" id="surf" aria-labelledby="surf-label" hidden>
-          <p class="card-label" id="surf-label">Surf report off Honolulu</p>
-          <p class="surf-call" id="surf-call"></p>
-          <dl class="stats" id="surf-stats"></dl>
-          <p class="card-source">Model forecast for the water off Honolulu from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a><span id="surf-wind-source" hidden>, wind from the <a href="https://www.weather.gov/hfo/" target="_blank" rel="noopener">National Weather Service</a></span>.</p>
-        </aside>
+        <section class="paper-card inst inst--surf" id="surf" aria-labelledby="surf-label" data-state="loading">
+          <header class="inst__head">
+            <h2 class="inst__title heading" id="surf-label">Surf report off Honolulu</h2>
+            <span class="inst__stale" id="surf-stale" hidden></span>
+          </header>
+          <div class="inst__body" id="surf-body"></div>
+          <p class="inst__source">Model forecast for the water off Honolulu from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a><span id="surf-wind-source" hidden>, wind from the <a href="https://www.weather.gov/hfo/" target="_blank" rel="noopener">National Weather Service</a></span><span id="surf-forecast-source" hidden>, wind from its hourly forecast</span>.</p>
+        </section>
         <!-- /wp:instruments -->
       </div>
 
       <div class="side">
         <!-- wp:instruments -->
-        <aside class="card word" aria-labelledby="word-label">
-          <p class="card-label" id="word-label">Today's Hawaiian word</p>
-          <p class="word-term" id="word-term" lang="haw">huikau</p>
-          <p class="word-meaning" id="word-meaning">Mixed up, jumbled, confused. In the best way.</p>
+        <div class="bottle">
+          <button class="bottle__btn" id="bottle-open" type="button" aria-haspopup="dialog" aria-expanded="false">
+            <span class="bottle__tag">Today's word</span>
+            <span class="visually-hidden">: open the message in a bottle</span>
+            <span class="bottle__float" aria-hidden="true">
+              <svg class="bottle__art" viewBox="0 0 120 48" focusable="false">
+                <path class="b-glass" d="M26 11h60c7 0 12 5 12 13s-5 13-12 13H26c-7 0-12-5-12-13s5-13 12-13z"/>
+                <path class="b-neck" d="M96 17h10v14H96z"/>
+                <rect class="b-cork" x="104" y="15" width="10" height="18" rx="3"/>
+                <g class="b-scroll"><rect x="30" y="16" width="52" height="16" rx="3"/><path d="M38 21h34M38 26h26"/></g>
+                <path class="b-shine" d="M24 15h46"/>
+              </svg>
+            </span>
+          </button>
+          <dialog class="bottle__dialog" id="bottle-card" aria-labelledby="word-label">
+            <div class="paper-card bottle__card">
+              <div class="bottle__head">
+                <h2 class="inst__title heading" id="word-label">Today's Hawaiian word</h2>
+                <button class="btn btn--secondary btn--small" id="bottle-close" type="button">Close</button>
+              </div>
+              <div class="bottle__word" aria-live="polite" aria-atomic="true">
+                <p class="word-term" id="word-term" lang="haw">huikau</p>
+                <p class="word-meaning" id="word-meaning">Mixed up, jumbled, confused. In the best way.</p>
+              </div>
+              <div class="bottle__nav">
+                <button class="btn btn--water" id="bottle-prev" type="button" aria-label="Previous word">Previous</button>
+                <span class="bottle__count" id="bottle-count">1 of 16</span>
+                <button class="btn btn--water" id="bottle-next" type="button" aria-label="Next word" autofocus>Next</button>
+              </div>
+              <button class="btn btn--quiet btn--small bottle__today" id="bottle-today" type="button" hidden>Back to today's word</button>
+            </div>
+          </dialog>
+        </div>
+
+        <section class="paper-card inst inst--tides" id="tides" aria-labelledby="tides-label" data-state="loading">
+          <header class="inst__head">
+            <h2 class="inst__title heading" id="tides-label">Today's tides in Honolulu</h2>
+            <span class="inst__stale" id="tides-stale" hidden></span>
+          </header>
+          <div class="inst__body" id="tides-body"></div>
+          <p class="inst__source">Predictions for Honolulu Harbor from <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=1612340" target="_blank" rel="noopener">NOAA</a>.</p>
+        </section>
+
+        <aside class="note" aria-labelledby="note-label">
+          <p class="note__label" id="note-label">Ula's pick</p>
+          <p class="note__text" id="today-pick">Ula's checking the tide chart…</p>
+          <svg class="note__scribble" viewBox="0 0 120 10" aria-hidden="true" focusable="false"><path d="M2 6c10-6 14 4 24-1s14 4 24-1 14 4 24-1 14 4 22 0"/></svg>
         </aside>
 
-        <aside class="card tides" id="tides" aria-labelledby="tides-label" hidden>
-          <p class="card-label" id="tides-label">Today's tides in Honolulu</p>
-          <ul id="tides-list"></ul>
-          <p class="card-source">Predictions for Honolulu Harbor from <a href="https://tidesandcurrents.noaa.gov/stationhome.html?id=1612340" target="_blank" rel="noopener">NOAA</a>.</p>
-        </aside>
+        <section class="paper-card inst inst--today" id="today" aria-labelledby="today-label" data-state="live">
+          <header class="inst__head">
+            <h2 class="inst__title heading" id="today-label">Today on the water</h2>
+          </header>
+          <div class="inst__body" id="today-body"></div>
+        </section>
 
-        <aside class="card today" id="today" aria-labelledby="today-label">
-          <p class="card-label" id="today-label">Today on the water</p>
-          <p class="today-pick" id="today-pick"></p>
-          <dl class="stats" id="today-stats"></dl>
-        </aside>
+        <section class="paper-card inst inst--weather" id="weather" aria-labelledby="weather-label" data-state="loading">
+          <header class="inst__head">
+            <h2 class="inst__title heading" id="weather-label">Weather in Honolulu</h2>
+            <span class="inst__stale" id="weather-stale" hidden></span>
+          </header>
+          <div class="inst__body" id="weather-body"></div>
+          <p class="inst__source">Conditions from the <a href="https://www.weather.gov/hfo/" target="_blank" rel="noopener">National Weather Service</a><span id="weather-forecast-source" hidden>; wind and temperature from the <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> hourly forecast</span>.</p>
+        </section>
         <!-- /wp:instruments -->
       </div>
     </section>

@@ -546,37 +546,6 @@ img { display: block; max-width: 100%; }
 .basket-reset:hover { color: var(--sand); }
 
 .side { display: grid; gap: 20px; }
-.card {
-  border: 2px solid rgba(247, 238, 219, .18);
-  border-radius: 20px;
-  padding: 26px 28px;
-}
-.card-label { margin: 0 0 10px; font-size: .95rem; color: rgba(247, 238, 219, .65); }
-.word-term {
-  font-family: var(--display);
-  font-size: 2.6rem;
-  line-height: 1.05;
-  margin: 0 0 8px;
-  color: var(--sand);
-}
-.word-meaning { margin: 0; font-size: 1.05rem; color: rgba(247, 238, 219, .88); }
-
-.tides ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.tides li { display: grid; grid-template-columns: 1fr auto auto; gap: 16px; color: rgba(247, 238, 219, .8); }
-.tides li .when { font-variant-numeric: tabular-nums; }
-.tides li .height { color: rgba(247, 238, 219, .55); font-variant-numeric: tabular-nums; min-width: 4.2em; text-align: right; }
-.tides li.next { color: var(--mango); font-weight: 600; }
-.tides li.next .height { color: var(--mango); }
-.tides li.past { opacity: .5; }
-.card-source { margin: 12px 0 0; font-size: .8rem; color: rgba(247, 238, 219, .45); }
-.card-source a { color: inherit; }
-
-.surf { margin-top: 40px; max-width: 460px; }
-.surf-call { margin: 0 0 14px; font-family: var(--display); font-size: 1.6rem; line-height: 1.15; color: var(--sand); }
-.stats { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; }
-.stats dt { color: rgba(247, 238, 219, .6); }
-.stats dd { margin: 0; color: rgba(247, 238, 219, .9); font-variant-numeric: tabular-nums; }
-.today-pick { margin: 0 0 14px; font-family: var(--display); font-size: 1.25rem; line-height: 1.3; color: var(--sand); }
 
 footer {
   max-width: 1040px;

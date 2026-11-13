@@ -25,7 +25,13 @@ export function parseSurf(json) {
     rows.push(["Swell", `${c.swell_wave_height.toFixed(1)} ft at ${Math.round(c.swell_wave_period)} s from the ${compass(c.swell_wave_direction)}`]);
   }
   if (c.sea_surface_temperature != null) rows.push(["Water", `${Math.round(c.sea_surface_temperature * 9 / 5 + 32)}°F`]);
-  return { height: h, call: surfCall(h), rows };
+  const part = (hh, dir, period) => ({ h: hh, dir: dir ?? null, period: period ?? null });
+  return {
+    height: h, call: surfCall(h), rows,
+    waves: part(h, c.wave_direction, c.wave_period),
+    swell: c.swell_wave_height != null ? part(c.swell_wave_height, c.swell_wave_direction, c.swell_wave_period) : null,
+    seaF: c.sea_surface_temperature != null ? Math.round(c.sea_surface_temperature * 9 / 5 + 32) : null
+  };
 }
 
 /** The wind row, from the shared weather reading; null when there is none. */
@@ -39,4 +45,4 @@ export function loadSurf(opts = {}) {
   return fetchCached("surf", SURF_URL, { parse: parseSurf, maxAge: 6 * 3600e3, ...opts });
 }
 
-export const surf = { status: "none", data: null };
+export const surf = { status: "none", data: null, t: null };
