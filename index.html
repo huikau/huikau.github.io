@@ -204,27 +204,42 @@
         </div>
         <span class="ula-tag">Captain Ula</span>
         <!-- /wp:land -->
-        <button class="bobber" id="bobber" type="button" aria-label="Reel in Ula's line">
-          <svg viewBox="0 0 30 40" aria-hidden="true">
-            <line x1="15" y1="0" x2="15" y2="8" stroke="#2A1A12" stroke-width="2"/>
-            <g class="classic">
-              <path d="M3 22 A12 12 0 0 1 27 22 Z" fill="#E8662A"/>
-              <path d="M3 22 A12 12 0 0 0 27 22 Z" fill="#F7EEDB"/>
-              <rect x="3" y="20.5" width="24" height="3" fill="#0E2B30"/>
+        <svg class="reel-ring" id="reel-ring" viewBox="-70 -70 140 140" aria-hidden="true" focusable="false">
+          <ellipse class="ring-ripple r1" cx="0" cy="14" rx="14" ry="5"/>
+          <ellipse class="ring-ripple r2" cx="0" cy="14" rx="14" ry="5"/>
+          <circle class="ring-key" r="22"/>
+          <circle class="ring-target" r="22"/>
+          <circle class="ring-shrink" r="22"/>
+        </svg>
+        <button class="bobber" id="bobber" type="button" aria-label="Cast your line">
+          <svg viewBox="0 0 30 40" aria-hidden="true" focusable="false">
+            <g class="skin-classic">
+              <line x1="15" y1="0" x2="15" y2="9" stroke="#0B2226" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M3 22 A12 12 0 0 0 27 22 Z" fill="#F7EEDB" stroke="#0B2226" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M3 22 A12 12 0 0 1 27 22 Z" fill="#E8662A" stroke="#0B2226" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M8.5 15.5 A9 9 0 0 1 14 11" fill="none" stroke="#F5A623" stroke-width="2" stroke-linecap="round"/>
+              <rect x="2.5" y="20" width="25" height="4" rx="1" fill="#0B2226"/>
             </g>
-            <g class="pumpkin">
-              <rect x="13.5" y="6" width="3" height="5" rx="1" fill="#3B5B2A"/>
-              <ellipse cx="15" cy="22" rx="13" ry="11.5" fill="#E8662A"/>
-              <path d="M15 10.5 C9 14 9 30 15 33.5 C21 30 21 14 15 10.5" fill="none" stroke="#C24E1A" stroke-width="1.2"/>
-              <path d="M8 18 L11.5 21 L8 21 Z M22 18 L18.5 21 L22 21 Z" fill="#2A1A12"/>
-              <path d="M8.5 25 Q15 31 21.5 25 L19 26.5 L17.5 25.5 L15 27 L12.5 25.5 L11 26.5 Z" fill="#2A1A12"/>
+            <g class="skin-pumpkin">
+              <line x1="15" y1="0" x2="15" y2="9" stroke="#0B2226" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M13.2 6.5 Q15 3 17.5 4.5 L16.8 10 L13.4 10Z" fill="#3E8F5A" stroke="#0B2226" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M15 9.5 C7 7 2 14 2 22 C2 30 8 34 15 34 C22 34 28 30 28 22 C28 14 23 7 15 9.5Z" fill="#E8662A" stroke="#0B2226" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M15 10 C11 14 11 29 15 33.5 M15 10 C19 14 19 29 15 33.5" fill="none" stroke="#B8441A" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M7.5 19 L12 20.5 L8.5 24Z M22.5 19 L18 20.5 L21.5 24Z" fill="#F5A623" stroke="#0B2226" stroke-width="1.3" stroke-linejoin="round"/>
+              <path d="M8.5 27 L11 25.5 L13 27.5 L15 25.5 L17 27.5 L19 25.5 L21.5 27 Q15 31.5 8.5 27Z" fill="#F5A623" stroke="#0B2226" stroke-width="1.3" stroke-linejoin="round"/>
             </g>
           </svg>
         </button>
-        <span class="hint" id="hint">Tap the bobber</span>
-        <div class="catch" id="catch" role="status" aria-live="polite">
-          <span class="catch-emoji" id="catch-emoji" aria-hidden="true"></span>
-          <span class="catch-text" id="catch-text"></span>
+        <span class="hint" id="hint" aria-hidden="true">Cast your line</span>
+        <p class="visually-hidden" id="game-live" role="status" aria-live="polite"></p>
+        <div class="catch paper-card" id="catch">
+          <div class="catch-art" id="catch-art" aria-hidden="true"></div>
+          <div class="catch-body">
+            <p class="catch-kicker" id="catch-kicker"></p>
+            <h3 class="catch-name"><span id="catch-name"></span> <span class="catch-en" id="catch-en"></span></h3>
+            <p class="catch-text" id="catch-text"></p>
+          </div>
+          <button class="catch-close" id="catch-close" type="button" aria-label="Close catch card"><span aria-hidden="true">×</span></button>
         </div>
       </div>
     </section>
@@ -283,11 +298,20 @@
         <!-- wp:basket -->
         <div class="basket" id="basket">
           <div class="basket-head">
-            <h2>Ula's lauhala basket</h2>
+            <h2 id="basket-title">Ula's lauhala basket</h2>
             <span class="basket-count" id="basket-count"></span>
           </div>
-          <ul class="basket-grid" id="basket-grid"></ul>
+          <p class="basket-sub">A field guide to what is biting. Tap a catch to read about it.</p>
+          <div class="basket-grid" id="basket-grid"></div>
           <button class="basket-reset" id="basket-reset" type="button" hidden>Empty the basket</button>
+          <dialog class="guide-dialog paper-card" id="guide-dialog" aria-labelledby="guide-name">
+            <div class="guide-art" id="guide-art" aria-hidden="true"></div>
+            <h3 class="guide-title"><span id="guide-name"></span> <span class="guide-en" id="guide-en"></span></h3>
+            <p class="guide-rarity" id="guide-rarity"></p>
+            <p class="guide-fact" id="guide-fact"></p>
+            <dl class="guide-facts" id="guide-facts"></dl>
+            <button class="btn btn--secondary" id="guide-close" type="button">Close</button>
+          </dialog>
         </div>
         <!-- /wp:basket -->
 

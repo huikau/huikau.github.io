@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { species, speciesById, catches, golden, seasonal } from "../../js/data/species.js";
+import * as data from "../../js/data/species.js";
+const { species, speciesById } = data;
 import { fishSVG, fishArt } from "../../js/game/fishart.js";
 
 // Plan section 4.5, character for character (U+02BB okina, kahako).
@@ -35,15 +36,9 @@ test("no emoji anywhere in species entries", () => {
   for (const s of species) assert.ok(!EMOJI.test(JSON.stringify(s)), s.id);
 });
 
-test("compatibility shim keeps the legacy game shape and order", () => {
-  assert.deepEqual(catches.map((c) => c.id), LEGACY.filter((i) => i !== "golden"));
-  for (const c of catches) assert.ok(c.e && c.t && c.mood);
-  assert.equal(golden.id, "golden");
-  assert.equal(golden.rare, true);
-  assert.equal(seasonal.none.length, 0);
-  assert.equal(seasonal.halloween.length, 2);
-  assert.equal(seasonal.winter.length, 1);
-  assert.equal(seasonal.newyear.length, 1);
+test("the emoji compatibility shim is gone; the game uses fishSVG", () => {
+  for (const k of ["catches", "golden", "seasonal"]) assert.ok(!(k in data), k);
+  for (const id of LEGACY) assert.ok(speciesById[id], id);
 });
 
 test("fishSVG renders every species, deterministically, with no gradients or emoji", () => {

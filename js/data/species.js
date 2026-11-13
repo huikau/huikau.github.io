@@ -1,6 +1,6 @@
 // Every creature and curiosity Ula can meet. Names come only from plan section 4.5; art parameters
-// are read by js/game/fishart.js. Entries carry no emoji: the compatibility shim at the bottom
-// keeps the current game (fishing.js, basket.js) working until WP6b rewrites them.
+// are read by js/game/fishart.js. Entries carry no emoji. The game (js/game/) adds nothing to them
+// at run time: `best` (best time of day), `fact` and `ulaLine` are filled in below.
 //
 // rarity: common | uncommon | rare | visitor (never caught) | junk | seasonal
 // kind:   fish | creature | visitor | object | seasonal
@@ -165,26 +165,52 @@ export const species = [
 
 export const speciesById = Object.fromEntries(species.map((s) => [s.id, s]));
 
-// ---------------------------------------------------------------------------------------------
-// Compatibility shim for the current game code (removed when WP6b lands): the old { id, e, t, mood }
-// shape, in the old order, derived from `species`. Emoji live only here.
-// ---------------------------------------------------------------------------------------------
-const LEGACY_EMOJI = {
-  mahi: "🐟", pineapple: "🍍", slipper: "🩴", hee: "🐙", coconut: "🥥", puffer: "🐡", plumeria: "🌺",
-  boot: "🥾", shark: "🦈", honu: "🐢", wave: "🌊", cap: "🧢", golden: "🐟",
-  skeleton: "💀", pumpkin: "🎃", gift: "🎁", popper: "🎉"
-};
-const legacy = (id, extra) => {
-  const s = speciesById[id];
-  return { id, e: LEGACY_EMOJI[id], t: s.line, mood: s.mood, ...extra };
-};
-const noId = ({ id, ...rest }) => rest; // seasonal finds were never saved to the basket
 
-export const catches = ["mahi", "pineapple", "slipper", "hee", "coconut", "puffer", "plumeria", "boot", "shark", "honu", "wave", "cap"].map((id) => legacy(id));
-export const golden = legacy("golden", { rare: true });
-export const seasonal = {
-  halloween: [noId(legacy("skeleton")), noId(legacy("pumpkin"))],
-  winter: [noId(legacy("gift"))],
-  newyear: [noId(legacy("popper"))],
-  none: []
+// ---------------------------------------------------------------------------------------------
+// Game data (WP6b): best time of day (dawn | day | dusk | night | any), one kid-friendly fact each,
+// and a line of its own for Ula meeting her namesake. English only; Hawaiian stays in the fields above.
+// ---------------------------------------------------------------------------------------------
+const BEST = {
+  mahi: "day", ahi: "dawn", aku: "day", ono: "dawn", ulua: "dusk", opakapaka: "dawn", uku: "dusk", moi: "dawn",
+  amaama: "day", humu: "day", uhu: "day", manini: "day", kala: "day", weke: "night", oio: "dawn",
+  hee: "dusk", ula: "night", shark: "dusk", puffer: "day", golden: "day", honu: "day"
 };
+const FACT = {
+  mahi: "Mahimahi flash bright green and gold, and the colors fade when they rest.",
+  ahi: "ʻAhi are fast swimmers that cross wide stretches of open ocean.",
+  aku: "Aku swim in big, speedy schools and almost never stop moving.",
+  ono: "Wahoo are among the fastest fish in the sea.",
+  ulua: "Ulua are strong fighters that hunt around reefs and rocky ledges.",
+  opakapaka: "ʻŌpakapaka live in deep water and wear a rosy pink color.",
+  uku: "Uku live in deep water and are busiest around dawn and dusk.",
+  moi: "Long ago, moi was a fish saved for Hawaiian royalty.",
+  amaama: "ʻAmaʻama sometimes leap right out of the water.",
+  humu: "This is Hawaiʻi's state fish. Its name is longer than the fish!",
+  uhu: "Uhu crunch on algae and coral, and they help make sand.",
+  manini: "Manini wear stripes and travel in hungry schools along the reef.",
+  kala: "Some kala grow a little horn on their forehead.",
+  weke: "Weke feel for food in the sand with whiskers on their chin.",
+  oio: "ʻŌʻio are silver, speedy, and hard to spot over the sand flats.",
+  hee: "Heʻe can squeeze through tiny gaps and change color to hide.",
+  ula: "Spiny lobsters have no big claws. They use long feelers instead.",
+  shark: "Most sharks are shy and keep away from people.",
+  puffer: "A pufferfish gulps water to puff up big and look scary.",
+  golden: "A golden ulua is very rare. Hardly anyone ever sees one.",
+  pineapple: "Pineapples grow on the ground, not on trees.",
+  slipper: "In Hawaiʻi, flip-flops are called slippers, and everybody wears them.",
+  coconut: "A coconut can float across an ocean and sprout on a faraway beach.",
+  plumeria: "Plumeria flowers are strung together to make leis.",
+  boot: "Every fisher finds an old boot sooner or later. It is nearly tradition.",
+  wave: "A nice wave is not a fish, but it is still a good day at sea.",
+  cap: "The Fat Boy Fishing Club cap is Ula's favorite hat.",
+  skeleton: "Skeleton fish only bite around Halloween.",
+  pumpkin: "A jack-o'-lantern only floats by around Halloween.",
+  gift: "Presents wrapped in seaweed only turn up in December.",
+  popper: "Party poppers only bob by around New Year.",
+  honu: "Honu are protected, so they only ever visit. They are never caught."
+};
+for (const s of species) {
+  s.best = BEST[s.id] || "any";
+  s.fact = FACT[s.id] || "";
+}
+speciesById.ula.ulaLine = "A spiny lobster called ula, just like her! Ula said hello to her namesake.";
