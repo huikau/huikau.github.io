@@ -58,10 +58,11 @@
       <!-- wp:seasonal -->
       <div class="lights" id="lights" aria-hidden="true"></div>
       <div class="fireworks" id="fireworks" aria-hidden="true"></div>
-
       <div class="shooting" id="shooting" aria-hidden="true"></div>
-      <svg class="iwa" id="iwa" viewBox="0 0 80 32" aria-hidden="true">
-        <path d="M0 13 L17 8 L29 14 L37 12 L40 15 L43 12 L51 14 L63 8 L80 13 L63 11 L51 18 L43 17 L44 30 L40 21 L36 30 L37 17 L29 18 L17 11 Z"/>
+      <svg class="iwa" id="iwa" viewBox="0 0 120 50" aria-hidden="true" focusable="false">
+        <path class="iwa-wing" d="M2 20C20 8 40 12 52 22L60 24L68 22C80 12 100 8 118 20C100 18 82 22 70 30L65 34L67 48L60 39L53 48L55 34L50 30C38 22 20 18 2 20Z"/>
+        <path class="iwa-hi" d="M10 19C26 14 38 17 49 23M110 19C94 14 82 17 71 23"/>
+        <ellipse class="iwa-pouch" cx="60" cy="27" rx="3.2" ry="2.6"/>
       </svg>
       <p class="wish" id="wish" role="status" aria-live="polite"></p>
       <!-- /wp:seasonal -->
@@ -126,11 +127,12 @@
       <!-- wp:water -->
       <div class="sea" aria-hidden="true">
         <!-- wp:seasonal -->
-        <span class="greenflash" id="greenflash"></span>
-        <div class="whale" id="whale">
-          <span class="spout"></span>
-          <svg class="fluke" viewBox="0 0 60 40"><path d="M28 40 C28 31 28.5 25 29 21 C23 13 12 8 2 9 C9 12 17 16 22 21 C25 23 27.5 21 30 18 C32.5 21 35 23 38 21 C43 16 51 12 58 9 C48 8 37 13 31 21 C31.5 25 32 31 32 40 Z"/></svg>
-        </div>
+        <span class="greenflash" id="greenflash">
+          <svg viewBox="0 0 120 16" aria-hidden="true" focusable="false">
+            <path class="gf-outer" d="M2 10Q60-4 118 10Q60 16 2 10Z"/>
+            <path class="gf-inner" d="M28 9.5Q60 2 92 9.5Q60 13 28 9.5Z"/>
+          </svg>
+        </span>
         <!-- /wp:seasonal -->
         <svg class="wave back" viewBox="0 0 2880 200" preserveAspectRatio="none">
           <path class="w-fill" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44 V200 H0 Z"/>
@@ -138,13 +140,32 @@
           <path class="w-crest" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44"/>
         </svg>
         <!-- wp:seasonal -->
-        <div class="boat" id="boat">
-          <svg viewBox="0 0 120 100">
-            <path d="M84 4 L84 12 L96 8 Z" fill="#E8662A"/>
-            <line x1="62" y1="6" x2="62" y2="80" stroke="#2A1A12" stroke-width="3"/>
-            <path d="M65 10 L65 74 L108 74 Z" fill="#F7EEDB"/>
-            <path d="M59 18 L59 74 L24 74 Z" fill="#E8662A"/>
-            <path d="M8 78 L114 78 L98 94 L24 94 Z" fill="#2A1A12"/>
+        <div class="whale" id="whale" aria-hidden="true">
+          <svg class="spout" viewBox="0 0 60 70" focusable="false">
+            <path class="sp-a" d="M30 70C24 52 26 40 30 22C34 40 36 52 30 70Z"/>
+            <path class="sp-b" d="M30 30C20 22 10 22 4 30C12 28 20 32 28 44ZM30 30C40 22 50 22 56 30C48 28 40 32 32 44Z"/>
+            <path class="sp-c" d="M30 14C26 8 28 4 30 0C32 4 34 8 30 14Z"/>
+          </svg>
+          <svg class="humpback" viewBox="0 0 120 50" focusable="false">
+            <path class="wh-body" d="M4 50C10 26 44 14 74 22C92 27 106 38 116 50Z"/>
+            <path class="wh-belly" d="M4 50C10 40 30 34 54 36C80 38 104 42 116 50Z"/>
+            <path class="wh-fin" d="M72 22L80 8L90 25Z"/>
+            <path class="wh-line" d="M16 40Q36 30 58 34M30 46Q54 38 80 42"/>
+          </svg>
+          <svg class="fluke" viewBox="0 0 60 44" focusable="false">
+            <path class="wh-body" d="M28 44C28 34 28.5 27 29 23C23 14 12 9 2 10C9 13 17 17 22 22C25 25 27.5 23 30 20C32.5 23 35 25 38 22C43 17 51 13 58 10C48 9 37 14 31 23C31.5 27 32 34 32 44Z"/>
+            <path class="wh-line" d="M30 22L30 38"/>
+          </svg>
+        </div>
+        <div class="boat" id="boat" aria-hidden="true">
+          <svg viewBox="0 0 150 120" focusable="false">
+            <path class="bt-flag" d="M92 4L92 16L108 10Z"/>
+            <path class="bt-mast" d="M72 6L72 90"/>
+            <path class="bt-sail" d="M76 14C96 32 108 58 112 84L76 84Z"/>
+            <path class="bt-jib" d="M68 22C54 40 42 62 36 84L68 84Z"/>
+            <text class="bt-text" x="93" y="72" text-anchor="middle" transform="rotate(-8 93 72)">aloha</text>
+            <path class="bt-hull" d="M10 88L140 88C134 104 120 112 104 112L40 112C24 110 14 100 10 88Z"/>
+            <path class="bt-stripe" d="M14 96L137 96"/>
           </svg>
         </div>
         <!-- /wp:seasonal -->
@@ -400,6 +421,14 @@
 
   <footer>© <span id="year">2026</span> Huikau. Made on island time.
     <!-- wp:seasonal -->
+    <details class="finds" id="finds">
+      <summary>Things to find <span class="finds-count" id="finds-count"></span></summary>
+      <div class="finds-body">
+        <p class="finds-intro">A few secrets are hiding on this page. Each riddle ticks off when you find its secret.</p>
+        <ul class="finds-list" id="finds-list"></ul>
+        <p class="sr-only" id="finds-status" role="status" aria-live="polite"></p>
+      </div>
+    </details>
     <!-- /wp:seasonal -->
   </footer>
 </body>

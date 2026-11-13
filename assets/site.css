@@ -68,40 +68,7 @@ img { display: block; max-width: 100%; }
   from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: none; }
 }
-/* invisible button over the pineapple in the logo */
-.pine {
-  position: absolute;
-  left: 0;
-  top: 12%;
-  width: 21%;
-  height: 88%;
-  padding: 0;
-  border: 0;
-  background: none;
-  border-radius: 40%;
-  cursor: pointer;
-}
-
-.friday {
-  display: inline-block;
-  margin-right: 10px;
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: var(--mango);
-  color: var(--abyss);
-  font-family: var(--display);
-  text-shadow: none;
-}
-
-/* the boat that sails by when someone types "aloha" */
-.boat { position: absolute; left: 0; bottom: 62%; width: 120px; transform: translateX(-160px); visibility: hidden; }
-.boat svg { width: 100%; height: auto; animation: rock 2.6s ease-in-out infinite; transform-origin: 50% 90%; }
-.boat.sail { visibility: visible; animation: sail 18s linear forwards; }
-@keyframes sail { to { transform: translateX(calc(100vw + 40px)); } }
-@keyframes rock {
-  0%, 100% { transform: rotate(-3deg) translateY(0); }
-  50%      { transform: rotate(3deg) translateY(4px); }
-}
+/* seasonal things (string lights, fireworks, the lei, Aloha Friday badge, pineapple rain, boat, whale, green flash, shooting stars, ʻiwa) live in css/seasonal.css (WP9) */
 
 /* ---------- Ula's fishing rig ---------- */
 .rig {
@@ -126,155 +93,6 @@ img { display: block; max-width: 100%; }
 }
 /* .lei, .ula-tag, .ula-frame and the canoe live in css/scene.css (land, WP4) */
 
-/* ---------- Seasonal extras ---------- */
-.lights, .fireworks { display: none; position: absolute; left: 0; right: 0; top: 0; pointer-events: none; }
-.season-winter .lights { display: block; height: 90px; }
-.lights circle { animation: glint 2.4s ease-in-out infinite; }
-.lights circle:nth-of-type(3n+1) { animation-delay: .8s; }
-.lights circle:nth-of-type(3n+2) { animation-delay: 1.6s; }
-@keyframes glint { 50% { opacity: .45; } }
-.season-newyear .fireworks { display: block; bottom: 45%; }
-.burst {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  animation: burst 3.2s ease-out infinite;
-}
-@keyframes burst {
-  0%   { transform: scale(.05); opacity: 1; }
-  70%  { opacity: 1; }
-  100% { transform: scale(1); opacity: 0; }
-}
-
-/* ---------- Horizon: green flash and whales ---------- */
-.greenflash {
-  position: absolute;
-  left: 50%;
-  bottom: 74%;
-  width: 150px;
-  height: 10px;
-  margin-left: -75px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at center, #B8FF9C, #3DDC6A 45%, transparent 72%);
-  filter: blur(1px);
-  opacity: 0;
-}
-.greenflash.go { animation: greenflash 1.8s ease-out; }
-@keyframes greenflash {
-  0%   { opacity: 0; transform: scaleX(.4); }
-  20%  { opacity: 1; transform: scaleX(1); }
-  100% { opacity: 0; transform: scaleX(.8); }
-}
-
-.whale { position: absolute; bottom: 70%; width: 58px; height: 72px; margin-left: -29px; }
-.whale .fluke { position: absolute; left: 0; bottom: 0; width: 58px; fill: #10303A; transform: translateY(38px); }
-.whale .spout {
-  position: absolute;
-  left: 50%;
-  bottom: 6px;
-  width: 16px;
-  height: 34px;
-  margin-left: -8px;
-  border-radius: 50% 50% 40% 40%;
-  background: radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, .95), rgba(255, 255, 255, .2) 70%, transparent);
-  transform-origin: 50% 100%;
-  opacity: 0;
-}
-.whale.fluke-up .fluke { animation: fluke 5s ease-in-out; }
-.whale.spouting .spout { animation: spout 3s ease-out; }
-@keyframes fluke {
-  0%   { transform: translateY(38px) rotate(0); }
-  30%  { transform: translateY(2px) rotate(-6deg); }
-  60%  { transform: translateY(0) rotate(5deg); }
-  100% { transform: translateY(42px) rotate(10deg); }
-}
-@keyframes spout {
-  0%   { opacity: 0; transform: scale(.3, .1); }
-  25%  { opacity: .95; transform: scale(1, 1); }
-  100% { opacity: 0; transform: scale(1.6, 1.15) translateY(-6px); }
-}
-
-/* ---------- Shooting stars and wishes ---------- */
-.shooting { position: absolute; inset: 0 0 50% 0; pointer-events: none; }
-.shoot {
-  position: absolute;
-  width: 80px;
-  height: 80px;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  pointer-events: auto;
-  animation: shoot 1.9s ease-in forwards;
-}
-.shoot::before {
-  content: "";
-  position: absolute;
-  left: 10px;
-  top: 38px;
-  width: 60px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .95));
-  transform: rotate(22deg);
-  box-shadow: 0 0 6px rgba(255, 255, 255, .8);
-}
-@keyframes shoot {
-  0%   { opacity: 0; transform: translate(0, 0); }
-  15%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(260px, 105px); }
-}
-.wish {
-  position: absolute;
-  top: 64px;
-  left: 50%;
-  z-index: 4;
-  width: max-content;
-  max-width: calc(100% - 32px);
-  margin: 0;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: rgba(247, 238, 219, .95);
-  color: var(--abyss);
-  font-size: .95rem;
-  text-align: center;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, .35);
-  transform: translate(-50%, -8px);
-  opacity: 0;
-  transition: opacity .3s ease, transform .3s ease;
-  pointer-events: none;
-}
-.wish.show { opacity: 1; transform: translate(-50%, 0); }
-
-/* ---------- An ʻiwa (frigatebird) gliding over ---------- */
-.iwa {
-  position: absolute;
-  left: 0;
-  z-index: 1;
-  width: 70px;
-  fill: var(--bird);
-  visibility: hidden;
-  pointer-events: none;
-}
-.iwa.glide { visibility: visible; animation: glide 26s linear forwards, soar 6s ease-in-out infinite; }
-@keyframes glide {
-  from { translate: -100px 0; }
-  to   { translate: calc(100vw + 100px) 0; }
-}
-@keyframes soar {
-  0%, 100% { transform: rotate(-4deg) translateY(0); }
-  50%      { transform: rotate(5deg) translateY(16px); }
-}
-
-/* ---------- Pineapple rain ---------- */
-.rain { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
-.rain span {
-  position: absolute;
-  top: -60px;
-  animation: fall var(--d) linear var(--delay) forwards;
-}
-@keyframes fall { to { transform: translateY(calc(100vh + 120px)) rotate(var(--r)); } }
 
 /* ---------- Fat Boy Fishing Club: the dock sign lives in css/scene.css (crew, WP4) ---------- */
 
@@ -357,7 +175,6 @@ footer {
   .shore { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-top: 56px; }
   .scene { padding-bottom: 30vh; padding-top: 56px; }
   .rig { transform: scale(.85); transform-origin: left bottom; }
-  .friday { display: table; margin-bottom: 6px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
