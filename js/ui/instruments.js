@@ -252,6 +252,23 @@ const sunGlyph = (x, y) => {
   return `${rays}<circle class="sun__disc" cx="${n1(x)}" cy="${n1(y)}" r="9"/>`;
 };
 
+/** The dial's sky follows the real one: day, golden (sun low), twilight (just down) and night. */
+export const dialSky = (alt) => (alt > 8 ? "day" : alt > -0.83 ? "golden" : alt > -12 ? "twilight" : "night");
+const DIAL_STARS = [[34, 26, 1.4], [78, 54, 1], [112, 18, 1.2], [150, 40, .9], [196, 22, 1.4], [238, 50, 1], [276, 16, 1.2], [312, 38, 1], [58, 92, .9], [292, 88, 1.1], [176, 76, .8]];
+/**
+ * Where the "Sun" and "Moon" labels go (their baselines): under the glyph when there is sky to spare above the horizon,
+ * otherwise over it; and if the two would overlap, the moon's label moves to the other side of its glyph.
+ */
+export function dialLabels(sun, moon) {
+  const place = (b, gap) => (b.y + b.r + gap + 2 < DIAL.horizon - 4 ? b.y + b.r + gap : b.y - b.r - 6);
+  const out = { sun: sun ? place(sun, 11) : null, moon: moon ? moon.y - moon.r - 6 : null };
+  if (sun && moon && Math.abs(sun.x - moon.x) < 46 && Math.abs(out.sun - out.moon) < 16) {
+    out.moon = out.moon === moon.y - moon.r - 6 && moon.y + moon.r + 17 < DIAL.horizon - 4 ? moon.y + moon.r + 15 : moon.y - moon.r - 6;
+    if (Math.abs(out.sun - out.moon) < 16) out.sun = out.sun > sun.y ? sun.y - sun.r - 6 : (sun.y + sun.r + 13 < DIAL.horizon - 4 ? sun.y + sun.r + 11 : out.sun);
+  }
+  return out;
+}
+
 /** The dial. `m` is the current minute of the day, `ms` the displayed instant, `dayMs` midnight of the displayed day. */
 export function dialSvg({ ms, dayMs, m, sun, phase }) {
   const arc = sunArc(dayMs, sun);
@@ -261,10 +278,15 @@ export function dialSvg({ ms, dayMs, m, sun, phase }) {
   const sunUp = sp.altitude > -0.83, moonUp = mp.altitude > 0;
   const sx = arc[0] ? arc[0].x : 38, ex = arc.length ? arc[arc.length - 1].x : 302;
   const cardinal = [["E", 90], ["S", 180], ["W", 270]].map(([t, az]) => `<text class="tick tick--dir tick--sea" x="${n1(dialPoint(az, 0)[0])}" y="${DIAL.horizon + 17}" text-anchor="middle">${t}</text>`).join("");
-  const sunMark = sunUp ? (([x, y]) => `${sunGlyph(x, y)}<text class="lbl lbl--halo" x="${n1(x)}" y="${n1(y + 28)}" text-anchor="middle">Sun</text>`)(dialPoint(sp.azimuth, sp.altitude)) : "";
-  const moonMark = moonUp ? (([x, y]) => `${moonGlyph(x, y, phase)}<text class="lbl lbl--halo" x="${n1(x)}" y="${n1(y - 17)}" text-anchor="middle">Moon</text>`)(dialPoint(mp.azimuth, mp.altitude)) : "";
-  return `<svg class="chart chart--dial" viewBox="0 0 ${DIAL.w} ${DIAL.h}" aria-hidden="true" focusable="false">`
-    + `<rect class="sky" x="0" y="0" width="${DIAL.w}" height="${DIAL.horizon}"/>`
+  const [sunX, sunY] = dialPoint(sp.azimuth, sp.altitude), [moonX, moonY] = dialPoint(mp.azimuth, mp.altitude);
+  const labels = dialLabels(sunUp && { x: sunX, y: sunY, r: 17 }, moonUp && { x: moonX, y: moonY, r: 11 });
+  const sunMark = sunUp ? `${sunGlyph(sunX, sunY)}<text class="lbl lbl--halo" x="${n1(sunX)}" y="${n1(labels.sun)}" text-anchor="middle">Sun</text>` : "";
+  const moonMark = moonUp ? `${moonGlyph(moonX, moonY, phase)}<text class="lbl lbl--halo" x="${n1(moonX)}" y="${n1(labels.moon)}" text-anchor="middle">Moon</text>` : "";
+  const sky = dialSky(sp.altitude);
+  let stars = "";
+  if (sky === "night" || sky === "twilight") for (const [x, y, r] of DIAL_STARS) stars += `<circle class="dial-star" cx="${x}" cy="${y}" r="${r}"/>`;
+  return `<svg class="chart chart--dial chart--dial-${sky}" viewBox="0 0 ${DIAL.w} ${DIAL.h}" aria-hidden="true" focusable="false">`
+    + `<rect class="sky" x="0" y="0" width="${DIAL.w}" height="${DIAL.horizon}"/>${stars}`
     + `<rect class="sea" x="0" y="${DIAL.horizon}" width="${DIAL.w}" height="${DIAL.h - DIAL.horizon}"/>`
     + `<line class="horizon" x1="0" y1="${DIAL.horizon}" x2="${DIAL.w}" y2="${DIAL.horizon}"/>`
     + `<path class="arc arc--todo" d="${path(todo)}"/><path class="arc arc--done" d="${path(done)}"/>`

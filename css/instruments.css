@@ -70,11 +70,16 @@
 .surf__text .stats dd { font-size: var(--step-0); }
 
 /* sun and moon dial */
-.chart--dial .sky { fill: var(--foam); }
+.chart--dial .sky { fill: var(--foam); transition: fill var(--dur-slow, .6s) ease; }
+.chart--dial-golden .sky { fill: #F6D7A6; }
+.chart--dial-twilight .sky { fill: #5B4E86; }
+.chart--dial-night .sky { fill: #12284A; }
+.dial-star { fill: var(--sand); opacity: .85; }
 .chart--dial .sea { fill: var(--deep); }
 .chart--dial .horizon { stroke: var(--ink); stroke-width: 2.5; }
 .chart--dial .arc { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
 .chart--dial .arc--todo { stroke-dasharray: 1 8; stroke-width: 4; }
+.chart--dial-twilight .arc, .chart--dial-night .arc { stroke: var(--sand); }
 .chart--dial .ax { stroke: var(--sunset); stroke-width: 3.5; }
 .chart--dial .tick--sea { fill: var(--sand); font-size: 13px; font-weight: 600; }
 .chart--dial .tick--dir.tick--sea { font-size: 13px; }

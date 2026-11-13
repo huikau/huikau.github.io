@@ -44,7 +44,7 @@
 body { background: var(--ink); }
 
 .shore {
-  --zone-h: clamp(440px, 80vh, 780px);
+  --zone-h: clamp(400px, 62vh, 640px); /* design review: less empty water between the cards and the reef */
   position: relative;
   isolation: isolate;
   max-width: none;
@@ -155,7 +155,7 @@ body { background: var(--ink); }
 @keyframes kelp-sway { from { rotate: -2.5deg; } to { rotate: 3deg; } }
 
 .reef-note {
-  position: absolute; left: 50%; top: 26%; translate: -50% 0; z-index: 2;
+  position: absolute; left: 50%; top: 16%; translate: -50% 0; z-index: 2;
   width: max-content; max-width: min(340px, 80vw); margin: 0;
   padding: var(--space-4) var(--space-5); text-align: center; font-size: var(--step-0); line-height: 1.35;
 }
