@@ -108,30 +108,19 @@ export function blossom(x, y, r, color, rot = 0) {
 }
 const leaf = (x, y, r, rot) => `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${(r * .36).toFixed(2)}" ry="${(r * .78).toFixed(2)}" transform="rotate(${rot} ${x.toFixed(1)} ${y.toFixed(1)})" fill="#3E8F5A" stroke="${INK}" stroke-width="1.1"/>`;
 
-/** A lei around Ula's portrait frame (a 120 x 120 box, rim radius 52). */
+/** A lei around Ula's neck in the boat illustration (rig coordinates: it hangs from her shoulders over the bandana). */
 export function leiSVG() {
-  const n = 16;
+  // shoulder to shoulder through a low point on her chest: a quadratic drape
+  const A = [80.5, 41], C = [95.5, 63], B = [110.5, 41], n = 11;
   let leaves = "", flowers = "";
   for (let i = 0; i < n; i++) {
-    const a = i / n * Math.PI * 2 - Math.PI / 2, b = a + Math.PI / n;
-    flowers += blossom(60 + Math.cos(a) * 52, 60 + Math.sin(a) * 52, 8.4, FLOWER[i % FLOWER.length], i * 31);
-    leaves += leaf(60 + Math.cos(b) * 52, 60 + Math.sin(b) * 52, 8, b * 180 / Math.PI);
+    const t = i / (n - 1), u = 1 - t;
+    const x = u * u * A[0] + 2 * u * t * C[0] + t * t * B[0], y = u * u * A[1] + 2 * u * t * C[1] + t * t * B[1];
+    const dx = 2 * u * (C[0] - A[0]) + 2 * t * (B[0] - C[0]), dy = 2 * u * (C[1] - A[1]) + 2 * t * (B[1] - C[1]);
+    if (i < n - 1) leaves += leaf(x + dx * .05, y + dy * .05 + 1.6, 3.6, Math.atan2(dy, dx) * 180 / Math.PI);
+    flowers += blossom(x, y, 3.9, FLOWER[i % FLOWER.length], i * 37);
   }
-  return leaves + flowers;
-}
-
-/** A short lei draped along the canoe's gunwale (canoe coordinates). */
-export function canoeLeiSVG() {
-  // points along the gunwale: straight run, then the rising stern curve
-  const pts = [[118, 118], [136, 118], [154, 118], [172, 118]];
-  const P = [[176, 118], [204, 116], [224, 102], [238, 80]];
-  for (const t of [.25, .5, .75]) {
-    const u = 1 - t;
-    pts.push([0, 1].map((k) => u ** 3 * P[0][k] + 3 * u * u * t * P[1][k] + 3 * u * t * t * P[2][k] + t ** 3 * P[3][k]));
-  }
-  const drape = pts.map(([x, y], i) => [x, y + 4 + Math.sin(i / (pts.length - 1) * Math.PI) * 3]);
-  const cord = `M${drape.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join("L")}`;
-  return `<g class="ula-lei"><path d="${cord}" fill="none" stroke="${INK}" stroke-width="2"/>${drape.map(([x, y], i) => leaf(x + 7, y + 1, 7, 90) + "").join("")}${drape.map(([x, y], i) => blossom(x, y, 6.2, FLOWER[i % FLOWER.length], i * 37)).join("")}</g>`;
+  return `<g class="ula-lei">${leaves}${flowers}</g>`;
 }
 
 export function initSeasons(clock) {
@@ -163,8 +152,6 @@ export function initSeasons(clock) {
     if (badge) badge.hidden = false;
     const lei = $("lei");
     if (lei) { lei.innerHTML = leiSVG(); lei.removeAttribute("hidden"); } // (an SVG element has no .hidden property)
-    const canoe = $("canoe"), gun = canoe?.querySelector(".ula-gunwale");
-    if (gun) gun.insertAdjacentHTML("afterend", canoeLeiSVG());
     markFound("friday");
   }
   return { season, friday, month: today.getUTCMonth() + 1 };

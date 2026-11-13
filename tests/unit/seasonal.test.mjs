@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createBus } from "../../js/core/bus.js";
-import { detectSeason, lightsSVG, burstSVG, leiSVG, canoeLeiSVG, BURSTS } from "../../js/ui/seasons.js";
+import { detectSeason, lightsSVG, burstSVG, leiSVG, BURSTS } from "../../js/ui/seasons.js";
 import { SECRETS, CATCH_SECRETS, markFound, isFound, resetFound, foundLabel, flashWindow, whaleSeason, pineappleSVG, WISHES } from "../../js/ui/eggs.js";
 
 test("seasons by date and override", () => {
@@ -20,7 +20,7 @@ test("string lights are flat SVG with an ink keyline and no gradients or emoji",
 });
 
 test("fireworks, lei and pineapple are drawn, not emoji", () => {
-  for (const s of [burstSVG("#F5A623", "#F7EEDB"), leiSVG(), canoeLeiSVG(), pineappleSVG(40)]) {
+  for (const s of [burstSVG("#F5A623", "#F7EEDB"), leiSVG(), pineappleSVG(40)]) {
     assert.match(s, /<(svg|ellipse|path|g)/);
     assert.ok(!/\p{Extended_Pictographic}/u.test(s));
   }

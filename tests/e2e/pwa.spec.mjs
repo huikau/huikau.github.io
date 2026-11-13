@@ -82,7 +82,7 @@ await test("/nope renders the 404 with every API down", async () => {
   assert.equal(await p.getAttribute("a.btn", "href"), "/");
   assert.match(await p.textContent("a.btn"), /Paddle back home/);
   await p.waitForSelector("#land .land-svg");
-  await p.waitForSelector("#canoe .ula-hull");
+  await p.waitForSelector("#canoe .cord");
   assert.deepEqual(errors.filter((e) => !/Service Worker|Failed to load resource/.test(e)), []);
   const apis = await p.evaluate(() => performance.getEntriesByType("resource").filter((r) => /api\.|noaa|weather\.gov/.test(r.name)).length);
   assert.equal(apis, 0, "the 404 makes no API requests");

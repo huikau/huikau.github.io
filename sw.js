@@ -14,7 +14,7 @@
 //                       x-huikau-sw: cache and x-huikau-sw-time: <ms when it was fetched>; js/core/store.js turns those
 //                       into status "cached"
 //   never stored        opaque responses, anything not 200 OK, partial content, non-GET requests
-const VERSION = "2026-11-13.2";
+const VERSION = "2026-11-13.3";
 const STATIC_CACHE = `huikau-static-${VERSION}`;
 const API_CACHE = "huikau-api"; // not versioned: the last good tide, surf and weather survive a deploy
 
@@ -37,7 +37,7 @@ const PRECACHE = [
   "/assets/fonts/anton-latin-ext.woff2", "/assets/fonts/anton-latin.woff2",
   "/assets/fonts/caprasimo-latin-ext.woff2", "/assets/fonts/caprasimo-latin.woff2",
   "/assets/fonts/figtree-var-latin-ext.woff2", "/assets/fonts/figtree-var-latin.woff2",
-  "/assets/huikau-logo.webp", "/assets/ula.webp", "/assets/fatboy-logo.webp",
+  "/assets/huikau-logo.webp", "/assets/img/ula-boat.webp", "/assets/fatboy-logo.webp",
   "/assets/favicon-32.png", "/assets/apple-touch-icon.png",
   "/assets/img/icons/icon-192.png", "/assets/img/icons/icon-512.png", "/assets/img/icons/icon-maskable-512.png"
 ];

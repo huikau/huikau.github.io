@@ -10,6 +10,7 @@ import { clockTime } from "../core/clock.js";
 import { speciesById } from "../data/species.js";
 import { fishSVG } from "../game/fishart.js";
 import { nearRidgeY, VIEW } from "../scene/land.js";
+import { BOAT } from "../scene/ula.js";
 
 export const W = 1200, H = 1500;
 export const FILE_NAME = "huikau-postcard.png";
@@ -18,7 +19,7 @@ export const SHARE_URL = "https://huikau.com/";
 const PIC = { x: 64, y: 64, w: 1072, h: 900 };
 const HORIZON = 0.72; // where the sea meets the sky, as a share of the picture height (same as the page)
 
-const INK = "#0B2226", SAND = "#F7EEDB", CREAM = "#FBF3DF", SUNSET = "#E8662A", LAUHALA = "#C49C5E", HIBISCUS = "#D8456B", LAGOON = "#1E6E78";
+const INK = "#0B2226", SAND = "#F7EEDB", CREAM = "#FBF3DF", SUNSET = "#E8662A", HIBISCUS = "#D8456B", LAGOON = "#1E6E78";
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -342,11 +343,21 @@ function drawSea(ctx, P, sea, resolve) {
 }
 
 async function drawCanoe(ctx, P) {
-  const svg = $("canoe"), portrait = $("ula");
+  const svg = $("canoe"), boat = $("ula");
   if (!svg) return;
+  // the rig's 320 x 150 coordinates, scaled; the boat reaches 28 above the rig's top, so the overlay is drawn from -40
   const s = 1.8, ox = 44, oy = 508;
-  const img = await svgToImage(svg, 400 * s, 205 * s, "-40 -14 400 205");
-  ctx.drawImage(img, ox - 40 * s, oy - 14 * s, 400 * s, 205 * s);
+  if (boat) {
+    const bi = await loadImage(boat.currentSrc || boat.src);
+    ctx.save();
+    ctx.shadowColor = "rgba(11, 34, 38, .3)"; ctx.shadowBlur = 10; ctx.shadowOffsetY = 8;
+    ctx.drawImage(bi, ox + BOAT.x * s, oy + BOAT.y * s, BOAT.w * s, BOAT.h * s);
+    ctx.restore();
+  }
+  const lei = $("lei");
+  if (lei && !lei.hasAttribute("hidden")) ctx.drawImage(await svgToImage(lei, 400 * s, 231 * s, "-40 -40 400 231"), ox - 40 * s, oy - 40 * s, 400 * s, 231 * s);
+  const img = await svgToImage(svg, 400 * s, 231 * s, "-40 -40 400 231");
+  ctx.drawImage(img, ox - 40 * s, oy - 40 * s, 400 * s, 231 * s);
   // the float
   const bx = ox + 285 * s, by = oy + 92 * s;
   ctx.lineWidth = 3; ctx.strokeStyle = INK;
@@ -354,25 +365,6 @@ async function drawCanoe(ctx, P) {
   ctx.save(); ctx.beginPath(); ctx.ellipse(bx, by + 8, 14, 18, 0, 0, Math.PI * 2); ctx.clip();
   ctx.fillStyle = SUNSET; ctx.fillRect(bx - 16, by - 12, 32, 18); ctx.restore();
   ctx.beginPath(); ctx.ellipse(bx, by + 8, 14, 18, 0, 0, Math.PI * 2); ctx.stroke();
-  // Ula in her lauhala-rimmed frame (108 px box in the page; here scaled)
-  const fx = ox + 6 * s, fy = oy + 18 * s, c = 54 * s;
-  const cx = fx + c, cy = fy + c;
-  ctx.fillStyle = LAUHALA; ctx.strokeStyle = INK; ctx.lineWidth = 3 * s;
-  ctx.beginPath(); ctx.arc(cx, cy, 52 * s, 0, Math.PI * 2); ctx.fill();
-  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, 52 * s, 0, Math.PI * 2); ctx.clip();
-  ctx.strokeStyle = "rgba(11,34,38,.35)"; ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  for (let k = -200; k < 200; k += 9 * s) { ctx.moveTo(cx + k - 60, cy - 60); ctx.lineTo(cx + k + 60, cy + 60); ctx.moveTo(cx + k + 60, cy - 60); ctx.lineTo(cx + k - 60, cy + 60); }
-  ctx.stroke(); ctx.restore();
-  ctx.strokeStyle = INK; ctx.lineWidth = 3 * s;
-  ctx.beginPath(); ctx.arc(cx, cy, 52 * s, 0, Math.PI * 2); ctx.stroke();
-  ctx.beginPath(); ctx.arc(cx, cy, 42 * s, 0, Math.PI * 2); ctx.stroke();
-  if (portrait) {
-    const pi = await loadImage(portrait.currentSrc || portrait.src);
-    ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, 42 * s, 0, Math.PI * 2); ctx.clip();
-    ctx.drawImage(pi, cx - 42 * s, cy - 42 * s, 84 * s, 84 * s);
-    ctx.restore();
-  }
   ctx.font = "600 27px Caprasimo, Georgia, serif";
   ctx.fillStyle = SAND; ctx.strokeStyle = INK; ctx.lineWidth = 5; ctx.lineJoin = "round";
   ctx.strokeText("Captain Ula", ox + 10 * s, oy + 142 * s + 40);

@@ -71,8 +71,9 @@ await env.test("kept exactly: Fat Boy link and logo, Ula at most 112 px, the log
   assert.match(await a.getAttribute("rel"), /noopener/);
   assert.equal(await a.locator('img[src$="assets/fatboy-logo.webp"]').count(), 1);
   assert.match(await a.textContent() + await a.getAttribute("aria-label"), /Fat Boy Fishing Club/);
+  // Ula at the helm of her boat (the illustration replaced the 112 px portrait at the owner's request)
   const r = await p.locator("#ula").boundingBox();
-  assert.ok(r.width <= 112 && r.height <= 112, `Ula renders ${r.width}x${r.height}`);
+  assert.ok(r.width >= 200 && r.width <= 420 && Math.abs(r.width / r.height - 1.5) < .05, `Ula's boat renders ${r.width}x${r.height}`);
   assert.equal(await p.locator('img.logo[src$="assets/huikau-logo.webp"]').count() >= 1, true);
   await p.ctx.close();
 });
