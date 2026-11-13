@@ -56,6 +56,22 @@ export function bodyPlace(altitude, azimuth) {
   return { x, y };
 }
 
+/**
+ * Keep a body out from behind the clock line and the Time Machine (WP11): a disc that would overlap `box` (the union of their
+ * rectangles, in px relative to the scene) is lowered to just under it, easing in over 140 px of horizontal approach so the
+ * body glides rather than jumps as it crosses. `x`, `y` are the centre in % of the scene, `half` the radius in px,
+ * `scene` is { w, h } in px. Returns the new y in %.
+ */
+export function keepClear(x, y, half, box, scene, ramp = 140) {
+  if (!box || !(scene.w > 0 && scene.h > 0)) return y;
+  const cx = x / 100 * scene.w, cy = y / 100 * scene.h;
+  const floor = box.bottom + half + 4;
+  if (cy >= floor) return y;
+  const d = Math.max(0, box.left - half - cx, cx - (box.right + half));
+  const w = Math.min(1, Math.max(0, 1 - d / ramp));
+  return (cy + (floor - cy) * w) / scene.h * 100;
+}
+
 /** Sun disc colour: deep orange at the horizon, buttery yellow overhead (flat, no gradient). */
 export function sunColors(alt) {
   const k = Math.min(1, Math.max(0, alt / 30));
@@ -68,18 +84,39 @@ export function sunColors(alt) {
 
 export function initBodies() {
   const sun = $("sun"), moon = $("moon"), moonLit = $("moon-lit");
-  return {
+  let last = null;
+  // the clock line and the Time Machine, as one box relative to the scene (null when the page has neither, as on the 404)
+  function barBox() {
+    const scene = (sun || moon)?.parentElement, parts = document.querySelectorAll(".skybar > *");
+    if (!scene || !parts.length) return null;
+    const sr = scene.getBoundingClientRect();
+    let box = null;
+    for (const el of parts) {
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) continue;
+      box = box ? { left: Math.min(box.left, r.left), right: Math.max(box.right, r.right), bottom: Math.max(box.bottom, r.bottom) } : { left: r.left, right: r.right, bottom: r.bottom };
+    }
+    return box && { box: { left: box.left - sr.left, right: box.right - sr.left, bottom: box.bottom - sr.top }, scene: { w: sr.width, h: sr.height } };
+  }
+  const clear = (el, x, y, size = 1) => {
+    const b = barBox();
+    return b ? keepClear(x, y, parseFloat(getComputedStyle(el).width) * size / 2 || 0, b.box, b.scene) : y;
+  };
+  const self = {
     /** sky: {sun:{altitude,azimuth}, moon:{altitude,azimuth}, phase, palette} */
-    update({ sun: s, moon: m, phase, palette }) {
+    update(arg) {
+      last = arg;
+      const { sun: s, moon: m, phase, palette } = arg;
       if (sun) {
-        const { x, y } = bodyPlace(s.altitude, s.azimuth);
-        const horizon = Math.min(1, Math.max(0, (s.altitude + 6) / 6)); // fades out as it drops behind the sea
+        const place = bodyPlace(s.altitude, s.azimuth), x = place.x;
         const size = 1 + .22 * (1 - Math.min(1, Math.max(0, s.altitude / 25)));
+        const y = clear(sun, x, place.y, size);
+        const horizon = Math.min(1, Math.max(0, (s.altitude + 6) / 6)); // fades out as it drops behind the sea
         const c = sunColors(s.altitude);
         sun.style.cssText = `left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;opacity:${horizon.toFixed(3)};transform:translate(-50%,-50%) scale(${size.toFixed(3)});--sun-disc:${c.disc};--sun-ring:${c.ring}`;
       }
       if (moon) {
-        const { x, y } = bodyPlace(m.altitude, m.azimuth);
+        const place = bodyPlace(m.altitude, m.azimuth), x = place.x, y = clear(moon, x, place.y);
         const rise = Math.min(1, Math.max(0, (m.altitude + 2) / 6));
         // by day the moon is pale, and a thin crescent all but vanishes into the blue
         const lit = (1 - Math.cos(2 * Math.PI * phase)) / 2;
@@ -90,6 +127,10 @@ export function initBodies() {
       if (moonLit) moonLit.setAttribute("d", moonLitPath(phase));
     }
   };
+  // a turned phone or a resized window moves the bar: place the bodies again
+  let timer = 0;
+  addEventListener("resize", () => { clearTimeout(timer); timer = setTimeout(() => last && self.update(last), 150); });
+  return self;
 }
 
 /** Kept for main.js: draws the moon's phase once; the sky engine keeps it up to date afterwards. */

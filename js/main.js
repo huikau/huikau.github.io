@@ -5,6 +5,7 @@ import { bus } from "./core/bus.js";
 import { store } from "./core/store.js";
 import { motion } from "./core/motion.js";
 import { astro } from "./core/astro.js";
+import { createPerf } from "./core/perf.js";
 import { weather, weatherPresets, loadWeather, applyParsed, loadForecast, forecast } from "./data/weather.js";
 import { loadTides, loadTidesHourly, tides, tidesHourly } from "./data/tides.js";
 import { loadSurf, surf } from "./data/surf.js";
@@ -17,11 +18,11 @@ import { initSeasons } from "./ui/seasons.js";
 import { initEggs, initGreenFlash, initWhales, initShootingStars, initIwa } from "./ui/eggs.js";
 import { initFishing } from "./game/fishing.js";
 import { initSound } from "./ui/sound.js";
+import { initSummary } from "./ui/summary.js";
 import { initInstruments } from "./ui/instruments.js";
 import { initSurface } from "./scene/surface.js";
 import { initDive } from "./scene/dive.js";
 import { initReef } from "./scene/reef.js";
-import { initPostcard } from "./ui/postcard.js";
 
 const mod = {};
 const p = params();
@@ -69,10 +70,17 @@ initWhales({ month: mod.seasons.month });
 initShootingStars();
 initIwa();
 initSound();
-mod.postcard = initPostcard({ clock, bus, weather });
+// The postcard painter is 30 KB and only needed on a click, so it loads then (and sw.js has it for offline).
+let postcardReady;
+const postcard = () => (postcardReady ||= import("./ui/postcard.js")
+  .then((m) => m.initPostcard({ clock, bus, weather, bind: false }))
+  .catch((e) => { postcardReady = null; console.warn("postcard:", e); throw e; })); // a failed fetch (offline) can be retried on the next click
+for (const b of document.querySelectorAll("[data-postcard]")) b.addEventListener("click", () => postcard().then((pc) => pc.open(b)));
+mod.postcard = { load: postcard };
 mod.surface = initSurface({ clock, bus, weather });
 mod.dive = initDive({ bus });
 mod.reef = initReef({ bus });
+mod.summary = initSummary({ clock, bus, weather, surf, tides });
 mod.sky.updateSky(); // the sky event fired before the surface and dive were listening
 
 // ---------- Surf and tides ----------
@@ -116,5 +124,5 @@ if ("serviceWorker" in navigator) {
 }
 
 if (p.get("debug") === "1") {
-  window.__huikau = { clock, bus, store, astro, motion, weather, tides, surf, modules: mod };
+  window.__huikau = { clock, bus, store, astro, motion, weather, tides, surf, modules: mod, perf: createPerf() };
 }

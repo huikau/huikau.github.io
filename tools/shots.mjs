@@ -106,19 +106,20 @@ export function serve(port = 0) {
   return new Promise((ok) => server.listen(port, "127.0.0.1", () => ok(server)));
 }
 
-export async function launch() {
-  try { return await chromium.launch(); } catch {
+export async function launch(options = {}) {
+  try { return await chromium.launch(options); } catch {
     const exe = process.env.CHROME_PATH || ["/usr/bin/chromium", "/usr/bin/google-chrome-stable", "/opt/pw-browsers/chromium"].find(existsSync);
-    return chromium.launch({ executablePath: exe });
+    return chromium.launch({ ...options, executablePath: exe });
   }
 }
 
 // ---------- API fixtures ----------
 const fixture = (name) => readFile(join(root, "tests/fixtures", `${name}.json`), "utf8");
+export const API_HOSTS = ["api.tidesandcurrents.noaa.gov", "api.weather.gov", "marine-api.open-meteo.com", "api.open-meteo.com"];
+export const hostOf = (u) => { try { return new URL(u).hostname; } catch { return ""; } };
 export async function routeApis(context, mode = "fixtures", weatherName = "weather") {
   if (mode === "live") return;
-  const hosts = ["api.tidesandcurrents.noaa.gov", "api.weather.gov", "marine-api.open-meteo.com", "api.open-meteo.com"];
-  await context.route((url) => hosts.includes(url.hostname), async (route) => {
+  await context.route((url) => API_HOSTS.includes(url.hostname), async (route) => {
     if (mode === "down") return route.abort("failed");
     const u = new URL(route.request().url());
     let name;
@@ -154,7 +155,12 @@ async function capture(browser, base, vp, [name, query, o = {}], outDir, log) {
 
   const q = query;
   const entry = { state: name, viewport: vp.name, url: q, console: [], errors: [], external: [] };
-  page.on("console", (m) => { if (["error", "warning"].includes(m.type())) entry.console.push(`${m.type()}: ${m.text()}`); });
+  // With --apis down the browser itself logs "Failed to load resource" for each refused API call; that is the test's doing, not the page's.
+  page.on("console", (m) => {
+    if (!["error", "warning"].includes(m.type())) return;
+    if (apis === "down" && API_HOSTS.includes(hostOf(m.location().url))) return;
+    entry.console.push(`${m.type()}: ${m.text()}`);
+  });
   page.on("pageerror", (e) => entry.errors.push(String(e)));
   page.on("request", (r) => { const u = new URL(r.url()); if (!["127.0.0.1", "localhost"].includes(u.hostname) && u.protocol.startsWith("http")) entry.external.push(u.hostname + u.pathname); });
 

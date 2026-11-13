@@ -100,10 +100,12 @@ body { background: var(--ink); }
 .deep-rays {
   position: absolute; left: -20%; top: -6%; width: 140%; height: 112%; transform-origin: 50% 0;
   opacity: calc(var(--light) * .4);
-  animation: rays-sway 11s ease-in-out infinite alternate;
+  transform: rotate(var(--lean)); /* the lean toward the sun is static; only the sway below animates */
 }
-.deep-rays svg { display: block; width: 100%; height: 100%; }
-@keyframes rays-sway { from { transform: rotate(calc(var(--lean) - 1.6deg)); } to { transform: rotate(calc(var(--lean) + 1.6deg)); } }
+/* The sway (WP11): a keyframe rotate that read var(--lean) ran on the main thread and cost a dropped frame in five at the bottom of
+   the page; a plain translate on the inner svg stays on the compositor and looks the same. */
+.deep-rays svg { display: block; width: 100%; height: 100%; animation: rays-sway 11s ease-in-out infinite alternate; }
+@keyframes rays-sway { from { transform: translateX(-2.2%) skewX(-1.2deg); } to { transform: translateX(2.2%) skewX(1.2deg); } }
 .deep-motes { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .deep-grain { position: absolute; inset: 0; background-image: var(--grain); background-size: 200px 200px; opacity: .09; }
 .deep-dim { position: absolute; inset: 0; background: var(--ink); }
@@ -159,7 +161,7 @@ body { background: var(--ink); }
 }
 
 /* animations run only while the water is on screen */
-.deep:not(.live) .ceil, .deep:not(.live) .deep-rays, .deep:not(.live) .kelp { animation-play-state: paused; }
+.deep:not(.live) .ceil, .deep:not(.live) .deep-rays svg, .deep:not(.live) .kelp { animation-play-state: paused; }
 
 /* ---------- parallax and grading: scroll-driven where the browser can, --depth elsewhere ---------- */
 .reef-far { --k: 70; }
@@ -202,8 +204,7 @@ body { background: var(--ink); }
 
 /* ---------- still and complete under reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .wave, .ceil, .deep-rays, .kelp, .reef-honu { animation: none !important; }
-  .deep-rays { transform: rotate(var(--lean)); }
+  .wave, .ceil, .deep-rays svg, .kelp, .reef-honu { animation: none !important; }
   .reef-far, .reef-near, .reef-floor, .deep-kelp, .deep-view--back, .deep-dim--depth { animation: none !important; translate: none; }
   .deep-view--back { opacity: .7; }
   .deep-dim--depth { opacity: .15; }

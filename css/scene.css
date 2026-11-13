@@ -94,6 +94,17 @@
   gap: 10px;
 }
 .season-winter .skybar { top: 92px; }
+/* Legibility (WP11): a soft pool of ink behind the clock line and the Time Machine keeps the light text at 4.5:1 or better over
+   bright daytime sky, and the cloud layer starts below the bar, so no cloud drifts behind the text. */
+.skybar::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  inset: -22px -56px -22px -40px;
+  background: radial-gradient(ellipse 62% 70% at 36% 52%, color-mix(in srgb, var(--ink) 46%, transparent) 0, color-mix(in srgb, var(--ink) 34%, transparent) 55%, transparent 100%);
+}
+.og .skybar::before { display: none; }
+.clouds { top: 128px; }
+.season-winter .clouds { top: 196px; }
+@media (max-width: 720px) { .clouds { top: 150px; } .season-winter .clouds { top: 214px; } }
 .og .skybar { display: none; }
 .skybar .clock {
   position: static;
@@ -180,6 +191,12 @@
 .tm-live[aria-pressed="true"]::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: var(--keyline); vertical-align: 1px; }
 .tm-live:disabled { opacity: 1; }
 
+@media (max-width: 420px) {
+  /* narrow phones: the track is about 130 px, so "midnight" would sit on "dawn" (its tick stays) and Live drops its dot */
+  .tm-ticks li[data-t="midnight"] { font-size: 0; }
+  .tm-live { padding: 3px 11px; }
+  .tm-live[aria-pressed="true"]::before { display: none; }
+}
 @media (max-width: 720px) {
   .skybar { left: 16px; right: 64px; }
   .skybar { gap: 6px; }

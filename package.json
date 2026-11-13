@@ -4,7 +4,10 @@
   "type": "module",
   "description": "Dev tooling for huikau.com. The site itself is static and needs none of this.",
   "scripts": {
-    "test": "node --test tests/unit/",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "node --test tests/unit/",
+    "test:e2e": "node tests/e2e/run.mjs",
+    "budget": "node tools/budget.mjs",
     "shots": "node tools/shots.mjs",
     "serve": "python3 -m http.server 8765"
   },

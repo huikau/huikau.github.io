@@ -20,9 +20,12 @@ const n1 = (v) => +v.toFixed(1);
  * Ula's pick for when to go out. `now` is minutes after midnight, `sun` is { rise, set },
  * `tides` is a parseTides() list. Anglers like moving water around a tide change, best of all near sunrise or sunset.
  */
-export function ulasPick(now, sun, tides) {
+export function ulasPick(now, sun, tides, ymd) {
   const daylight = (m) => m >= sun.rise - 45 && m <= sun.set + 45;
-  const upcoming = tides.filter((t) => t.m >= now - 20 && daylight(t.m));
+  // The NOAA list can run past midnight (tomorrow's tides have small minutes too), so only today's rows count.
+  const day = ymd ? `${ymd.slice(0, 4)}-${ymd.slice(4, 6)}-${ymd.slice(6, 8)}` : null;
+  const today = day ? tides.filter((t) => !t.t || t.t.slice(0, 10) === day) : tides;
+  const upcoming = today.filter((t) => t.m >= now - 20 && daylight(t.m));
   if (upcoming.length) {
     const nearSun = (m) => Math.min(Math.abs(m - sun.rise), Math.abs(m - sun.set));
     const best = upcoming.reduce((a, b) => (nearSun(b.m) < nearSun(a.m) ? b : a));
@@ -342,7 +345,7 @@ export function initInstruments({ clock = defaultClock, bus, tides, weather, sur
     const next = nextChange(list, ymd, now), summary = `Tide curve for today in Honolulu. ${nextText(next)} The full list of tides follows.`;
     const series = tideSeries(hourly.list, list, ymd);
     const ext = list.map((p) => ({ abs: tideMinutes(p.t, ymd), v: p.v, high: p.high, m: p.m })).filter((e) => e.abs >= 0 && e.abs <= 1440);
-    const rows = tideRows(list);
+    const rows = tideRows(list.filter((p) => { const a = tideMinutes(p.t, ymd); return a >= 0 && a < 1440; })); // today only: the feed can run into tomorrow
     const nextKey = next && next.p.t;
     body.innerHTML = (series ? tideChart(series, ext, now, summary) : tideSkeleton("none"))
       + `<p class="tide__next" id="tides-next">${esc(nextText(next))}</p>`
@@ -391,7 +394,7 @@ export function initInstruments({ clock = defaultClock, bus, tides, weather, sur
   function renderPick(sun = sunTimes(clock.hst())) {
     const el = $("today-pick");
     if (!el) return;
-    el.textContent = seen.tides || (tides.list && tides.list.length) ? ulasPick(clock.minutes(), sun, tides.list || []) : "Ula's checking the tide chart…";
+    el.textContent = seen.tides || (tides.list && tides.list.length) ? ulasPick(clock.minutes(), sun, tides.list || [], clock.ymd()) : "Ula's checking the tide chart…";
   }
 
   // ---- weather strip ----

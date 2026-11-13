@@ -579,8 +579,8 @@ const toBlob = (canvas) => new Promise((ok, no) => canvas.toBlob((b) => (b ? ok(
 
 // ---------- the dialog ----------
 
-export function initPostcard({ clock, bus, weather } = {}) {
-  const buttons = [...document.querySelectorAll("[data-postcard]")];
+export function initPostcard({ clock, bus, weather, bind = true } = {}) {
+  const buttons = bind ? [...document.querySelectorAll("[data-postcard]")] : [];
   let dlg = null, url = "", blob = null, opener = null, token = 0;
 
   const els = {};
