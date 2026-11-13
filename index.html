@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Huikau</title>
+  <!-- wp:head -->
   <meta name="description" content="Huikau. Gone fishin'. Back when the tide turns.">
   <meta name="theme-color" content="#0E2B30">
   <link rel="canonical" href="https://huikau.com/">
@@ -23,16 +24,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caprasimo&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/site.css">
   <script src="assets/site.js" defer></script>
+  <!-- /wp:head -->
 </head>
 <body>
+  <!--
+    Redesign mount points (see fable5.2-plan.md section 6). Each region between
+    <!- - wp:NAME - -> and <!- - /wp:NAME - -> belongs to one work package. A name may
+    appear more than once; a region nested inside another belongs to the inner name.
+    Owners: head WP10 · sky WP3 · land, crew WP4 · water, reef WP5 · game, basket WP6 ·
+    instruments WP7 · sound WP8 · seasonal WP9.
+  -->
   <main>
     <section class="scene" aria-label="The view from Ula's fishing spot">
+      <!-- wp:sky -->
       <div class="stars" id="stars" aria-hidden="true"></div>
       <svg class="moon" id="moon" viewBox="0 0 54 54" aria-hidden="true">
         <circle class="moon-dark" cx="27" cy="27" r="24"/>
         <path class="moon-lit" id="moon-lit" d="M27 3 A24 24 0 1 1 27 51 A24 24 0 1 1 27 3 Z"/>
       </svg>
       <div class="clouds" id="clouds" aria-hidden="true"></div>
+      <!-- /wp:sky -->
+      <!-- wp:seasonal -->
       <div class="lights" id="lights" aria-hidden="true"></div>
       <div class="fireworks" id="fireworks" aria-hidden="true"></div>
 
@@ -41,6 +53,8 @@
         <path d="M0 13 L17 8 L29 14 L37 12 L40 15 L43 12 L51 14 L63 8 L80 13 L63 11 L51 18 L43 17 L44 30 L40 21 L36 30 L37 17 L29 18 L17 11 Z"/>
       </svg>
       <p class="wish" id="wish" role="status" aria-live="polite"></p>
+      <!-- /wp:seasonal -->
+      <!-- wp:sound -->
       <button class="sound" id="sound" type="button" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>
@@ -49,23 +63,34 @@
         </svg>
         <span class="sr-only">Ocean sound</span>
       </button>
+      <!-- /wp:sound -->
 
+      <!-- wp:sky -->
       <p class="clock"><span class="friday" id="friday" hidden>It's Aloha Friday</span><span id="clock-text"></span></p>
+      <!-- /wp:sky -->
 
+      <!-- wp:land -->
       <div class="logo-wrap">
         <img class="logo" src="assets/huikau-logo.webp" width="1400" height="497" alt="Huikau">
+        <!-- wp:seasonal -->
         <button class="pine" id="pine" type="button" aria-label="Make it rain pineapples"></button>
+        <!-- /wp:seasonal -->
       </div>
+      <!-- /wp:land -->
 
+      <!-- wp:water -->
       <div class="sea" aria-hidden="true">
+        <!-- wp:seasonal -->
         <span class="greenflash" id="greenflash"></span>
         <div class="whale" id="whale">
           <span class="spout"></span>
           <svg class="fluke" viewBox="0 0 60 40"><path d="M28 40 C28 31 28.5 25 29 21 C23 13 12 8 2 9 C9 12 17 16 22 21 C25 23 27.5 21 30 18 C32.5 21 35 23 38 21 C43 16 51 12 58 9 C48 8 37 13 31 21 C31.5 25 32 31 32 40 Z"/></svg>
         </div>
+        <!-- /wp:seasonal -->
         <svg class="wave back" viewBox="0 0 2880 200" preserveAspectRatio="none">
           <path fill="currentColor" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44 V200 H0 Z"/>
         </svg>
+        <!-- wp:seasonal -->
         <div class="boat" id="boat">
           <svg viewBox="0 0 120 100">
             <path d="M84 4 L84 12 L96 8 Z" fill="#E8662A"/>
@@ -75,6 +100,7 @@
             <path d="M8 78 L114 78 L98 94 L24 94 Z" fill="#2A1A12"/>
           </svg>
         </div>
+        <!-- /wp:seasonal -->
         <svg class="wave mid" viewBox="0 0 2880 200" preserveAspectRatio="none">
           <path fill="currentColor" d="M0 40 C80 18 160 18 240 40 S400 62 480 40 S640 18 720 40 S880 62 960 40 S1120 18 1200 40 S1360 62 1440 40 S1600 18 1680 40 S1840 62 1920 40 S2080 18 2160 40 S2320 62 2400 40 S2560 18 2640 40 S2800 62 2880 40 V200 H0 Z"/>
         </svg>
@@ -82,9 +108,13 @@
           <path fill="currentColor" d="M0 26 C60 10 120 10 180 26 S300 42 360 26 S480 10 540 26 S660 42 720 26 S840 10 900 26 S1020 42 1080 26 S1200 10 1260 26 S1380 42 1440 26 S1560 10 1620 26 S1740 42 1800 26 S1920 10 1980 26 S2100 42 2160 26 S2280 10 2340 26 S2460 42 2520 26 S2640 10 2700 26 S2820 42 2880 26 V200 H0 Z"/>
         </svg>
       </div>
+      <!-- /wp:water -->
 
+      <!-- wp:sky -->
       <div class="showers" id="showers" aria-hidden="true" hidden></div>
+      <!-- /wp:sky -->
 
+      <!-- wp:crew -->
       <a class="crew" href="https://fatboyfishn.com/" target="_blank" rel="noopener">
         <span class="crew-note">Ula's cap came from here</span>
         <img class="crew-logo" src="assets/fatboy-logo.webp" width="158" height="200" alt="">
@@ -94,15 +124,19 @@
           <span class="crew-cta">Shop the gear</span>
         </span>
       </a>
+      <!-- /wp:crew -->
 
+      <!-- wp:game -->
       <div class="rig" id="rig">
         <svg class="line" viewBox="0 0 320 150" aria-hidden="true">
           <line class="rod" x1="78" y1="70" x2="150" y2="6"/>
           <path class="cord" d="M150 6 Q200 120 284 100"/>
         </svg>
+        <!-- wp:land -->
         <img class="ula" id="ula" src="assets/ula.webp" width="96" height="96" alt="Ula, smiling at sunset in her skull-and-crossbones cap">
         <svg class="lei" id="lei" viewBox="0 0 120 120" aria-hidden="true" hidden></svg>
         <span class="ula-tag">Captain Ula</span>
+        <!-- /wp:land -->
         <button class="bobber" id="bobber" type="button" aria-label="Reel in Ula's line">
           <svg viewBox="0 0 30 40" aria-hidden="true">
             <line x1="15" y1="0" x2="15" y2="8" stroke="#2A1A12" stroke-width="2"/>
@@ -127,12 +161,16 @@
         </div>
       </div>
     </section>
+      <!-- /wp:game -->
 
     <section class="shore">
       <div class="away">
+        <!-- wp:reef -->
         <h1>Gone fishin'.</h1>
         <p>Ula's out on the water and the rest of the site went with her. Check back when the tide turns, or tap the bobber to see what's biting.</p>
+        <!-- /wp:reef -->
 
+        <!-- wp:basket -->
         <div class="basket" id="basket">
           <div class="basket-head">
             <h2>Ula's lauhala basket</h2>
@@ -141,16 +179,20 @@
           <ul class="basket-grid" id="basket-grid"></ul>
           <button class="basket-reset" id="basket-reset" type="button" hidden>Empty the basket</button>
         </div>
+        <!-- /wp:basket -->
 
+        <!-- wp:instruments -->
         <aside class="card surf" id="surf" aria-labelledby="surf-label" hidden>
           <p class="card-label" id="surf-label">Surf report off Honolulu</p>
           <p class="surf-call" id="surf-call"></p>
           <dl class="stats" id="surf-stats"></dl>
           <p class="card-source">Model forecast for the water off Honolulu from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a><span id="surf-wind-source" hidden>, wind from the <a href="https://www.weather.gov/hfo/" target="_blank" rel="noopener">National Weather Service</a></span>.</p>
         </aside>
+        <!-- /wp:instruments -->
       </div>
 
       <div class="side">
+        <!-- wp:instruments -->
         <aside class="card word" aria-labelledby="word-label">
           <p class="card-label" id="word-label">Today's Hawaiian word</p>
           <p class="word-term" id="word-term" lang="haw">huikau</p>
@@ -168,10 +210,14 @@
           <p class="today-pick" id="today-pick"></p>
           <dl class="stats" id="today-stats"></dl>
         </aside>
+        <!-- /wp:instruments -->
       </div>
     </section>
   </main>
 
-  <footer>© <span id="year">2026</span> Huikau. Made on island time.</footer>
+  <footer>© <span id="year">2026</span> Huikau. Made on island time.
+    <!-- wp:seasonal -->
+    <!-- /wp:seasonal -->
+  </footer>
 </body>
 </html>

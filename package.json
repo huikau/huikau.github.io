@@ -1,0 +1,14 @@
+{
+  "name": "huikau-site",
+  "private": true,
+  "type": "module",
+  "description": "Dev tooling for huikau.com. The site itself is static and needs none of this.",
+  "scripts": {
+    "test": "node --test tests/unit/",
+    "shots": "node tools/shots.mjs",
+    "serve": "python3 -m http.server 8765"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}
