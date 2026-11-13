@@ -1,0 +1,66 @@
+/* postcard.css — WP10. The "Send a postcard" button, its dialog, and the clean link-preview frame (?og=1).
+   The button is a screenprint sticker like the sound toggle: sand stock, ink keyline, hard shadow, 44 px or taller. */
+
+.postcard-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 16px 6px 12px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--sand);
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  font: inherit;
+  font-family: var(--font-text);
+  font-size: .95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, background-color .2s ease;
+}
+.postcard-btn:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); background: var(--mango); }
+.postcard-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--ink); }
+.postcard-btn svg { width: 22px; height: 22px; flex: none; }
+
+/* in the hero: beside the sound toggle, top right. It steps out of the way below 900 px, where the clock line needs the room. */
+.postcard-btn--hero { position: absolute; top: 12px; right: 72px; z-index: 4; } /* above .skybar (z 3), whose empty box spans the top of the hero */
+/* in the footer: the way in on narrow screens */
+.postcard-btn--foot { display: flex; margin: 0 0 14px; }
+@media (max-width: 899px) { .postcard-btn--hero { display: none; } }
+@media (min-width: 900px) { .postcard-btn--foot { display: none; } }
+
+/* ---------- the dialog ---------- */
+.postcard-dialog {
+  position: fixed; inset: 0; margin: auto;
+  width: min(540px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px);
+  overflow: auto;
+  text-align: center;
+}
+.postcard-dialog::backdrop { background: rgba(11, 34, 38, .66); }
+.postcard-title { margin: 0 0 var(--space-3, 12px); font-size: var(--step-2, 1.66rem); }
+.postcard-stage { display: grid; place-items: center; min-height: 160px; }
+.postcard-img {
+  display: block; width: auto; height: auto;
+  max-width: 100%; max-height: min(58vh, 560px);
+  aspect-ratio: 4 / 5; object-fit: contain;
+  border: 2px solid var(--ink); border-radius: 4px; box-shadow: var(--shadow-offset, 3px 3px 0 #0B2226);
+  background: var(--sand);
+}
+.postcard-wait { margin: 0; padding: 40px 12px; }
+.postcard-status { min-height: 1.5em; margin: var(--space-3, 12px) 0 var(--space-2, 8px); font-size: .95rem; }
+.postcard-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3, 12px); }
+
+/* ---------- ?og=1: the clean frame for the link-preview image ----------
+   The logo, the sky, the ridge with Lēʻahi, the water and Ula's canoe. No clock, Time Machine, sound toggle, hints, sign,
+   bottle, catch card or postcard button; the pale daytime moon is left out so it does not read as a stray circle. */
+.og .postcard-btn, .og .catch, .og .hint, .og .wish, .og .pine, .og .finds { display: none; }
+.og .scene[data-sky="day"] .moon, .og .scene[data-sky="golden"] .moon, .og .scene[data-sky="dawn"] .moon { display: none; }
+.og .logo-wrap { animation: none; }
+.og .scene { --logo-top: 40px; --logo-w: min(720px, 66vw); }
+
+@media (prefers-reduced-motion: reduce) {
+  .postcard-btn, .postcard-btn:hover, .postcard-btn:active { transition: none; }
+}

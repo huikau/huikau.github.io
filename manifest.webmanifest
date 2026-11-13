@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "Huikau",
+  "short_name": "Huikau",
+  "description": "Gone fishin'. Back when the tide turns. A living view of Honolulu with Captain Ula.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0E2B30",
+  "theme_color": "#0E2B30",
+  "categories": ["weather", "games", "lifestyle"],
+  "icons": [
+    { "src": "/assets/img/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/img/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/img/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

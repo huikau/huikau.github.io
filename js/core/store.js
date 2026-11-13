@@ -37,18 +37,22 @@ export async function fetchCached(key, url, opts = {}) {
     init = {}, parse = (j) => j, timeout = FETCH_TIMEOUT_MS, maxAge = Infinity,
     fetchImpl = globalThis.fetch, now = () => Date.now()
   } = opts;
-  let timer;
+  let timer, swCached; // swCached: set when the service worker served a cached copy (its fetch time, or null if unknown)
   try {
     const ctl = typeof AbortController === "function" ? new AbortController() : null;
     const limit = new Promise((_, no) => { timer = setTimeout(() => { ctl && ctl.abort(); no(new Error("timeout")); }, timeout); });
     const work = (async () => {
       const res = await fetchImpl(url, ctl ? { ...init, signal: ctl.signal } : init);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      // sw.js answers from its own cache when the network fails, and says so (and when it was fetched) in these headers
+      const h = res.headers;
+      if (h && typeof h.get === "function" && h.get("x-huikau-sw") === "cache") swCached = Number(h.get("x-huikau-sw-time")) || null;
       return parse(await res.json());
     })();
     work.catch(() => {}); // a late failure after the timeout must not surface
     const data = await Promise.race([work, limit]);
     if (data == null || (Array.isArray(data) && !data.length)) throw new Error("unusable response");
+    if (swCached !== undefined) return { status: "cached", data, t: swCached ?? now() };
     const t = now();
     cache.write(key, data, t);
     return { status: "live", data, t };

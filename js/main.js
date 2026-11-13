@@ -21,6 +21,7 @@ import { initInstruments } from "./ui/instruments.js";
 import { initSurface } from "./scene/surface.js";
 import { initDive } from "./scene/dive.js";
 import { initReef } from "./scene/reef.js";
+import { initPostcard } from "./ui/postcard.js";
 
 const mod = {};
 const p = params();
@@ -68,6 +69,7 @@ initWhales({ month: mod.seasons.month });
 initShootingStars();
 initIwa();
 initSound();
+mod.postcard = initPostcard({ clock, bus, weather });
 mod.surface = initSurface({ clock, bus, weather });
 mod.dive = initDive({ bus });
 mod.reef = initReef({ bus });
@@ -98,6 +100,20 @@ async function refreshTides() {
   bus.emit("tides", tides); // also when there is no data, so the card can show its no-data state
 }
 refreshTides();
+
+// ---------- Offline and install (sw.js). Not on plain http, not under ?nosw=1, and not in automated browsers (the screenshot
+// matrix blocks workers and would log a warning) unless the test asks with ?sw=1. ----------
+if ("serviceWorker" in navigator) {
+  const secure = location.protocol === "https:" || ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
+  const automated = navigator.webdriver && p.get("sw") !== "1";
+  if (p.get("nosw") === "1") navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister())).catch(() => {});
+  else if (secure && !automated) addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").then((reg) => {
+      // a new version installs and takes over by itself; the page already open keeps running, the next load uses the new files
+      addEventListener("visibilitychange", () => { if (!document.hidden) reg.update().catch(() => {}); });
+    }).catch(() => {});
+  });
+}
 
 if (p.get("debug") === "1") {
   window.__huikau = { clock, bus, store, astro, motion, weather, tides, surf, modules: mod };

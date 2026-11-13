@@ -5,20 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Huikau</title>
   <!-- wp:head -->
-  <meta name="description" content="Huikau. Gone fishin'. Back when the tide turns.">
+  <meta name="description" content="Huikau. Gone fishin'. Back when the tide turns. A living view of Honolulu: the sky, the tide, the surf, and Captain Ula's fishing game.">
   <meta name="theme-color" content="#0E2B30">
+  <meta name="color-scheme" content="dark light">
   <link rel="canonical" href="https://huikau.com/">
+  <link rel="manifest" href="manifest.webmanifest">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Huikau">
+  <meta property="og:locale" content="en_US">
   <meta property="og:url" content="https://huikau.com/">
   <meta property="og:title" content="Huikau">
   <meta property="og:description" content="Gone fishin'. Back when the tide turns.">
   <meta property="og:image" content="https://huikau.com/assets/og.png">
+  <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="The Huikau logo over a sunset, with Captain Ula fishing on the waves">
+  <meta property="og:image:alt" content="The Huikau logo over a golden-hour sky, with Lēʻahi on the horizon and Captain Ula fishing from her canoe on the water.">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Huikau">
+  <meta name="twitter:description" content="Gone fishin'. Back when the tide turns.">
+  <meta name="twitter:image" content="https://huikau.com/assets/og.png">
+  <meta name="twitter:image:alt" content="The Huikau logo over a golden-hour sky, with Lēʻahi on the horizon and Captain Ula fishing from her canoe on the water.">
+  <meta name="apple-mobile-web-app-title" content="Huikau">
+  <meta name="mobile-web-app-capable" content="yes">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icons/icon-192.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/caprasimo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/figtree-var-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="assets/site.css">
@@ -28,6 +42,7 @@
   <link rel="stylesheet" href="css/deep.css">
   <link rel="stylesheet" href="css/sound.css">
   <link rel="stylesheet" href="css/seasonal.css">
+  <link rel="stylesheet" href="css/postcard.css">
   <script type="module" src="js/main.js"></script>
   <!-- /wp:head -->
 </head>
@@ -37,7 +52,7 @@
     <!- - wp:NAME - -> and <!- - /wp:NAME - -> belongs to one work package. A name may
     appear more than once; a region nested inside another belongs to the inner name.
     Owners: head WP10 · sky WP3 · land, crew WP4 · water, reef WP5 · game, basket WP6 ·
-    instruments WP7 · sound WP8 · seasonal WP9.
+    instruments WP7 · sound WP8 · seasonal WP9 · postcard WP10.
   -->
   <main>
     <section class="scene" aria-label="The view from Ula's fishing spot">
@@ -76,6 +91,12 @@
         <span class="sr-only">Ocean sound</span>
       </button>
       <!-- /wp:sound -->
+      <!-- wp:postcard -->
+      <button class="postcard-btn postcard-btn--hero" type="button" data-postcard aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+        <span>Send a postcard</span>
+      </button>
+      <!-- /wp:postcard -->
 
       <!-- wp:sky -->
       <div class="skybar">
@@ -420,6 +441,12 @@
   </main>
 
   <footer>© <span id="year">2026</span> Huikau. Made on island time.
+    <!-- wp:postcard -->
+    <button class="postcard-btn postcard-btn--foot" type="button" data-postcard aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span>Send a postcard</span>
+    </button>
+    <!-- /wp:postcard -->
     <!-- wp:seasonal -->
     <details class="finds" id="finds">
       <summary>Things to find <span class="finds-count" id="finds-count"></span></summary>

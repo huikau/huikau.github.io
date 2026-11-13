@@ -4,58 +4,114 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lost at sea · Huikau</title>
+  <meta name="description" content="This page drifted off somewhere. Paddle back home to Huikau.">
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#0E2B30">
+  <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/caprasimo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/figtree-var-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/tokens.css">
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/assets/site.css">
   <link rel="stylesheet" href="/css/scene.css">
-  <link rel="stylesheet" href="/css/game.css">
-  <link rel="stylesheet" href="/css/instruments.css">
   <link rel="stylesheet" href="/css/deep.css">
-  <link rel="stylesheet" href="/css/sound.css">
-  <link rel="stylesheet" href="/css/seasonal.css">
-  <script type="module" src="/js/main.js"></script>
+  <style>
+    /* Lost at sea: the same sky, ridge, water and canoe as the home page, without the game, the instruments or the dive.
+       The page is served for any unknown path, so every URL here is absolute. */
+    body { background: var(--abyss); }
+    .scene { min-height: 100svh; }
+    .scene[data-sky="dawn"] .moon, .scene[data-sky="day"] .moon, .scene[data-sky="golden"] .moon { display: none; } /* a pale daytime moon would sit behind the words */
+    .clouds { top: 52%; } /* keep the clouds below the words */
+    .lost { position: relative; z-index: 3; text-align: center; max-width: 34rem; margin-top: -8vh; color: var(--text-on-sky, var(--sand)); }
+    .lost h1 { margin: 0 0 14px; font-family: var(--font-display); font-weight: 400; font-size: clamp(3rem, 11vw, 5.5rem); line-height: 1; color: inherit; text-shadow: 0 2px 0 rgba(11, 34, 38, .35), 0 0 22px rgba(11, 34, 38, .25); }
+    .lost p { margin: 0 0 26px; font-size: var(--step-1); line-height: var(--leading-text); color: inherit; text-shadow: 0 1px 0 rgba(11, 34, 38, .35), 0 0 14px rgba(11, 34, 38, .3); }
+    .lost .btn { --btn-bg: var(--sand); }
+    .rig { bottom: calc(28% * .52 - 30px); animation: lost-drift 9s ease-in-out infinite; }
+    @keyframes lost-drift {
+      0%, 100% { transform: translate(0, 0) rotate(-1.5deg); }
+      50% { transform: translate(34px, 6px) rotate(1.5deg); }
+    }
+    @media (max-width: 720px) { .rig { bottom: calc(28% * .52 - 58px); transform-origin: left bottom; } }
+    @media (prefers-reduced-motion: reduce) { .rig { animation: none; } }
+  </style>
+  <script type="module">
+    // The pieces of the home page that make this scene: the sky engine, the land and Ula's canoe. No data, no game.
+    import { clock } from "/js/core/clock.js";
+    import { bus } from "/js/core/bus.js";
+    import { weather } from "/js/data/weather.js";
+    import { initSky } from "/js/sky/sky.js";
+    import { initLand } from "/js/scene/land.js";
+    import { initUla } from "/js/scene/ula.js";
+    initLand({ bus });
+    initUla({ bus, clock });
+    const sky = initSky({ clock, bus });
+    setInterval(() => bus.emit("tick"), 30000);
+    Object.assign(weather, { text: "Mostly clear", clouds: 2, rain: false, calm: 1, status: "live" });
+    bus.emit("weather", weather); // a few clouds, no network
+    sky.updateSky();
+  </script>
 </head>
 <body>
   <main>
     <section class="scene" aria-label="Open water">
       <div class="stars" id="stars" aria-hidden="true"></div>
+      <svg class="sun" id="sun" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="sun-halo" cx="50" cy="50" r="49"/>
+        <circle class="sun-ring" cx="50" cy="50" r="38"/>
+        <circle class="sun-disc" cx="50" cy="50" r="28"/>
+      </svg>
       <svg class="moon" id="moon" viewBox="0 0 54 54" aria-hidden="true">
         <circle class="moon-dark" cx="27" cy="27" r="24"/>
         <path class="moon-lit" id="moon-lit" d="M27 3 A24 24 0 1 1 27 51 A24 24 0 1 1 27 3 Z"/>
+        <circle class="moon-key" cx="27" cy="27" r="24"/>
       </svg>
       <div class="clouds" id="clouds" aria-hidden="true"></div>
+      <div class="land" id="land" aria-hidden="true"></div>
+      <svg class="land-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+        <pattern id="lauhala-weave" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="9" height="9" fill="#C49C5E"/>
+            <rect width="4.5" height="4.5" fill="#A27B3C"/>
+            <rect x="4.5" y="4.5" width="4.5" height="4.5" fill="#A27B3C"/>
+          </pattern>
+      </defs></svg>
+      <div class="scene-grain grain" aria-hidden="true"></div>
+
+      <div class="sea" aria-hidden="true">
+        <svg class="wave back" viewBox="0 0 2880 200" preserveAspectRatio="none">
+          <path class="w-fill" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44 V200 H0 Z"/>
+          <path class="w-foam" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44" transform="translate(0 7)"/>
+          <path class="w-crest" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44"/>
+        </svg>
+        <svg class="wave mid" viewBox="0 0 2880 200" preserveAspectRatio="none">
+          <path class="w-fill" d="M0 40 C80 18 160 18 240 40 S400 62 480 40 S640 18 720 40 S880 62 960 40 S1120 18 1200 40 S1360 62 1440 40 S1600 18 1680 40 S1840 62 1920 40 S2080 18 2160 40 S2320 62 2400 40 S2560 18 2640 40 S2800 62 2880 40 V200 H0 Z"/>
+          <path class="w-foam" d="M0 40 C80 18 160 18 240 40 S400 62 480 40 S640 18 720 40 S880 62 960 40 S1120 18 1200 40 S1360 62 1440 40 S1600 18 1680 40 S1840 62 1920 40 S2080 18 2160 40 S2320 62 2400 40 S2560 18 2640 40 S2800 62 2880 40" transform="translate(0 7)"/>
+          <path class="w-crest" d="M0 40 C80 18 160 18 240 40 S400 62 480 40 S640 18 720 40 S880 62 960 40 S1120 18 1200 40 S1360 62 1440 40 S1600 18 1680 40 S1840 62 1920 40 S2080 18 2160 40 S2320 62 2400 40 S2560 18 2640 40 S2800 62 2880 40"/>
+        </svg>
+        <svg class="wave front" viewBox="0 0 2880 200" preserveAspectRatio="none">
+          <path class="w-fill" d="M0 26 C60 10 120 10 180 26 S300 42 360 26 S480 10 540 26 S660 42 720 26 S840 10 900 26 S1020 42 1080 26 S1200 10 1260 26 S1380 42 1440 26 S1560 10 1620 26 S1740 42 1800 26 S1920 10 1980 26 S2100 42 2160 26 S2280 10 2340 26 S2460 42 2520 26 S2640 10 2700 26 S2820 42 2880 26 V200 H0 Z"/>
+          <path class="w-foam" d="M0 26 C60 10 120 10 180 26 S300 42 360 26 S480 10 540 26 S660 42 720 26 S840 10 900 26 S1020 42 1080 26 S1200 10 1260 26 S1380 42 1440 26 S1560 10 1620 26 S1740 42 1800 26 S1920 10 1980 26 S2100 42 2160 26 S2280 10 2340 26 S2460 42 2520 26 S2640 10 2700 26 S2820 42 2880 26" transform="translate(0 7)"/>
+          <path class="w-crest" d="M0 26 C60 10 120 10 180 26 S300 42 360 26 S480 10 540 26 S660 42 720 26 S840 10 900 26 S1020 42 1080 26 S1200 10 1260 26 S1380 42 1440 26 S1560 10 1620 26 S1740 42 1800 26 S1920 10 1980 26 S2100 42 2160 26 S2280 10 2340 26 S2460 42 2520 26 S2640 10 2700 26 S2820 42 2880 26"/>
+        </svg>
+      </div>
+
+      <div class="rig" id="rig" aria-hidden="true">
+        <svg class="canoe" id="canoe" viewBox="0 0 320 150"></svg>
+        <div class="ula-frame" id="ula-frame">
+          <svg class="ula-rim" viewBox="0 0 108 108">
+            <circle cx="54" cy="54" r="52" fill="url(#lauhala-weave)" stroke="#0B2226" stroke-width="3"/>
+            <circle cx="54" cy="54" r="42" fill="none" stroke="#0B2226" stroke-width="3"/>
+          </svg>
+          <img class="ula" id="ula" src="/assets/ula.webp" width="84" height="84" alt="">
+        </div>
+        <span class="ula-tag">Captain Ula</span>
+      </div>
 
       <div class="lost">
         <h1>Lost at sea.</h1>
         <p>This page drifted off somewhere. Ula's still fishing back at the main dock.</p>
-        <a class="home-btn" href="/">Paddle back home</a>
-      </div>
-
-      <div class="sea" aria-hidden="true">
-        <span class="greenflash" id="greenflash"></span>
-        <div class="whale" id="whale">
-          <span class="spout"></span>
-          <svg class="fluke" viewBox="0 0 60 40"><path d="M28 40 C28 31 28.5 25 29 21 C23 13 12 8 2 9 C9 12 17 16 22 21 C25 23 27.5 21 30 18 C32.5 21 35 23 38 21 C43 16 51 12 58 9 C48 8 37 13 31 21 C31.5 25 32 31 32 40 Z"/></svg>
-        </div>
-        <svg class="wave back" viewBox="0 0 2880 200" preserveAspectRatio="none">
-          <path fill="currentColor" d="M0 44 C120 14 240 14 360 44 S600 74 720 44 S960 14 1080 44 S1320 74 1440 44 S1680 14 1800 44 S2040 74 2160 44 S2400 14 2520 44 S2760 74 2880 44 V200 H0 Z"/>
-        </svg>
-        <svg class="wave mid" viewBox="0 0 2880 200" preserveAspectRatio="none">
-          <path fill="currentColor" d="M0 40 C80 18 160 18 240 40 S400 62 480 40 S640 18 720 40 S880 62 960 40 S1120 18 1200 40 S1360 62 1440 40 S1600 18 1680 40 S1840 62 1920 40 S2080 18 2160 40 S2320 62 2400 40 S2560 18 2640 40 S2800 62 2880 40 V200 H0 Z"/>
-        </svg>
-        <svg class="wave front" viewBox="0 0 2880 200" preserveAspectRatio="none">
-          <path fill="currentColor" d="M0 26 C60 10 120 10 180 26 S300 42 360 26 S480 10 540 26 S660 42 720 26 S840 10 900 26 S1020 42 1080 26 S1200 10 1260 26 S1380 42 1440 26 S1560 10 1620 26 S1740 42 1800 26 S1920 10 1980 26 S2100 42 2160 26 S2280 10 2340 26 S2460 42 2520 26 S2640 10 2700 26 S2820 42 2880 26 V200 H0 Z"/>
-        </svg>
-      </div>
-
-      <div class="showers" id="showers" aria-hidden="true" hidden></div>
-
-      <div class="adrift">
-        <img class="ula" src="/assets/ula.webp" width="96" height="96" alt="Ula, drifting on the waves">
+        <a class="btn" href="/">Paddle back home</a>
       </div>
     </section>
   </main>
